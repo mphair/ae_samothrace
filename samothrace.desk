@@ -1,0 +1,62 @@
+{
+  "widgets": [
+    {
+      "widget_id": "claude_desk",
+      "instance_id": "de8d46e9-2a95-4dd6-ba1a-d8d22602c098",
+      "x": -218.40234375,
+      "y": -65.4609375,
+      "width": 701.484375,
+      "height": 560.0,
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "project_files",
+      "instance_id": "28db15c5",
+      "x": 661.6484375,
+      "y": -4.4296875,
+      "width": 360.0,
+      "height": 640.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    }
+  ],
+  "pan_x": 308.0,
+  "pan_y": 287.0,
+  "scale": 1.0,
+  "custom_widgets": [],
+  "file_type_registry": [],
+  "state": {},
+  "installed_jobs": [],
+  "recently_removed": [
+    {
+      "widget_id": "editor",
+      "kind": "python",
+      "label": "Editor (1a6549f7)",
+      "instance_id": "1a6549f7",
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/.gitignore"
+      },
+      "width": 720.0,
+      "height": 520.0,
+      "removed_at": 1791568702.88813
+    },
+    {
+      "widget_id": "editor",
+      "kind": "python",
+      "label": "Editor (54a868f8)",
+      "instance_id": "54a868f8",
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/README.md"
+      },
+      "width": 720.0,
+      "height": 520.0,
+      "removed_at": 1791568520.116562
+    }
+  ]
+}

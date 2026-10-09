@@ -1,0 +1,7 @@
+
+# Desk-specific
+.desk_temp/
+**/__pycache__/
+
+# MacOS
+.DS_Store

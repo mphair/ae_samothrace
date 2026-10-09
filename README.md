@@ -1,4 +1,11 @@
-# Interactive Map: Sanctuary of the Great Gods, Samothrace
+# Desk import of Interactive Map: Sanctuary of the Great Gods, Samothrace; for Ars Magica saga cartography
+
+This is a fork of <https://github.com/jagingrich/samo_website> (see note below),
+for the purpose of ingesting the data into Desk <https://github.com/inadvisable-adventures/desk>
+to use as a basis for cartography in an [Ars Magica](https://en.wikipedia.org/wiki/Ars_Magica) saga.
+
+
+## Forked from Interactive Map: Sanctuary of the Great Gods, Samothrace
 
 Code, text, images, and GIS files that support this interactive map: Jared Gingrich, October 18, 2023
 
