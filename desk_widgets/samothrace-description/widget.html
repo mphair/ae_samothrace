@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Samothrace Monument Description</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+      }
+      samothrace-description {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <template id="samothrace-description-template">
+      <style>
+        :host {
+          display: block;
+          width: 100%;
+          height: 100%;
+          font-family: Arial, Helvetica, sans-serif;
+          color: #1c1c1c;
+        }
+        .wrap {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          box-sizing: border-box;
+        }
+        .content {
+          width: 100%;
+          height: 100%;
+          box-sizing: border-box;
+          overflow-y: auto;
+          padding: 16px 18px 32px;
+        }
+        .placeholder {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+          text-align: center;
+          color: #777;
+          font-size: 14px;
+          line-height: 1.5;
+        }
+        .status-overlay {
+          position: absolute;
+          inset: 0;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255, 255, 255, 0.85);
+          font-size: 13px;
+          color: #444;
+          z-index: 10;
+          text-align: center;
+          padding: 16px;
+        }
+
+        /* description content styling */
+        .field-title,
+        .field-monument {
+          font-size: 26px;
+          font-weight: bold;
+          margin: 0 0 4px;
+          line-height: 1.2;
+        }
+        .field-header {
+          font-size: 20px;
+          font-weight: bold;
+          margin: 20px 0 8px;
+        }
+        .field-subheader {
+          font-size: 16px;
+          font-weight: bold;
+          margin: 16px 0 6px;
+        }
+        .field-part {
+          font-size: 14px;
+          font-weight: bold;
+          margin: 12px 0 4px;
+        }
+        .meta-line {
+          font-size: 12px;
+          color: #555;
+          margin: 0 0 2px;
+        }
+        .paragraph {
+          font-size: 14px;
+          line-height: 1.55;
+          margin: 10px 0;
+        }
+        .figure {
+          margin: 14px 0;
+        }
+        .figure img {
+          display: block;
+          width: 100%;
+          height: auto;
+          border-radius: 3px;
+        }
+        .figure figcaption {
+          font-size: 11px;
+          color: #666;
+          margin-top: 4px;
+          font-style: italic;
+        }
+        .bib-heading {
+          font-size: 16px;
+          font-weight: bold;
+          margin: 22px 0 8px;
+        }
+        .bib-entry {
+          font-size: 11px;
+          line-height: 1.4;
+          margin: 6px 0;
+          padding-left: 36px;
+          text-indent: -36px;
+          color: #333;
+        }
+      </style>
+      <div class="wrap">
+        <div class="content"></div>
+        <div class="placeholder">
+          Click a monument on the Samothrace Map, or press Overview, to see
+          its description here.
+        </div>
+        <div class="status-overlay"></div>
+      </div>
+    </template>
+    <script>
+      /* BUILD:COMPILED_JS */
+    </script>
+    <samothrace-description></samothrace-description>
+  </body>
+</html>

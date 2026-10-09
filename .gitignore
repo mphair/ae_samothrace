@@ -5,3 +5,6 @@
 
 # MacOS
 .DS_Store
+
+# Desk-specific
+desk_widgets/**/.build/

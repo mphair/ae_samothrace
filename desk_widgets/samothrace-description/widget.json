@@ -1,0 +1,7 @@
+{
+  "keyword": "SamothraceDescription",
+  "label": "Samothrace Monument Description",
+  "width": 460,
+  "height": 700,
+  "capabilities": ["fs", "documents", "state", "events"]
+}

@@ -3,10 +3,10 @@
     {
       "widget_id": "claude_desk",
       "instance_id": "de8d46e9-2a95-4dd6-ba1a-d8d22602c098",
-      "x": -218.40234375,
-      "y": -65.4609375,
+      "x": -605.058692912328,
+      "y": 142.9037430003307,
       "width": 701.484375,
-      "height": 560.0,
+      "height": 679.6171875,
       "state": {
         "model": "claude-sonnet-5",
         "permission_mode": "auto"
@@ -17,23 +17,237 @@
     {
       "widget_id": "project_files",
       "instance_id": "28db15c5",
-      "x": 661.6484375,
-      "y": -4.4296875,
-      "width": 360.0,
+      "x": 845.9075380926944,
+      "y": -303.8121059401094,
+      "width": 448.62109375,
       "height": 640.0,
       "state": {},
       "locked": false,
       "placed_content_hash": null
+    },
+    {
+      "widget_id": "git_status",
+      "instance_id": "d6e6c7b3",
+      "x": 138.69887886992905,
+      "y": 598.3257008143469,
+      "width": 420.0,
+      "height": 360.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "state_manager",
+      "instance_id": "a31c9a17",
+      "x": 308.0,
+      "y": 287.0,
+      "width": 760.0,
+      "height": 520.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "SamothraceMap",
+      "instance_id": "bbc0901e-438e-4bd9-9ec0-6a8d09f1ecd0",
+      "x": -131.77990054429,
+      "y": -230.5362147482338,
+      "width": 920.0,
+      "height": 700.0,
+      "state": {
+        "lastGroup": "Aerial Imagery"
+      },
+      "locked": false,
+      "placed_content_hash": "e1de1d7af94a"
+    },
+    {
+      "widget_id": "SamothraceDescription",
+      "instance_id": "d8697e13-5540-419f-9b0d-623e5259c7fa",
+      "x": 1193.01171875,
+      "y": -350.7578125,
+      "width": 460.0,
+      "height": 885.4318374734625,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": "2a136b77f3fe"
     }
   ],
-  "pan_x": 308.0,
-  "pan_y": 287.0,
-  "scale": 1.0,
-  "custom_widgets": [],
+  "pan_x": 451.74732156145257,
+  "pan_y": 424.36869601227363,
+  "scale": 0.6574471741712323,
+  "custom_widgets": [
+    {
+      "keyword": "SamothraceMap",
+      "label": "Samothrace Map",
+      "html_b64": "",
+      "default_size": {
+        "width": 920,
+        "height": 700
+      },
+      "capabilities": [
+        "fs",
+        "documents",
+        "state"
+      ],
+      "source_path": "desk_widgets/samothrace-map"
+    },
+    {
+      "keyword": "SamothraceDescription",
+      "label": "Samothrace Monument Description",
+      "html_b64": "",
+      "default_size": {
+        "width": 460,
+        "height": 700
+      },
+      "capabilities": [
+        "fs",
+        "documents",
+        "state",
+        "events"
+      ],
+      "source_path": "desk_widgets/samothrace-description"
+    }
+  ],
   "file_type_registry": [],
-  "state": {},
+  "state": {
+    "samothrace.selectedMonument": {
+      "value": {
+        "webCode": "(11a)Stoa",
+        "label": "11a",
+        "name": "Stoa",
+        "plan": "Restored"
+      },
+      "edit": null,
+      "history": [
+        {
+          "value": {
+            "webCode": "(20)RotundaofArsinoeII",
+            "label": "20",
+            "name": "Rotunda of Arsinoe II",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(20)RotundaofArsinoeII",
+            "label": "20",
+            "name": "Rotunda of Arsinoe II",
+            "plan": "Restored"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(22)Sacristy",
+            "label": "22",
+            "name": "Sacristy",
+            "plan": "Restored"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(0)Introduction",
+            "label": "",
+            "name": "Overview",
+            "plan": "Overview"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(18)SacredWay",
+            "label": "18",
+            "name": "Sacred Way",
+            "plan": "Restored"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(11a)Stoa",
+            "label": "11a",
+            "name": "Stoa",
+            "plan": "Restored"
+          },
+          "edit": null
+        }
+      ]
+    }
+  },
   "installed_jobs": [],
   "recently_removed": [
+    {
+      "widget_id": "git_diff",
+      "kind": "python",
+      "label": "Git Diff (3504a616)",
+      "instance_id": "3504a616",
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/samothrace.desk"
+      },
+      "width": 640.0,
+      "height": 480.0,
+      "removed_at": 1791574607.2713652
+    },
+    {
+      "widget_id": "claude_desk_task_log",
+      "kind": "python",
+      "label": "Claude (Desk) Task Log (76a3451d)",
+      "instance_id": "76a3451d",
+      "state": {},
+      "width": 460.0,
+      "height": 679.79296875,
+      "removed_at": 1791570705.049113
+    },
+    {
+      "widget_id": "editor",
+      "kind": "python",
+      "label": "Editor (666849ed)",
+      "instance_id": "666849ed",
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/.gitattributes"
+      },
+      "width": 720.0,
+      "height": 520.0,
+      "removed_at": 1791569526.643008
+    },
+    {
+      "widget_id": "editor",
+      "kind": "python",
+      "label": "Editor (aca25127)",
+      "instance_id": "aca25127",
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/Data/mapDescriptions/(1-3)UnidentifiedLateHellenisticBuildings/SamoWebsite_(1-3)UnidentifiedLateHellenisticBuildings.txt"
+      },
+      "width": 720.0,
+      "height": 520.0,
+      "removed_at": 1791569504.104785
+    },
+    {
+      "widget_id": "editor",
+      "kind": "python",
+      "label": "Editor (e06e9a43)",
+      "instance_id": "e06e9a43",
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/Data/mapDescriptions/(0)Introduction/SamoWebsite_(0)Introduction.txt"
+      },
+      "width": 720.0,
+      "height": 520.0,
+      "removed_at": 1791569444.0092921
+    },
+    {
+      "widget_id": "editor",
+      "kind": "python",
+      "label": "Editor (033e3afe)",
+      "instance_id": "033e3afe",
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/README Storage.txt"
+      },
+      "width": 720.0,
+      "height": 520.0,
+      "removed_at": 1791569296.61704
+    },
     {
       "widget_id": "editor",
       "kind": "python",
