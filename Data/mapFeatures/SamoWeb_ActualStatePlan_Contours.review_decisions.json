@@ -1,0 +1,14 @@
+{
+  "plan": "actual",
+  "decisions": [
+    {
+      "reviewId": "actual-contours-0",
+      "lon": 25.531093329191208,
+      "lat": 40.5008967334299,
+      "decision": "reject",
+      "value": null,
+      "ocrText": "09 \u0433",
+      "resolvedAt": "2026-10-10T07:06:29.349Z"
+    }
+  ]
+}

@@ -481,11 +481,90 @@ class ReviewItem:
     image_base64: str
 
 
+# ── Review decisions (human answers, fed back into extraction) ──
+# A human's answer to a ReviewItem, via the contour-label-review widget
+# and scripts/apply_label_review.py, is persisted per plan at
+# Data/mapFeatures/SamoWeb_<Plan>_Contours.review_decisions.json --
+# DELIBERATELY keyed by the label candidate's own geographic position
+# (lon/lat), not by fragment id: fragment ids are array positions that
+# shift across re-runs (see the "Known limitations" note on this very
+# topic), but the candidate's position in the source raster obviously
+# doesn't. apply_label_review.py is the only thing that WRITES this
+# file (translating .desk_temp/contour-label-review-log.json's
+# fragment-id-keyed answers into position-keyed ones using the geojson
+# that was current when the answer was given); extraction only ever
+# READS it.
+REVIEW_DECISION_MATCH_RADIUS_M = 10.0
+
+
+def review_decisions_path(plan: str) -> Path:
+    plan_label = "ActualStatePlan" if plan == "actual" else "RestoredStatePlan"
+    return FEATURES_DIR / f"SamoWeb_{plan_label}_Contours.review_decisions.json"
+
+
+def load_review_decisions(plan: str) -> list[dict]:
+    path = review_decisions_path(plan)
+    if not path.is_file():
+        return []
+    return json.loads(path.read_text()).get("decisions", [])
+
+
+def _approx_meters(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
+    # Equirectangular approximation -- fine at this site's scale (tens of
+    # meters) and latitude; not meant for anything farther-reaching.
+    return math.hypot((lon2 - lon1) * 85000, (lat2 - lat1) * 111000)
+
+
+def find_review_decision(decisions: list[dict], lon: float, lat: float) -> dict | None:
+    best, best_d = None, REVIEW_DECISION_MATCH_RADIUS_M
+    for d in decisions:
+        dist = _approx_meters(lon, lat, d["lon"], d["lat"])
+        if dist <= best_d:
+            best, best_d = d, dist
+    return best
+
+
+def _apply_merge(
+    fragments: list[Fragment],
+    endpoint_index: list[tuple[tuple[int, int], int, bool]],
+    consumed: set[int],
+    a: tuple[tuple[int, int], int, bool],
+    b: tuple[tuple[int, int], int, bool],
+    elevation_m: float | None,
+    elevation_source: str,
+) -> None:
+    """Shared by both the (script-decided) OCR auto-accept path and the
+    (human-decided) review-decision accept/custom path -- the actual
+    splice-two-fragments-into-one mechanics don't care which one asked
+    for it, only what elevation/source to tag the result with."""
+    frag_a, frag_b = fragments[a[1]], fragments[b[1]]
+    path_a = frag_a.path if not a[2] else frag_a.path[::-1]
+    path_b = frag_b.path if b[2] else frag_b.path[::-1]
+    merged = Fragment(
+        frag_id=frag_a.frag_id,
+        path=path_a + path_b,
+        elevation_m=elevation_m,
+        elevation_source=elevation_source,
+        merged_from=[frag_a.frag_id, frag_b.frag_id],
+    )
+    # See the long comment in the (former) inline version of this code --
+    # preserved below at its call site -- for why both originals are
+    # consumed and the merge is appended fresh rather than overwriting
+    # fragments[a[1]] in place.
+    consumed.add(a[1])
+    consumed.add(b[1])
+    new_idx = len(fragments)
+    fragments.append(merged)
+    endpoint_index.append((merged.path[0], new_idx, True))
+    endpoint_index.append((merged.path[-1], new_idx, False))
+
+
 def merge_labeled_fragments(
     fragments: list[Fragment],
     ink_mask: np.ndarray,
     thick_px_dilated: np.ndarray,
-    rgba: np.ndarray,
+    mosaic: Mosaic,
+    review_decisions: list[dict],
 ) -> tuple[list[Fragment], int, list[ReviewItem]]:
     """For each label-candidate blob, find the two nearest fragment
     endpoints roughly straddling it and run OCR (see try_ocr_elevation
@@ -531,7 +610,25 @@ def merge_labeled_fragments(
         # the centroid-radius check individually.
         if math.dist(a[0], b[0]) > MAX_LABEL_GAP_PX:
             continue
-        readout = try_ocr_elevation(rgba, cand["bbox"])
+
+        # A human may have already judged THIS specific candidate (by
+        # position) via a previous run's review queue -- check before
+        # spending an OCR call on it. "reject" means permanently treat
+        # as if OCR found nothing here; "accept"/"custom" means apply
+        # the human-confirmed value directly, bypassing the
+        # multiple-of-5 auto-accept gate entirely (a human already
+        # looked at the image, which is a stronger signal than any
+        # heuristic here).
+        cand_lon, cand_lat = pixel_to_lonlat(mosaic, cx, cy)
+        decision = find_review_decision(review_decisions, cand_lon, cand_lat)
+        if decision is not None:
+            if decision["decision"] == "reject":
+                continue
+            _apply_merge(fragments, endpoint_index, consumed, a, b, decision["value"], "review-confirmed")
+            merged_count += 1
+            continue
+
+        readout = try_ocr_elevation(mosaic.rgba, cand["bbox"])
         if readout is None:
             continue
         if readout.status == "review":
@@ -550,36 +647,20 @@ def merge_labeled_fragments(
                 )
             )
             continue  # leave both fragments separate and unlabeled -- see docstring
-        frag_a, frag_b = fragments[a[1]], fragments[b[1]]
-        path_a = frag_a.path if not a[2] else frag_a.path[::-1]
-        path_b = frag_b.path if b[2] else frag_b.path[::-1]
-        merged_path = path_a + path_b
-        merged = Fragment(
-            frag_id=frag_a.frag_id,
-            path=merged_path,
-            elevation_m=readout.value,
-            elevation_source="ocr",
-            merged_from=[frag_a.frag_id, frag_b.frag_id],
-        )
-        # Consume BOTH originals (rather than overwriting fragments[a[1]]
-        # in place) and append the merged result as a fresh entry with
-        # its own endpoints registered in endpoint_index. Overwriting in
-        # place left endpoint_index's two stale entries for a[1]
-        # pointing at coordinates that were no longer real endpoints of
-        # the (now longer) fragment at that index -- a later candidate
-        # could still match against that stale "near" coordinate (it's
-        # still in endpoint_index, un-consumed) and splice using an
-        # is_start flag computed for the ORIGINAL short fragment's
-        # orientation, which silently produces the wrong splice point
-        # against the current merged path and a long bogus straight
-        # jump in the output geometry. Treating every merge as
+        # Consuming BOTH originals (rather than overwriting fragments[a[1]]
+        # in place) and appending the merge as a fresh entry, inside
+        # _apply_merge, is deliberate: overwriting in place left
+        # endpoint_index's two stale entries for a[1] pointing at
+        # coordinates that were no longer real endpoints of the (now
+        # longer) fragment at that index -- a later candidate could
+        # still match against that stale "near" coordinate (it's still
+        # in endpoint_index, un-consumed) and splice using an is_start
+        # flag computed for the ORIGINAL short fragment's orientation,
+        # which silently produces the wrong splice point against the
+        # current merged path and a long bogus straight jump in the
+        # output geometry. Treating every merge as
         # consume-two-make-one-new avoids the staleness entirely.
-        consumed.add(a[1])
-        consumed.add(b[1])
-        new_idx = len(fragments)
-        fragments.append(merged)
-        endpoint_index.append((merged.path[0], new_idx, True))
-        endpoint_index.append((merged.path[-1], new_idx, False))
+        _apply_merge(fragments, endpoint_index, consumed, a, b, readout.value, "ocr")
         merged_count += 1
 
     # Phase 2 of ReviewItem.fragment_{a,b}_id: translate from "index into
@@ -668,8 +749,11 @@ def extract_contours(plan: str, mosaic: Mosaic) -> tuple[dict, list[ReviewItem]]
         fragments.append(Fragment(frag_id=i, path=path))
 
     print(f"  [{plan}] {len(fragments)} contour fragments before label merge")
-    fragments, merged, review_items = merge_labeled_fragments(fragments, ink_mask, thick_px_dilated, mosaic.rgba)
-    labeled = sum(1 for f in fragments if f.elevation_source == "ocr")
+    review_decisions = load_review_decisions(plan)
+    if review_decisions:
+        print(f"  [{plan}] loaded {len(review_decisions)} prior human review decision(s)")
+    fragments, merged, review_items = merge_labeled_fragments(fragments, ink_mask, thick_px_dilated, mosaic, review_decisions)
+    labeled = sum(1 for f in fragments if f.elevation_source in ("ocr", "review-confirmed"))
     print(f"  [{plan}] merged {merged} label gaps -> {labeled}/{len(fragments)} fragments have an elevation")
     if review_items:
         print(
@@ -720,10 +804,18 @@ def extract_streams(plan: str, mosaic: Mosaic) -> dict | None:
 
 
 def write_review_queue(plan: str, review_items: list[ReviewItem]) -> Path | None:
-    if not review_items:
-        return None
     plan_label = "ActualStatePlan" if plan == "actual" else "RestoredStatePlan"
     out_path = FEATURES_DIR / f"SamoWeb_{plan_label}_Contours.review_queue.json"
+    if not review_items:
+        # Every run writes an authoritative queue -- including "there is
+        # currently nothing to review" -- rather than leaving a PRIOR
+        # run's file sitting there stale. Without this, a candidate a
+        # human already resolved (via review_decisions.json, so it no
+        # longer generates a ReviewItem at all) would leave its old
+        # queue entry on disk forever, looking like a still-pending
+        # question to anything reading this file later.
+        out_path.unlink(missing_ok=True)
+        return None
     payload = {
         "plan": plan,
         "layer": "contours",
