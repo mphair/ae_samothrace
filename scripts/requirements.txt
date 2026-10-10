@@ -1,0 +1,12 @@
+# For extract_vector_layers.py. Install with:
+#   pip3 install -r scripts/requirements.txt
+#
+# ocrmac wraps macOS's built-in Vision framework for the elevation-label
+# OCR step -- no external OCR engine/binary needed, but it only works on
+# macOS. numpy/scipy/Pillow/scikit-image/shapely are all cross-platform.
+numpy
+scipy
+Pillow
+scikit-image
+shapely
+ocrmac

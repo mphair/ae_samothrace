@@ -1,0 +1,3800 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529972165822983,
+            40.50167736300432
+          ],
+          [
+            25.529950708150864,
+            40.501703876716675
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529634207487106,
+            40.50167532348755
+          ],
+          [
+            25.529634207487106,
+            40.50169163961996
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529992282390594,
+            40.50165798759251
+          ],
+          [
+            25.529977530241013,
+            40.501670224695346
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529634207487106,
+            40.5016488097639
+          ],
+          [
+            25.529634207487106,
+            40.501664106144204
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53001508116722,
+            40.50163759241613
+          ],
+          [
+            25.53000032901764,
+            40.5016498295227
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.5296328663826,
+            40.50163657265715
+          ],
+          [
+            25.5296328663826,
+            40.50162025651134
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530039221048355,
+            40.501618216992824
+          ],
+          [
+            25.530024468898773,
+            40.50163045410292
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.5296328663826,
+            40.50160801939936
+          ],
+          [
+            25.529634207487106,
+            40.50159374276592
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53006336092949,
+            40.50159884156393
+          ],
+          [
+            25.530051290988922,
+            40.50160801939936
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52963823080063,
+            40.50158150564912
+          ],
+          [
+            25.52964225411415,
+            40.50156620924998
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530102252960205,
+            40.50156824877006
+          ],
+          [
+            25.530112981796265,
+            40.50156111044949
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52964359521866,
+            40.50155397212816
+          ],
+          [
+            25.52964761853218,
+            40.501538675722735
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530123710632324,
+            40.50155397212816
+          ],
+          [
+            25.53014114499092,
+            40.50154275476452
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530169308185577,
+            40.501528478117194
+          ],
+          [
+            25.530150532722473,
+            40.50153663620175
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529651641845703,
+            40.501528478117194
+          ],
+          [
+            25.529654324054718,
+            40.5015111421842
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530197471380234,
+            40.50151420146681
+          ],
+          [
+            25.530181378126144,
+            40.50152133979238
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53021088242531,
+            40.50150808290143
+          ],
+          [
+            25.530228316783905,
+            40.5015019643355
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52965834736824,
+            40.50149890505232
+          ],
+          [
+            25.52966371178627,
+            40.50148462839566
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530259162187576,
+            40.50149176672437
+          ],
+          [
+            25.53024172782898,
+            40.50149686553013
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530292689800262,
+            40.50148054935033
+          ],
+          [
+            25.530275255441666,
+            40.50148666791822
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530306100845337,
+            40.50147545054334
+          ],
+          [
+            25.530323535203934,
+            40.50146729245133
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52967444062233,
+            40.50145811459664
+          ],
+          [
+            25.529667735099792,
+            40.50147341102043
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530353039503098,
+            40.50145199602615
+          ],
+          [
+            25.5303356051445,
+            40.50146117388167
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52967980504036,
+            40.5014458774551
+          ],
+          [
+            25.52968516945839,
+            40.50143262054924
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53037852048874,
+            40.50143567983544
+          ],
+          [
+            25.530363768339157,
+            40.5014458774551
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530390590429306,
+            40.50142854150076
+          ],
+          [
+            25.530406683683395,
+            40.50141834387846
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52969992160797,
+            40.50140610672966
+          ],
+          [
+            25.529691874980927,
+            40.501420383403044
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530433505773544,
+            40.50140100791701
+          ],
+          [
+            25.530417412519455,
+            40.50141222530435
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52972137928009,
+            40.501383671951075
+          ],
+          [
+            25.529707968235016,
+            40.501396928866605
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53044557571411,
+            40.501393869578635
+          ],
+          [
+            25.530458986759186,
+            40.501384691713895
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530487149953842,
+            40.501366335980656
+          ],
+          [
+            25.530471056699753,
+            40.501377553373786
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529736131429672,
+            40.50137143479595
+          ],
+          [
+            25.529746860265732,
+            40.50136531621755
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.5304978787899,
+            40.5013591976386
+          ],
+          [
+            25.530512630939484,
+            40.50134798024239
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529775023460388,
+            40.50134798024239
+          ],
+          [
+            25.5297589302063,
+            40.5013561383489
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529787093400955,
+            40.50134186166185
+          ],
+          [
+            25.529803186655045,
+            40.50133166402639
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530523359775543,
+            40.501340841898376
+          ],
+          [
+            25.53053542971611,
+            40.50133166402639
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52982598543167,
+            40.50130820945892
+          ],
+          [
+            25.52981525659561,
+            40.50132350591689
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530564934015274,
+            40.50131228851472
+          ],
+          [
+            25.530554205179214,
+            40.501318407097955
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530590415000916,
+            40.50129597229003
+          ],
+          [
+            25.530575662851334,
+            40.501305150166914
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529838055372238,
+            40.50128271535455
+          ],
+          [
+            25.5298313498497,
+            40.50129903158246
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530621260404587,
+            40.501280675825775
+          ],
+          [
+            25.530602484941483,
+            40.50128985370475
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530649423599243,
+            40.5012643595934
+          ],
+          [
+            25.530631989240646,
+            40.5012735374746
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52984207868576,
+            40.50127047818101
+          ],
+          [
+            25.529844760894775,
+            40.501255181710945
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530674904584885,
+            40.501246003827234
+          ],
+          [
+            25.530660152435303,
+            40.501257221240486
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52984744310379,
+            40.501242944532386
+          ],
+          [
+            25.529848784208298,
+            40.501227648056044
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53069904446602,
+            40.501227648056044
+          ],
+          [
+            25.530684292316437,
+            40.50123886547237
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53070843219757,
+            40.5012194899339
+          ],
+          [
+            25.530720502138138,
+            40.50120827251434
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529850125312805,
+            40.50121541087246
+          ],
+          [
+            25.529851466417313,
+            40.50120113415546
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530731230974197,
+            40.501199094624205
+          ],
+          [
+            25.53074598312378,
+            40.501186857435414
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529851466417313,
+            40.501186857435414
+          ],
+          [
+            25.52985280752182,
+            40.50117360047837
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.5307674407959,
+            40.5011664621158
+          ],
+          [
+            25.530754029750824,
+            40.50117869930831
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52985280752182,
+            40.501160343518706
+          ],
+          [
+            25.529854148626328,
+            40.501144027257055
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530779510736465,
+            40.50115524468736
+          ],
+          [
+            25.530790239572525,
+            40.50114606678998
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530811697244644,
+            40.5011246516912
+          ],
+          [
+            25.53079828619957,
+            40.50113790865792
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529855489730835,
+            40.50111955285715
+          ],
+          [
+            25.529854148626328,
+            40.50113179005822
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530821084976196,
+            40.501114454022705
+          ],
+          [
+            25.53083449602127,
+            40.50110221681847
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530851930379868,
+            40.50108080170569
+          ],
+          [
+            25.530841201543808,
+            40.5010950784483
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530868023633957,
+            40.50105734705052
+          ],
+          [
+            25.530858635902405,
+            40.50107060403054
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529856830835342,
+            40.50104409006788
+          ],
+          [
+            25.52985817193985,
+            40.5010583668183
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53088277578354,
+            40.501032872618985
+          ],
+          [
+            25.530873388051987,
+            40.501048169139736
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529854148626328,
+            40.501019615631506
+          ],
+          [
+            25.529855489730835,
+            40.501032872618985
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.5308935046196,
+            40.50100737840997
+          ],
+          [
+            25.53088814020157,
+            40.501023694704855
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52985280752182,
+            40.50100635864141
+          ],
+          [
+            25.529850125312805,
+            40.500993101648696
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53089752793312,
+            40.50099616095494
+          ],
+          [
+            25.530900210142136,
+            40.500980864422324
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529846101999283,
+            40.50097984465336
+          ],
+          [
+            25.529844760894775,
+            40.50096760742457
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530901551246643,
+            40.50096964696286
+          ],
+          [
+            25.530904233455658,
+            40.500954350424195
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529843419790268,
+            40.500955370193545
+          ],
+          [
+            25.529844760894775,
+            40.5009410934212
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530910938978195,
+            40.50092885618534
+          ],
+          [
+            25.530906915664673,
+            40.50094313296029
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529846101999283,
+            40.50093191549451
+          ],
+          [
+            25.52985280752182,
+            40.500916618947244
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530920326709747,
+            40.5009033619368
+          ],
+          [
+            25.530914962291718,
+            40.500917638717176
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52986353635788,
+            40.50089112469406
+          ],
+          [
+            25.52985817193985,
+            40.50090540147704
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530928373336792,
+            40.50087786767857
+          ],
+          [
+            25.53092435002327,
+            40.50089214446437
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529864877462387,
+            40.50087888744908
+          ],
+          [
+            25.529864877462387,
+            40.50086563043118
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530928373336792,
+            40.500864610660464
+          ],
+          [
+            25.530931055545807,
+            40.50085033386879
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52986353635788,
+            40.500852373410645
+          ],
+          [
+            25.52986353635788,
+            40.50084013615861
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530931055545807,
+            40.5008391163875
+          ],
+          [
+            25.530931055545807,
+            40.500824839590415
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529860854148865,
+            40.50082789890433
+          ],
+          [
+            25.529859513044357,
+            40.50081464187635
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.5309297144413,
+            40.50081158256182
+          ],
+          [
+            25.530927032232285,
+            40.50079832553062
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529856830835342,
+            40.500802404617424
+          ],
+          [
+            25.529854148626328,
+            40.5007891475844
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53092435002327,
+            40.500785068496796
+          ],
+          [
+            25.530923008918762,
+            40.5007707916882
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529850125312805,
+            40.50076161373821
+          ],
+          [
+            25.529851466417313,
+            40.50077793009287
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530923008918762,
+            40.50074529737959
+          ],
+          [
+            25.530921667814255,
+            40.50075753464893
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529848784208298,
+            40.50075039624208
+          ],
+          [
+            25.52984744310379,
+            40.50073713919878
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530921667814255,
+            40.500717763515404
+          ],
+          [
+            25.530921667814255,
+            40.50073306010801
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529843419790268,
+            40.50070960533125
+          ],
+          [
+            25.529844760894775,
+            40.50072388215287
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53092435002327,
+            40.500691249413286
+          ],
+          [
+            25.530921667814255,
+            40.500705526238804
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52984207868576,
+            40.500698387826425
+          ],
+          [
+            25.52984207868576,
+            40.50068411099939
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53092435002327,
+            40.50068105167891
+          ],
+          [
+            25.530927032232285,
+            40.50066575507444
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529843419790268,
+            40.50067289349029
+          ],
+          [
+            25.52984744310379,
+            40.50065861665783
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530931055545807,
+            40.50065453756228
+          ],
+          [
+            25.530936419963837,
+            40.50063924095177
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52985817193985,
+            40.50063312230659
+          ],
+          [
+            25.529851466417313,
+            40.500647399144476
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53094044327736,
+            40.500629043209486
+          ],
+          [
+            25.53094983100891,
+            40.50061476636769
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529859513044357,
+            40.500621904788964
+          ],
+          [
+            25.529862195253372,
+            40.50060762794566
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530959218740463,
+            40.50060660817101
+          ],
+          [
+            25.530972629785538,
+            40.50059539064897
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529864877462387,
+            40.500596410423775
+          ],
+          [
+            25.529867559671402,
+            40.50058213357503
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53099811077118,
+            40.500577034699745
+          ],
+          [
+            25.53098738193512,
+            40.500584173125034
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529870241880417,
+            40.500557658970116
+          ],
+          [
+            25.52986890077591,
+            40.50056989627369
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53100883960724,
+            40.50056989627369
+          ],
+          [
+            25.531026273965836,
+            40.500559698520874
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531038343906403,
+            40.500551540317495
+          ],
+          [
+            25.531054437160492,
+            40.50054338211313
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52986890077591,
+            40.50053216458051
+          ],
+          [
+            25.52986890077591,
+            40.50054338211313
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53106516599655,
+            40.5005362436835
+          ],
+          [
+            25.53108260035515,
+            40.50052706570142
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531110763549805,
+            40.50051278883792
+          ],
+          [
+            25.531094670295715,
+            40.500520947046006
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52986890077591,
+            40.50050565040504
+          ],
+          [
+            25.52986890077591,
+            40.50051890749408
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531142950057983,
+            40.50049851197139
+          ],
+          [
+            25.53112283349037,
+            40.50050768995737
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531175136566162,
+            40.50048729443126
+          ],
+          [
+            25.53115501999855,
+            40.500494432866105
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529867559671402,
+            40.500492393313365
+          ],
+          [
+            25.529867559671402,
+            40.500479136219084
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53118720650673,
+            40.5004842351018
+          ],
+          [
+            25.531205981969833,
+            40.50047709666588
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531219393014908,
+            40.50047403733596
+          ],
+          [
+            25.531238168478012,
+            40.50046689889896
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529867559671402,
+            40.50046689889896
+          ],
+          [
+            25.529867559671402,
+            40.50045262202265
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531251579523087,
+            40.50046281979175
+          ],
+          [
+            25.531269013881683,
+            40.50045772090739
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53130254149437,
+            40.500446503360436
+          ],
+          [
+            25.531285107135773,
+            40.50045262202265
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531334728002548,
+            40.50043426603437
+          ],
+          [
+            25.531314611434937,
+            40.50044038469768
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529867559671402,
+            40.5004393649205
+          ],
+          [
+            25.529870241880417,
+            40.50042712759312
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53136020898819,
+            40.50041896937362
+          ],
+          [
+            25.531345456838608,
+            40.50042712759312
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529871582984924,
+            40.5004016331539
+          ],
+          [
+            25.529870241880417,
+            40.5004148902635
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531372278928757,
+            40.50041081115313
+          ],
+          [
+            25.53138703107834,
+            40.50039857382054
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53141251206398,
+            40.50037817826126
+          ],
+          [
+            25.53139641880989,
+            40.5003914353755
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52987292408943,
+            40.500374099148665
+          ],
+          [
+            25.529871582984924,
+            40.500389395819624
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531419217586517,
+            40.50036900025756
+          ],
+          [
+            25.531429946422577,
+            40.50035676291734
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529875606298447,
+            40.50034860468929
+          ],
+          [
+            25.52987292408943,
+            40.500361861809374
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531436651945114,
+            40.50034860468929
+          ],
+          [
+            25.531451404094696,
+            40.50033330800902
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52987426519394,
+            40.50032412999918
+          ],
+          [
+            25.52987426519394,
+            40.50033738712409
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531468838453293,
+            40.50031291242989
+          ],
+          [
+            25.531456768512726,
+            40.50032412999918
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52987292408943,
+            40.500310872871644
+          ],
+          [
+            25.52987292408943,
+            40.50029761574148
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53149163722992,
+            40.50029251684457
+          ],
+          [
+            25.531476885080338,
+            40.500304754196506
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529871582984924,
+            40.50027212125304
+          ],
+          [
+            25.529871582984924,
+            40.500285378388234
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53150102496147,
+            40.5002843586087
+          ],
+          [
+            25.53151711821556,
+            40.500274160812474
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531542599201202,
+            40.50025682455533
+          ],
+          [
+            25.53152784705162,
+            40.50026804213399
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529871582984924,
+            40.50024560697479
+          ],
+          [
+            25.529870241880417,
+            40.50025784433529
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53155466914177,
+            40.50024764653502
+          ],
+          [
+            25.531566739082336,
+            40.500237448733216
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529871582984924,
+            40.50023336961206
+          ],
+          [
+            25.52987426519394,
+            40.50021909268605
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531577467918396,
+            40.50022929049065
+          ],
+          [
+            25.53159087896347,
+            40.50021807290551
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531615018844604,
+            40.50019971685304
+          ],
+          [
+            25.53160160779953,
+            40.50020991466059
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.52988499403,
+            40.50019563772959
+          ],
+          [
+            25.52987828850746,
+            40.5002078750992
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531640499830246,
+            40.50018034101444
+          ],
+          [
+            25.531625747680664,
+            40.50019155860589
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.529891699552536,
+            40.50018543991987
+          ],
+          [
+            25.529901087284088,
+            40.500172182764935
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531660616397858,
+            40.50015892560736
+          ],
+          [
+            25.531649887561798,
+            40.50017116298367
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530027151107788,
+            40.50008040238961
+          ],
+          [
+            25.530044585466385,
+            40.5000732639107
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53007408976555,
+            40.50006510564817
+          ],
+          [
+            25.530053973197937,
+            40.5000671452139
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530086159706116,
+            40.500060006733584
+          ],
+          [
+            25.530102252960205,
+            40.50005286825251
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530114322900772,
+            40.50004572977068
+          ],
+          [
+            25.530133098363876,
+            40.500039611071365
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53016260266304,
+            40.50002737367107
+          ],
+          [
+            25.530145168304443,
+            40.50003349237149
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530174672603607,
+            40.50002329453713
+          ],
+          [
+            25.53019344806671,
+            40.500016156052155
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530221611261368,
+            40.500005958215155
+          ],
+          [
+            25.53020551800728,
+            40.50001207691754
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530233681201935,
+            40.49999983951221
+          ],
+          [
+            25.53025111556053,
+            40.49999474059266
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530284643173218,
+            40.49998760210465
+          ],
+          [
+            25.530265867710114,
+            40.49999168124075
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530298054218292,
+            40.4999855625365
+          ],
+          [
+            25.530318170785904,
+            40.49998250318418
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530416071414948,
+            40.49996516685166
+          ],
+          [
+            25.53033158183098,
+            40.49998046361588
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530465692281723,
+            40.499946810729995
+          ],
+          [
+            25.530429482460022,
+            40.49996210749839
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53048849105835,
+            40.499932533743
+          ],
+          [
+            25.53049921989441,
+            40.49992845460331
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530507266521454,
+            40.49992233589329
+          ],
+          [
+            25.530516654253006,
+            40.49990703911582
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530523359775543,
+            40.499897861047664
+          ],
+          [
+            25.530532747507095,
+            40.49988358405025
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530548840761185,
+            40.499860128976486
+          ],
+          [
+            25.530539453029633,
+            40.499874405978886
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53055688738823,
+            40.49984891132961
+          ],
+          [
+            25.53056761622429,
+            40.49983565410817
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53057298064232,
+            40.49982545624373
+          ],
+          [
+            25.530581027269363,
+            40.499813218804356
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.5305877327919,
+            40.49980404072336
+          ],
+          [
+            25.53059846162796,
+            40.499789763705984
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530613213777542,
+            40.49976528881199
+          ],
+          [
+            25.530605167150497,
+            40.499778546047345
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530627965927124,
+            40.49974081390906
+          ],
+          [
+            25.530618578195572,
+            40.499756110724434
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530638694763184,
+            40.499715319209024
+          ],
+          [
+            25.530633330345154,
+            40.49972959624223
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530648082494736,
+            40.49968982449929
+          ],
+          [
+            25.5306413769722,
+            40.499706141114636
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530652105808258,
+            40.49968064640141
+          ],
+          [
+            25.530657470226288,
+            40.49966432977987
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53066685795784,
+            40.49963883505076
+          ],
+          [
+            25.530660152435303,
+            40.4996551516785
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.5306775867939,
+            40.49961334031196
+          ],
+          [
+            25.530670881271362,
+            40.49962761736688
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53068831562996,
+            40.4995888653536
+          ],
+          [
+            25.530681610107422,
+            40.49960416220362
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.530696362257004,
+            40.499571528919354
+          ],
+          [
+            25.53069368004799,
+            40.499578667451644
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "streams",
+        "plan": "actual",
+        "elevation_m": null,
+        "elevation_source": "n/a",
+        "pixel_zoom": 20
+      }
+    }
+  ]
+}
