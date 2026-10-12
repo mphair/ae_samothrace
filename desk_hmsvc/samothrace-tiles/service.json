@@ -1,0 +1,5 @@
+{
+  "description": "Serves Samothrace map tiles (raw passthrough + derived topographic/structure layers) over HTTP for the Samothrace Map widget.",
+  "autostart": true,
+  "capabilities": []
+}

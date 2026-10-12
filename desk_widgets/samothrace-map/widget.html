@@ -1,0 +1,237 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Samothrace Map</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: #11151c;
+      }
+      samothrace-map {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <template id="samothrace-map-template">
+      <style>
+        :host {
+          display: block;
+          width: 100%;
+          height: 100%;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+        .wrap {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          background: #1b1f27;
+          color: #e6e9ef;
+        }
+        .toolbar {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px;
+          background: #20262f;
+          border-bottom: 1px solid #333c48;
+          flex: 0 0 auto;
+        }
+        .monument-select {
+          flex: 1 1 auto;
+          min-width: 0;
+          font-size: 13px;
+          padding: 5px 6px;
+          border-radius: 4px;
+          border: 1px solid #3a4454;
+          background: #11151c;
+          color: #e6e9ef;
+        }
+        .home-button {
+          font-size: 12px;
+          padding: 6px 10px;
+          border-radius: 4px;
+          border: 1px solid #3a4454;
+          background: #2a3444;
+          color: #e6e9ef;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+        .home-button:hover {
+          background: #344258;
+        }
+        .body-row {
+          position: relative;
+          flex: 1 1 auto;
+          display: flex;
+          min-height: 0;
+        }
+        .layers-panel {
+          flex: 0 0 200px;
+          overflow-y: auto;
+          background: #181c23;
+          border-right: 1px solid #333c48;
+          padding: 10px 10px 16px;
+          box-sizing: border-box;
+          font-size: 12px;
+        }
+        .layer-group-title {
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: #8a93a3;
+          margin: 14px 0 4px;
+        }
+        .layer-group-title:first-child {
+          margin-top: 0;
+        }
+        .layer-row {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 3px 0;
+          cursor: pointer;
+          user-select: none;
+          line-height: 1.3;
+        }
+        .layer-row input {
+          flex: 0 0 auto;
+        }
+        .debug-section {
+          margin-top: 14px;
+          padding-top: 10px;
+          border-top: 1px solid #333c48;
+        }
+        .debug-summary {
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: #8a93a3;
+          cursor: pointer;
+          user-select: none;
+        }
+        .debug-section[open] .debug-summary {
+          margin-bottom: 8px;
+        }
+        .debug-clear-button {
+          margin-top: 4px;
+          font-size: 11px;
+          padding: 3px 8px;
+          border-radius: 3px;
+          border: 1px solid #3a4454;
+          background: #2a3444;
+          color: #e6e9ef;
+          cursor: pointer;
+        }
+        .debug-clear-button:hover {
+          background: #344258;
+        }
+        .map-pane {
+          position: relative;
+          flex: 1 1 auto;
+          min-width: 0;
+          background: #808080;
+          overflow: hidden;
+        }
+        .map-canvas {
+          display: block;
+          width: 100%;
+          height: 100%;
+          touch-action: none;
+          cursor: grab;
+        }
+        .map-canvas:active {
+          cursor: grabbing;
+        }
+        .zoom-controls {
+          position: absolute;
+          right: 10px;
+          bottom: 10px;
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          border: 1px solid #3a4454;
+          border-radius: 4px;
+          overflow: hidden;
+          background: #20262f;
+        }
+        .zoom-in-button,
+        .zoom-out-button {
+          width: 28px;
+          height: 26px;
+          border: none;
+          background: transparent;
+          color: #e6e9ef;
+          font-size: 15px;
+          cursor: pointer;
+          line-height: 1;
+        }
+        .zoom-in-button:hover,
+        .zoom-out-button:hover {
+          background: #344258;
+        }
+        .zoom-label {
+          position: absolute;
+          left: 10px;
+          bottom: 10px;
+          font-size: 11px;
+          padding: 3px 6px;
+          border-radius: 3px;
+          background: rgba(32, 38, 47, 0.85);
+          color: #cbd5e1;
+          pointer-events: none;
+        }
+        .status-overlay {
+          position: absolute;
+          inset: 0;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          background: rgba(17, 21, 28, 0.75);
+          color: #e6e9ef;
+          font-size: 13px;
+          z-index: 20;
+          text-align: center;
+          padding: 16px;
+        }
+      </style>
+      <div class="wrap">
+        <div class="toolbar">
+          <select class="monument-select"><option value="">Loading…</option></select>
+          <button type="button" class="home-button" title="Zoom to overview">⟲ Overview</button>
+        </div>
+        <div class="body-row">
+          <div class="layers-panel">
+            <div class="layers-list"></div>
+            <details class="debug-section">
+              <summary class="debug-summary">Debug</summary>
+              <label class="layer-row"><input type="checkbox" class="debug-hit-trace-toggle" /> Hit-test trace</label>
+              <button type="button" class="debug-clear-button">Clear trace</button>
+            </details>
+          </div>
+          <div class="map-pane">
+            <canvas class="map-canvas"></canvas>
+            <div class="zoom-controls">
+              <button type="button" class="zoom-in-button" title="Zoom in">+</button>
+              <button type="button" class="zoom-out-button" title="Zoom out">−</button>
+            </div>
+            <div class="zoom-label"></div>
+            <div class="status-overlay"></div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <script>
+      /* BUILD:COMPILED_JS */
+    </script>
+    <samothrace-map></samothrace-map>
+  </body>
+</html>
