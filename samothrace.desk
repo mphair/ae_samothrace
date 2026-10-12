@@ -1,12 +1,71 @@
 {
   "widgets": [
     {
+      "widget_id": "project_files",
+      "instance_id": "28db15c5",
+      "x": -1024.2743455773873,
+      "y": 973.3447244270533,
+      "width": 449.0,
+      "height": 640.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "state_manager",
+      "instance_id": "a31c9a17",
+      "x": -239.57793187541805,
+      "y": 1087.8210911821243,
+      "width": 760.0,
+      "height": 520.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "hmsvc_manager",
+      "instance_id": "8c61c442-3d5a-4752-96d4-b36444b496a6",
+      "x": 556.8915445920625,
+      "y": 1019.3783702994083,
+      "width": 720.0,
+      "height": 480.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "SamothraceMap",
+      "instance_id": "10fa8b04-4a35-4071-8e15-d833516b42b0",
+      "x": -156.88609672013885,
+      "y": 112.36707324471631,
+      "width": 920.0,
+      "height": 700.0,
+      "state": {
+        "visibleLayers": [
+          "aerial"
+        ]
+      },
+      "locked": false,
+      "placed_content_hash": "05b0df31728f"
+    },
+    {
+      "widget_id": "SamothraceDescription",
+      "instance_id": "cb314ecb-7253-4017-a7e1-cef53c12e96b",
+      "x": 887.2922756014669,
+      "y": 288.67639034132804,
+      "width": 460.0,
+      "height": 700.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": "2a136b77f3fe"
+    },
+    {
       "widget_id": "claude_desk",
-      "instance_id": "de8d46e9-2a95-4dd6-ba1a-d8d22602c098",
-      "x": -605.058692912328,
-      "y": 142.9037430003307,
-      "width": 701.484375,
-      "height": 679.6171875,
+      "instance_id": "a800da51-f40e-4234-a5a0-f7040193270a",
+      "x": -1125.2093137002928,
+      "y": 1709.0157374903472,
+      "width": 656.0,
+      "height": 883.0,
       "state": {
         "model": "claude-sonnet-5",
         "permission_mode": "auto"
@@ -15,66 +74,45 @@
       "placed_content_hash": null
     },
     {
+      "widget_id": "claude_desk",
+      "instance_id": "1a2b4fa6-697c-4815-9090-35dc1946736b",
+      "x": -831.3680691330119,
+      "y": 23.655547347273636,
+      "width": 647.0,
+      "height": 688.0,
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "scratch",
+      "instance_id": "321a58d6",
+      "x": -1598.8020833333346,
+      "y": 2082.5376157407422,
+      "width": 360.0,
+      "height": 320.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
       "widget_id": "project_files",
-      "instance_id": "28db15c5",
-      "x": 845.9075380926944,
-      "y": -303.8121059401094,
-      "width": 448.62109375,
+      "instance_id": "b893d3c8",
+      "x": -284.6364236017654,
+      "y": 1884.5223532633381,
+      "width": 360.0,
       "height": 640.0,
       "state": {},
       "locked": false,
       "placed_content_hash": null
-    },
-    {
-      "widget_id": "git_status",
-      "instance_id": "d6e6c7b3",
-      "x": 138.69887886992905,
-      "y": 598.3257008143469,
-      "width": 420.0,
-      "height": 360.0,
-      "state": {},
-      "locked": false,
-      "placed_content_hash": null
-    },
-    {
-      "widget_id": "state_manager",
-      "instance_id": "a31c9a17",
-      "x": 308.0,
-      "y": 287.0,
-      "width": 760.0,
-      "height": 520.0,
-      "state": {},
-      "locked": false,
-      "placed_content_hash": null
-    },
-    {
-      "widget_id": "SamothraceMap",
-      "instance_id": "bbc0901e-438e-4bd9-9ec0-6a8d09f1ecd0",
-      "x": -131.77990054429,
-      "y": -230.5362147482338,
-      "width": 920.0,
-      "height": 700.0,
-      "state": {
-        "lastGroup": "Aerial Imagery"
-      },
-      "locked": false,
-      "placed_content_hash": "e1de1d7af94a"
-    },
-    {
-      "widget_id": "SamothraceDescription",
-      "instance_id": "d8697e13-5540-419f-9b0d-623e5259c7fa",
-      "x": 1193.01171875,
-      "y": -350.7578125,
-      "width": 460.0,
-      "height": 885.4318374734625,
-      "state": {},
-      "locked": false,
-      "placed_content_hash": "2a136b77f3fe"
     }
   ],
-  "pan_x": 451.74732156145257,
-  "pan_y": 424.36869601227363,
-  "scale": 0.6574471741712323,
+  "pan_x": -596.271189591078,
+  "pan_y": 2002.5061338289963,
+  "scale": 0.8704093188804402,
   "custom_widgets": [
     {
       "keyword": "SamothraceMap",
@@ -86,7 +124,6 @@
       },
       "capabilities": [
         "fs",
-        "documents",
         "state"
       ],
       "source_path": "desk_widgets/samothrace-map"
@@ -106,16 +143,85 @@
         "events"
       ],
       "source_path": "desk_widgets/samothrace-description"
+    },
+    {
+      "keyword": "ContourLabelReview",
+      "label": "Contour Label Review",
+      "html_b64": "",
+      "default_size": {
+        "width": 460,
+        "height": 680
+      },
+      "capabilities": [
+        "fs"
+      ],
+      "source_path": "desk_widgets/contour-label-review"
+    },
+    {
+      "keyword": "TopoCompare",
+      "label": "Topographic Source Comparison",
+      "html_b64": "",
+      "default_size": {
+        "width": 1040,
+        "height": 980
+      },
+      "capabilities": [
+        "fs",
+        "popups",
+        "state"
+      ],
+      "source_path": "desk_widgets/topo-compare"
+    },
+    {
+      "keyword": "PipelineStageViewer",
+      "label": "Pipeline Stage Viewer",
+      "html_b64": "",
+      "default_size": {
+        "width": 820,
+        "height": 760
+      },
+      "capabilities": [
+        "documents"
+      ],
+      "source_path": "desk_widgets/pipeline-stage-viewer"
+    },
+    {
+      "keyword": "MinorContourReview",
+      "label": "Minor Contour Review",
+      "html_b64": "",
+      "default_size": {
+        "width": 1040,
+        "height": 820
+      },
+      "capabilities": [
+        "fs",
+        "state"
+      ],
+      "source_path": "desk_widgets/minor-contour-review"
+    },
+    {
+      "keyword": "ContourConnector",
+      "label": "Contour Connector",
+      "html_b64": "",
+      "default_size": {
+        "width": 1100,
+        "height": 860
+      },
+      "capabilities": [
+        "fs",
+        "state"
+      ],
+      "source_path": "desk_widgets/contour-connector"
     }
   ],
   "file_type_registry": [],
   "state": {
     "samothrace.selectedMonument": {
       "value": {
-        "webCode": "(11a)Stoa",
-        "label": "11a",
-        "name": "Stoa",
-        "plan": "Restored"
+        "webCode": "(8-10)NicheCultRooms",
+        "label": "8-10",
+        "name": "Faux Mycenaean Niche and Rooms",
+        "plan": "Actual"
       },
       "edit": null,
       "history": [
@@ -172,6 +278,159 @@
             "plan": "Restored"
           },
           "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(20)RotundaofArsinoeII",
+            "label": "20",
+            "name": "Rotunda of Arsinoe II",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(6)Milesian",
+            "label": "6",
+            "name": "Milesian",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(1-3)UnidentifiedLateHellenisticBuildings",
+            "label": "1-3",
+            "name": "Unidentified Late Hellenistic Buildings",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(4)BuildingA",
+            "label": "4",
+            "name": "Building A",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(29)Neorion",
+            "label": "29",
+            "name": "Neorion",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(4)BuildingA",
+            "label": "4",
+            "name": "Building A",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(6)Milesian",
+            "label": "6",
+            "name": "Milesian",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(1-3)UnidentifiedLateHellenisticBuildings",
+            "label": "1-3",
+            "name": "Unidentified Late Hellenistic Buildings",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(0)Introduction",
+            "label": "",
+            "name": "Overview",
+            "plan": "Overview"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(28)DoricRotunda",
+            "label": "28",
+            "name": "Doric Rotunda",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(0)Introduction",
+            "label": "",
+            "name": "Overview",
+            "plan": "Overview"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(20)RotundaofArsinoeII",
+            "label": "20",
+            "name": "Rotunda of Arsinoe II",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(0)Introduction",
+            "label": "",
+            "name": "Overview",
+            "plan": "Overview"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(18)SacredWay",
+            "label": "18",
+            "name": "Sacred Way",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(0)Introduction",
+            "label": "",
+            "name": "Overview",
+            "plan": "Overview"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(18)SacredWay",
+            "label": "18",
+            "name": "Sacred Way",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(8-10)NicheCultRooms",
+            "label": "8-10",
+            "name": "Faux Mycenaean Niche and Rooms",
+            "plan": "Actual"
+          },
+          "edit": null
         }
       ]
     }
@@ -179,98 +438,340 @@
   "installed_jobs": [],
   "recently_removed": [
     {
-      "widget_id": "git_diff",
-      "kind": "python",
-      "label": "Git Diff (3504a616)",
-      "instance_id": "3504a616",
-      "state": {
-        "path": "/Users/mphair/desk_imports/ae_samothrace/samothrace.desk"
-      },
-      "width": 640.0,
-      "height": 480.0,
-      "removed_at": 1791574607.2713652
+      "widget_id": "ContourConnector",
+      "kind": "html",
+      "label": "Contour Connector (d1b238d5)",
+      "instance_id": "d1b238d5-80c9-4328-9f37-8d94f2098326",
+      "state": {},
+      "width": 1100.0,
+      "height": 860.0,
+      "removed_at": 1791776874.547093
     },
     {
-      "widget_id": "claude_desk_task_log",
-      "kind": "python",
-      "label": "Claude (Desk) Task Log (76a3451d)",
-      "instance_id": "76a3451d",
+      "widget_id": "MinorContourReview",
+      "kind": "html",
+      "label": "Minor Contour Review (78954685)",
+      "instance_id": "78954685-994b-48ae-8e7f-1c68716a23c0",
+      "state": {},
+      "width": 1040.0,
+      "height": 820.0,
+      "removed_at": 1791776861.98542
+    },
+    {
+      "widget_id": "PipelineStageViewer",
+      "kind": "html",
+      "label": "Pipeline Stage Viewer (2ffb795f)",
+      "instance_id": "2ffb795f-3c5c-4c2e-ae94-28bcb3431d9f",
+      "state": {},
+      "width": 820.0,
+      "height": 760.0,
+      "removed_at": 1791776855.3944619
+    },
+    {
+      "widget_id": "ContourLabelReview",
+      "kind": "html",
+      "label": "Contour Label Review (e963d42a)",
+      "instance_id": "e963d42a-6eab-48e9-9556-e4f2741cd3e5",
       "state": {},
       "width": 460.0,
-      "height": 679.79296875,
-      "removed_at": 1791570705.049113
+      "height": 680.0,
+      "removed_at": 1791776849.125943
+    },
+    {
+      "widget_id": "TopoCompare",
+      "kind": "html",
+      "label": "Topographic Source Comparison (45a17a41)",
+      "instance_id": "45a17a41-81c2-4762-8a1c-954e91f2d630",
+      "state": {},
+      "width": 1040.0,
+      "height": 980.0,
+      "removed_at": 1791776844.4338481
+    },
+    {
+      "widget_id": "ContourConnector",
+      "kind": "html",
+      "label": "Contour Connector (93aea20e)",
+      "instance_id": "93aea20e-a8f4-4b5b-a85b-e481fc92b1a2",
+      "state": {
+        "log": {
+          "connections": [
+            {
+              "connectionId": "manual-restored-1791684498288-786748",
+              "plan": "restored",
+              "source": "manual",
+              "aLon": 25.530296713113785,
+              "aLat": 40.49988256426461,
+              "bLon": 25.530273914337158,
+              "bLat": 40.499881544478946,
+              "elevationM": 45,
+              "confirmedAt": "2026-10-11T02:08:18.289Z"
+            },
+            {
+              "connectionId": "manual-restored-1791684512347-718699",
+              "plan": "restored",
+              "source": "manual",
+              "aLon": 25.530296713113785,
+              "aLat": 40.49988256426461,
+              "bLon": 25.530273914337158,
+              "bLat": 40.499881544478946,
+              "elevationM": 45,
+              "confirmedAt": "2026-10-11T02:08:32.347Z"
+            },
+            {
+              "connectionId": "restored-auto-gap-309",
+              "plan": "restored",
+              "source": "auto-gap",
+              "aLon": 25.52903339266777,
+              "aLat": 40.50152439907453,
+              "bLon": 25.5289489030838,
+              "bLat": 40.50140610672966,
+              "elevationM": null,
+              "confirmedAt": "2026-10-11T02:12:25.034Z"
+            },
+            {
+              "connectionId": "manual-restored-1791684759436-982465",
+              "plan": "restored",
+              "source": "manual",
+              "aLon": 25.529050827026367,
+              "aLat": 40.501591703246596,
+              "bLon": 25.52904948592186,
+              "bLat": 40.50158966372723,
+              "elevationM": null,
+              "confirmedAt": "2026-10-11T02:12:39.436Z"
+            }
+          ],
+          "rejections": [],
+          "removed": []
+        }
+      },
+      "width": 1100.0,
+      "height": 1162.0,
+      "removed_at": 1791776714.708938
+    },
+    {
+      "widget_id": "minimap",
+      "kind": "python",
+      "label": "Minimap (2114efdb)",
+      "instance_id": "2114efdb",
+      "state": {},
+      "width": 420.0,
+      "height": 360.0,
+      "removed_at": 1791776549.4926562
+    },
+    {
+      "widget_id": "claude_desk",
+      "kind": "python",
+      "label": "Claude (Desk) (0cddb8e0)",
+      "instance_id": "0cddb8e0-025b-4e30-806e-bdf91db1b821",
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "width": 480.0,
+      "height": 560.0,
+      "removed_at": 1791776546.901584
+    },
+    {
+      "widget_id": "TopoCompare",
+      "kind": "html",
+      "label": "Topographic Source Comparison (a46798e6)",
+      "instance_id": "a46798e6-4937-4627-86e4-e4afed64b76c",
+      "state": {
+        "entries": [
+          {
+            "id": 3,
+            "source": "vectors",
+            "sub": {
+              "combinedLayer": null,
+              "vectorPlan": "actual"
+            },
+            "rect": {
+              "x": 142.6740993869657,
+              "y": 179.1065140565461,
+              "width": 61.73356472677139,
+              "height": 71.27789986448494
+            },
+            "lonLatBounds": {
+              "west": 25.52887205296426,
+              "north": 40.50158311069374,
+              "east": 25.529203217611922,
+              "south": 40.50129236471544
+            },
+            "comment": "There are several different issues shown in this selection. (1) there are disconnected amber paths which do have faint lines between them, such that they shouldn't be broken. (2) some of the elevation lines are interrupted by buildings. (3) some building label numbers (e.g. 1) have been accidentally detected as contour lines. Please build some simple UI that will let me use my human vision and judgement to work with the image processing tools to clean this up.",
+            "savedAt": "2026-10-10T02:41:49.238Z"
+          },
+          {
+            "id": 4,
+            "source": "vectors",
+            "sub": {
+              "combinedLayer": null,
+              "vectorPlan": "actual"
+            },
+            "rect": {
+              "x": 548.5445569989056,
+              "y": 146.9855580366933,
+              "width": 128.22292588181472,
+              "height": 157.6919713141354
+            },
+            "lonLatBounds": {
+              "west": 25.531049311764832,
+              "north": 40.50171413320478,
+              "east": 25.531737153140227,
+              "south": 40.501070899643416
+            },
+            "comment": "I've made some additional corrections in this area, which are all connecting broken unlabelled contour lines. There should be four vertical-ish unlabelled lines between each of the labelled lines in this area (starting with 45m on the left, 50m in the middle, and 55m on the right). These contour lines are definitely there, which makes me wonder if those are possibly 1m minor contours (if they are a different line weight in the original) or if maybe the 45m, 50m, or 55m lines in this area were improperly detected; do we know how they got marked as labelled lines? what evidence? ",
+            "savedAt": "2026-10-10T05:31:25.148Z"
+          }
+        ],
+        "nextId": 5,
+        "collapsedSections": [
+          "combined",
+          "overlay"
+        ]
+      },
+      "width": 979.0,
+      "height": 1027.0,
+      "removed_at": 1791776541.9007518
+    },
+    {
+      "widget_id": "ContourLabelReview",
+      "kind": "html",
+      "label": "Contour Label Review (5419457a)",
+      "instance_id": "5419457a-bbdd-47a5-aacd-0b9ff80f5e77",
+      "state": {
+        "answers": [
+          {
+            "reviewId": "actual-contours-0",
+            "plan": "actual",
+            "fragmentAId": 683,
+            "fragmentBId": 635,
+            "decision": "reject",
+            "value": null,
+            "ocrText": "09 \u0433",
+            "ocrConfidence": 0.5,
+            "parsedValue": 9,
+            "reason": "OCR read 9, which is not a multiple of the established 5m contour interval",
+            "answeredAt": "2026-10-10T07:06:29.349Z"
+          }
+        ]
+      },
+      "width": 460.0,
+      "height": 680.0,
+      "removed_at": 1791776537.338868
+    },
+    {
+      "widget_id": "MinorContourReview",
+      "kind": "html",
+      "label": "Minor Contour Review (a5a2c30c)",
+      "instance_id": "a5a2c30c-3291-433f-b56f-cde8916fb358",
+      "state": {},
+      "width": 1040.0,
+      "height": 1034.0,
+      "removed_at": 1791776531.277447
+    },
+    {
+      "widget_id": "PipelineStageViewer",
+      "kind": "html",
+      "label": "Pipeline Stage Viewer (00e0f097)",
+      "instance_id": "00e0f097-2dab-4fbc-b28a-d62c4f8d6522",
+      "state": {},
+      "width": 820.0,
+      "height": 760.0,
+      "removed_at": 1791776523.6659
+    },
+    {
+      "widget_id": "project_files",
+      "kind": "python",
+      "label": "Project Files (6fd86003)",
+      "instance_id": "6fd86003",
+      "state": {},
+      "width": 360.0,
+      "height": 640.0,
+      "removed_at": 1791774349.889698
+    },
+    {
+      "widget_id": "scratch",
+      "kind": "python",
+      "label": "Scratch (2ed42b85)",
+      "instance_id": "2ed42b85-5105-4e6d-86ac-286a66cb8ef1",
+      "state": {
+        "label": "Contour extraction status + next: 1m minor contours",
+        "text": "Where we're at (topographic contour/stream extraction)\n\nBuilt scripts/extract_vector_layers.py: extracts contour lines + stream\npaths directly from each plan's own raster (Data/mapTiles), independent\nof the old raster-diff \"topographic\" layer in samothrace-tiles (which\nturned out unreliable -- see the TopoCompare widget this all grew out\nof). Outputs real vector GeoJSON (2D LineString + elevation_m property,\nmatching gdal_contour's own convention) to Data/mapFeatures/.\n\nWhat's working:\n- Index (5m-interval) contours extract and label well. Classification\n  pipeline: local stroke-width threshold -> skeletonize -> cut at\n  branch points -> length filter separates real contour arcs from\n  digit/symbol strokes. Elevation labels read via OCR (ocrmac, macOS\n  Vision, no external binary needed), gated by \"must be a multiple of\n  5m\" -- calibrated against every real hit on the site, much more\n  reliable than OCR confidence or text-cleanliness alone.\n- Blue dashed stream lines extract cleanly (Actual State Plan only --\n  Restored has none marked).\n- A human-review loop now closes end-to-end: extraction queues genuine\n  ambiguity (not auto-accepted, not silently discarded) ->\n  ContourLabelReview widget shows the human the exact cropped image ->\n  apply_label_review.py persists the decision by geographic position\n  (survives fragment-id churn across re-runs) -> extraction respects it\n  forever after. First real answer (the \"09\"/9m misread -- actually a\n  contour loop/switchback, not a label) applied and verified.\n- TopoCompare widget: 4 panels (side-by-side sources, red/cyan overlay,\n  combined raster-diff result, extracted vectors), collapsible\n  sections, TOC sidebar, zoom/comment modes, and an edit mode for\n  manually deleting false positives / merging fragments that should be\n  one line -- corrections stored separately from the extractor's own\n  output (*.corrections.json) so re-running the extractor never\n  clobbers human review work.\n- Actual State Plan has several rounds of human corrections applied via\n  the widget (digit-label false positives deleted, broken fragments\n  reconnected). Restored State Plan has none yet.\n\nKnown limitations (see extract_vector_layers.py's own docstring for the\nfull list): contours get cut at every crossing rather than reconstructed\ncontinuous; the survey-boundary line can leak in as a false contour;\ncorrections key off array index, which can shift on a re-run (now at\nleast partially mitigated for label review via position-keyed\ndecisions, but *.corrections.json deletes/merges still don't have that\nprotection).\n\nNext thing to try: the 1m minor contours\n\nConfirmed visually (topo-compare-log.json entry #4) that the ~4 unlabeled\nlines between each pair of index contours are a genuinely distinct,\nvisibly thinner stroke weight in the source raster -- real 1m contours,\nnot extraction noise. We don't currently do anything with that\ndistinction: minor contours just come out unlabeled, like any other\nunlabeled fragment, with no elevation at all.\n\nA first attempt at measuring stroke width per-fragment (local\ndistance-transform average) didn't cleanly separate index vs. minor --\nin dense hillside areas the measurement gets confounded by *neighboring*\nlines, not just a fragment's own pen width, so ~93% of fragments bottom\nout at the same minimum value regardless of true drawn weight. Dropped\nrather than shipped on shaky statistical ground.\n\nWant to take another pass at this -- possibly a smarter width-measurement\napproach (perpendicular-to-tangent sampling instead of raw distance\n-transform?), or leaning on the fact that minor contours are regularly\nspaced between two known index contours (could interpolate if contour\nordering/adjacency were tracked topologically). This feels like exactly\nthe kind of fuzzy, \"does this look bold or thin to you\" judgment call\nthat a small human-review UI (same shape as the contour-label-review\nloop: a handful of targeted questions, not a wall of them) could help\ncalibrate or directly resolve, rather than trying to nail a fully\nautomatic classifier up front."
+      },
+      "width": 360.0,
+      "height": 730.0,
+      "removed_at": 1791684095.59479
+    },
+    {
+      "widget_id": "MinorContourReview",
+      "kind": "html",
+      "label": "Minor Contour Review (98bdd557)",
+      "instance_id": "98bdd557-38e6-4cfd-906b-0f4991133f53",
+      "state": {},
+      "width": 1040.0,
+      "height": 820.0,
+      "removed_at": 1791677199.168365
+    },
+    {
+      "widget_id": "scratch",
+      "kind": "python",
+      "label": "Scratch (71e07a4d)",
+      "instance_id": "71e07a4d",
+      "state": {
+        "label": "untitled",
+        "text": ""
+      },
+      "width": 360.0,
+      "height": 320.0,
+      "removed_at": 1791656465.64796
+    },
+    {
+      "widget_id": "claude_desk",
+      "kind": "python",
+      "label": "Claude (Desk) (de8d46e9)",
+      "instance_id": "de8d46e9-2a95-4dd6-ba1a-d8d22602c098",
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "width": 701.0,
+      "height": 680.0,
+      "removed_at": 1791618955.385472
+    },
+    {
+      "widget_id": "git_status",
+      "kind": "python",
+      "label": "Git Status (d6e6c7b3)",
+      "instance_id": "d6e6c7b3",
+      "state": {},
+      "width": 498.0889921757873,
+      "height": 360.0,
+      "removed_at": 1791609569.30607
     },
     {
       "widget_id": "editor",
       "kind": "python",
-      "label": "Editor (666849ed)",
-      "instance_id": "666849ed",
+      "label": "Editor (59641afb)",
+      "instance_id": "59641afb",
       "state": {
-        "path": "/Users/mphair/desk_imports/ae_samothrace/.gitattributes"
+        "path": "/Users/mphair/desk_imports/ae_samothrace/.desk_temp/desk_procs/2f4f6d7e-a620-4487-aa95-fc73190dcf5b/desk_proc_source.py"
       },
       "width": 720.0,
       "height": 520.0,
-      "removed_at": 1791569526.643008
+      "removed_at": 1791591117.712497
     },
     {
-      "widget_id": "editor",
+      "widget_id": "claude_desk",
       "kind": "python",
-      "label": "Editor (aca25127)",
-      "instance_id": "aca25127",
+      "label": "Claude (Desk) (1cfdfc0d)",
+      "instance_id": "1cfdfc0d-0090-450a-8b6c-8eb5fbc5a8f9",
       "state": {
-        "path": "/Users/mphair/desk_imports/ae_samothrace/Data/mapDescriptions/(1-3)UnidentifiedLateHellenisticBuildings/SamoWebsite_(1-3)UnidentifiedLateHellenisticBuildings.txt"
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
       },
-      "width": 720.0,
-      "height": 520.0,
-      "removed_at": 1791569504.104785
-    },
-    {
-      "widget_id": "editor",
-      "kind": "python",
-      "label": "Editor (e06e9a43)",
-      "instance_id": "e06e9a43",
-      "state": {
-        "path": "/Users/mphair/desk_imports/ae_samothrace/Data/mapDescriptions/(0)Introduction/SamoWebsite_(0)Introduction.txt"
-      },
-      "width": 720.0,
-      "height": 520.0,
-      "removed_at": 1791569444.0092921
-    },
-    {
-      "widget_id": "editor",
-      "kind": "python",
-      "label": "Editor (033e3afe)",
-      "instance_id": "033e3afe",
-      "state": {
-        "path": "/Users/mphair/desk_imports/ae_samothrace/README Storage.txt"
-      },
-      "width": 720.0,
-      "height": 520.0,
-      "removed_at": 1791569296.61704
-    },
-    {
-      "widget_id": "editor",
-      "kind": "python",
-      "label": "Editor (1a6549f7)",
-      "instance_id": "1a6549f7",
-      "state": {
-        "path": "/Users/mphair/desk_imports/ae_samothrace/.gitignore"
-      },
-      "width": 720.0,
-      "height": 520.0,
-      "removed_at": 1791568702.88813
-    },
-    {
-      "widget_id": "editor",
-      "kind": "python",
-      "label": "Editor (54a868f8)",
-      "instance_id": "54a868f8",
-      "state": {
-        "path": "/Users/mphair/desk_imports/ae_samothrace/README.md"
-      },
-      "width": 720.0,
-      "height": 520.0,
-      "removed_at": 1791568520.116562
+      "width": 480.0,
+      "height": 560.0,
+      "removed_at": 1791583593.9762292
     }
   ]
 }
