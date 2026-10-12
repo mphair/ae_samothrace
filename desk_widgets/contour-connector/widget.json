@@ -1,0 +1,7 @@
+{
+  "keyword": "ContourConnector",
+  "label": "Contour Connector",
+  "width": 1100,
+  "height": 860,
+  "capabilities": ["fs", "state"]
+}

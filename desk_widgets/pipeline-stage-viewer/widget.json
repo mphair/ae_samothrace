@@ -1,0 +1,7 @@
+{
+  "keyword": "PipelineStageViewer",
+  "label": "Pipeline Stage Viewer",
+  "width": 820,
+  "height": 760,
+  "capabilities": ["documents"]
+}

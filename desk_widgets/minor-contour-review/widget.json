@@ -1,0 +1,7 @@
+{
+  "keyword": "MinorContourReview",
+  "label": "Minor Contour Review",
+  "width": 1040,
+  "height": 820,
+  "capabilities": ["fs", "state"]
+}

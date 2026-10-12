@@ -1,0 +1,295 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Minor Contour Review</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: #11151c;
+      }
+      minor-contour-review {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <template id="minor-contour-review-template">
+      <style>
+        :host {
+          display: block;
+          width: 100%;
+          height: 100%;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+        .wrap {
+          position: relative;
+          box-sizing: border-box;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          background: #1b1f27;
+          color: #e6e9ef;
+        }
+        .toolbar {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          flex-wrap: wrap;
+          padding: 10px 12px;
+          background: #20262f;
+          border-bottom: 1px solid #333c48;
+          flex: 0 0 auto;
+        }
+        select, input[type="number"] {
+          font-size: 12px;
+          padding: 5px 6px;
+          border-radius: 4px;
+          border: 1px solid #3a4454;
+          background: #11151c;
+          color: #e6e9ef;
+          box-sizing: border-box;
+        }
+        .group-select {
+          min-width: 160px;
+        }
+        button {
+          font-size: 12px;
+          padding: 6px 10px;
+          border-radius: 4px;
+          border: 1px solid #3a4454;
+          background: #2a3444;
+          color: #e6e9ef;
+          cursor: pointer;
+        }
+        button:hover:not(:disabled) {
+          background: #344258;
+        }
+        button:disabled {
+          opacity: 0.45;
+        }
+        .progress {
+          font-size: 11.5px;
+          color: #9aa5b5;
+          margin-left: auto;
+        }
+        .body {
+          flex: 1 1 auto;
+          min-height: 0;
+          display: flex;
+          flex-direction: row;
+        }
+        .canvas-area {
+          flex: 1 1 auto;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          padding: 10px;
+          box-sizing: border-box;
+          gap: 8px;
+          overflow-y: auto;
+        }
+        .group-info {
+          font-size: 12.5px;
+          color: #cbd5e1;
+        }
+        .main-canvas-wrap {
+          position: relative;
+          background: #808080;
+          border: 1px solid #333c48;
+          border-radius: 4px;
+          aspect-ratio: 1 / 1;
+        }
+        .main-canvas {
+          display: block;
+          width: 100%;
+          height: 100%;
+          touch-action: none;
+          cursor: crosshair;
+        }
+        .minimap-canvas {
+          position: absolute;
+          right: 8px;
+          bottom: 8px;
+          width: 110px;
+          height: 110px;
+          border: 2px solid #11151c;
+          border-radius: 4px;
+          background: #808080;
+          pointer-events: none;
+        }
+        .main-toolbar {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .hd-section {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .hd-canvas {
+          display: block;
+          width: 240px;
+          height: 240px;
+          background: #808080;
+          border: 1px solid #333c48;
+          border-radius: 4px;
+        }
+        .hd-status {
+          font-size: 11px;
+          color: #70798a;
+        }
+        .sidebar {
+          flex: 0 0 300px;
+          overflow-y: auto;
+          box-sizing: border-box;
+          padding: 10px;
+          background: #181c23;
+          border-left: 1px solid #333c48;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          scrollbar-width: auto;
+          scrollbar-color: #4a5568 #1b1f27;
+        }
+        .sidebar::-webkit-scrollbar {
+          width: 12px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+          background: #4a5568;
+          border-radius: 6px;
+          border: 2px solid #1b1f27;
+        }
+        .sidebar h3 {
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: #9aa5b5;
+          margin: 0;
+        }
+        .fragment-list {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .fragment-row {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          background: #20262f;
+          border: 1px solid #333c48;
+          border-radius: 4px;
+          padding: 6px;
+          font-size: 11.5px;
+        }
+        .swatch {
+          width: 12px;
+          height: 12px;
+          border-radius: 2px;
+          flex: 0 0 auto;
+        }
+        .frag-id {
+          color: #70798a;
+          font-family: monospace;
+          flex: 0 0 auto;
+          width: 48px;
+        }
+        .elev-input {
+          width: 60px;
+        }
+        .not-contour-label {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          color: #9aa5b5;
+          white-space: nowrap;
+        }
+        .action-buttons {
+          display: flex;
+          gap: 8px;
+          margin-top: auto;
+        }
+        .confirm-button {
+          border-color: #2f7a4f;
+          background: #1f4a33;
+          flex: 1 1 auto;
+        }
+        .confirm-button:hover:not(:disabled) {
+          background: #276240;
+        }
+        .skip-button {
+          flex: 0 0 auto;
+        }
+        .help-text {
+          font-size: 11px;
+          color: #70798a;
+          line-height: 1.5;
+        }
+        .status-overlay {
+          position: absolute;
+          inset: 0;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          background: rgba(17, 21, 28, 0.82);
+          color: #e6e9ef;
+          font-size: 13px;
+          z-index: 20;
+          text-align: center;
+          padding: 16px;
+        }
+      </style>
+      <div class="wrap">
+        <div class="toolbar">
+          <select class="plan-select"></select>
+          <button type="button" class="prev-button">◀ Prev</button>
+          <select class="group-select"></select>
+          <button type="button" class="next-button">Next ▶</button>
+          <button type="button" class="next-unanswered-button">Skip to next unanswered</button>
+          <div class="progress"></div>
+        </div>
+        <div class="body">
+          <div class="canvas-area">
+            <div class="group-info"></div>
+            <div class="main-toolbar">
+              <button type="button" class="reset-zoom-button">⟲ Reset zoom</button>
+              <button type="button" class="hd-button">🔍 Load HD crop (zoom 22)</button>
+            </div>
+            <div class="main-canvas-wrap">
+              <canvas class="main-canvas"></canvas>
+              <canvas class="minimap-canvas" title="Whole site — current view highlighted"></canvas>
+            </div>
+            <div class="hd-section">
+              <canvas class="hd-canvas"></canvas>
+              <div class="hd-status"></div>
+            </div>
+          </div>
+          <div class="sidebar">
+            <h3>Fragments</h3>
+            <div class="help-text">
+              Numbers match the colored lines on the map (low→high, best guess). Edit each elevation directly, or
+              check "not a contour" to exclude a fragment that doesn't belong in this group.
+            </div>
+            <div class="fragment-list"></div>
+            <div class="action-buttons">
+              <button type="button" class="confirm-button">✅ Confirm / Submit</button>
+              <button type="button" class="skip-button">Skip</button>
+            </div>
+          </div>
+        </div>
+        <div class="status-overlay"></div>
+      </div>
+    </template>
+    <script>
+      /* BUILD:COMPILED_JS */
+    </script>
+    <minor-contour-review></minor-contour-review>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "keyword": "ContourLabelReview",
+  "label": "Contour Label Review",
+  "width": 460,
+  "height": 680,
+  "capabilities": ["fs"]
+}

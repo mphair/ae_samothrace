@@ -1,0 +1,307 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Contour Connector</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: #11151c;
+      }
+      contour-connector {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <template id="contour-connector-template">
+      <style>
+        :host {
+          display: block;
+          width: 100%;
+          height: 100%;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+        .wrap {
+          position: relative;
+          box-sizing: border-box;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          background: #1b1f27;
+          color: #e6e9ef;
+        }
+        .toolbar {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          flex-wrap: wrap;
+          padding: 10px 12px;
+          background: #20262f;
+          border-bottom: 1px solid #333c48;
+          flex: 0 0 auto;
+        }
+        select {
+          font-size: 12px;
+          padding: 5px 6px;
+          border-radius: 4px;
+          border: 1px solid #3a4454;
+          background: #11151c;
+          color: #e6e9ef;
+          box-sizing: border-box;
+        }
+        button {
+          font-size: 12px;
+          padding: 6px 10px;
+          border-radius: 4px;
+          border: 1px solid #3a4454;
+          background: #2a3444;
+          color: #e6e9ef;
+          cursor: pointer;
+        }
+        button:hover:not(:disabled) {
+          background: #344258;
+        }
+        button:disabled {
+          opacity: 0.45;
+          cursor: default;
+        }
+        .progress {
+          font-size: 11.5px;
+          color: #9aa5b5;
+          margin-left: auto;
+        }
+        .info-bar {
+          font-size: 11.5px;
+          color: #cbd5e1;
+          padding: 6px 12px;
+          background: #181c23;
+          border-bottom: 1px solid #262c36;
+          flex: 0 0 auto;
+        }
+        .body {
+          flex: 1 1 auto;
+          min-height: 0;
+          display: flex;
+          flex-direction: row;
+        }
+        .canvas-area {
+          flex: 1 1 auto;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          padding: 10px;
+          box-sizing: border-box;
+          gap: 8px;
+          overflow-y: auto;
+        }
+        .main-canvas-wrap {
+          position: relative;
+          background: #808080;
+          border: 1px solid #333c48;
+          border-radius: 4px;
+          aspect-ratio: 1 / 1;
+        }
+        .main-canvas {
+          display: block;
+          width: 100%;
+          height: 100%;
+          touch-action: none;
+          cursor: crosshair;
+        }
+        .minimap-canvas {
+          position: absolute;
+          right: 8px;
+          bottom: 8px;
+          width: 110px;
+          height: 110px;
+          border: 2px solid #11151c;
+          border-radius: 4px;
+          background: #808080;
+          pointer-events: none;
+        }
+        .main-toolbar {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .hd-section {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .hd-canvas {
+          display: block;
+          width: 240px;
+          height: 240px;
+          background: #808080;
+          border: 1px solid #333c48;
+          border-radius: 4px;
+        }
+        .hd-status {
+          font-size: 11px;
+          color: #70798a;
+        }
+        .sidebar {
+          flex: 0 0 280px;
+          overflow-y: auto;
+          box-sizing: border-box;
+          padding: 10px;
+          background: #181c23;
+          border-left: 1px solid #333c48;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          scrollbar-width: auto;
+          scrollbar-color: #4a5568 #1b1f27;
+        }
+        .sidebar::-webkit-scrollbar {
+          width: 12px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+          background: #4a5568;
+          border-radius: 6px;
+          border: 2px solid #1b1f27;
+        }
+        .sidebar h3 {
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: #9aa5b5;
+          margin: 0 0 8px 0;
+        }
+        .layer-toggle {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 12px;
+          margin-bottom: 6px;
+        }
+        .slider-row {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          margin-top: 10px;
+        }
+        .slider-row label {
+          font-size: 11.5px;
+          color: #cbd5e1;
+          display: flex;
+          justify-content: space-between;
+        }
+        input[type="range"] {
+          width: 100%;
+        }
+        .legend {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          font-size: 11.5px;
+        }
+        .legend-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .legend-swatch {
+          width: 22px;
+          height: 0;
+          border-top-width: 3px;
+          border-top-style: solid;
+          flex: 0 0 auto;
+        }
+        .legend-swatch.dashed {
+          border-top-style: dashed;
+        }
+        .help-text {
+          font-size: 11px;
+          color: #70798a;
+          line-height: 1.5;
+        }
+        .remove-selected-button {
+          width: 100%;
+        }
+        .status-overlay {
+          position: absolute;
+          inset: 0;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          background: rgba(17, 21, 28, 0.82);
+          color: #e6e9ef;
+          font-size: 13px;
+          z-index: 20;
+          text-align: center;
+          padding: 16px;
+        }
+      </style>
+      <div class="wrap">
+        <div class="toolbar">
+          <select class="plan-select"></select>
+          <button type="button" class="reset-zoom-button">⟲ Reset zoom</button>
+          <button type="button" class="hd-button">🔍 Load HD crop (zoom 22)</button>
+          <div class="progress"></div>
+        </div>
+        <div class="info-bar"></div>
+        <div class="body">
+          <div class="canvas-area">
+            <div class="main-canvas-wrap">
+              <canvas class="main-canvas"></canvas>
+              <canvas class="minimap-canvas" title="Whole site — current view highlighted"></canvas>
+            </div>
+            <div class="hd-section">
+              <canvas class="hd-canvas"></canvas>
+              <div class="hd-status"></div>
+            </div>
+          </div>
+          <div class="sidebar">
+            <div>
+              <h3>Layers</h3>
+              <label class="layer-toggle"><input type="checkbox" class="show-suggested" checked /> Suggested connections</label>
+              <label class="layer-toggle"><input type="checkbox" class="show-confirmed" checked /> Confirmed connections</label>
+              <label class="layer-toggle"><input type="checkbox" class="show-stream-guide" checked /> Actual-plan stream guide</label>
+              <div class="slider-row">
+                <label><span>Max suggested gap shown</span><span class="max-suggest-dist-readout">140px</span></label>
+                <input type="range" class="max-suggest-dist" min="10" max="260" step="10" value="140" />
+              </div>
+            </div>
+            <div>
+              <h3>Legend</h3>
+              <div class="legend">
+                <div class="legend-row"><span class="legend-swatch" style="border-color:#c026d3"></span> Major (index) contour</div>
+                <div class="legend-row"><span class="legend-swatch" style="border-color:#f59e0b"></span> Minor (1m) contour</div>
+                <div class="legend-row"><span class="legend-swatch" style="border-color:#94a3b8"></span> Unlabeled contour</div>
+                <div class="legend-row"><span class="legend-swatch dashed" style="border-color:#64748b"></span> Suggested (auto-gap)</div>
+                <div class="legend-row"><span class="legend-swatch dashed" style="border-color:#0ea5e9"></span> Suggested (stream-guided)</div>
+                <div class="legend-row"><span class="legend-swatch dashed" style="border-color:#facc15"></span> Confirmed / inferred connection</div>
+              </div>
+            </div>
+            <div>
+              <h3>Selection</h3>
+              <button type="button" class="remove-selected-button" disabled>Remove selected connection</button>
+            </div>
+            <div class="help-text">
+              Drag from one contour fragment to another to connect them — the fragment you start on anchors a
+              line that follows the pointer; hovering a different fragment while dragging highlights it green;
+              release there to connect. Click a dashed suggested connection to accept it; right-click to dismiss
+              it. Click a confirmed (yellow dashed) connection to select it, then use "Remove selected" to undo.
+              Inferred connections are always drawn dashed and never any of the three solid contour colors, so
+              what's really on the source plan and what's a best-guess bridge stay visually distinct.
+            </div>
+          </div>
+        </div>
+        <div class="status-overlay"></div>
+      </div>
+    </template>
+    <script>
+      /* BUILD:COMPILED_JS */
+    </script>
+    <contour-connector></contour-connector>
+  </body>
+</html>
