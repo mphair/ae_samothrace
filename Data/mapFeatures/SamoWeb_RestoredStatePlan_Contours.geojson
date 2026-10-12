@@ -30,742 +30,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.52889660000801,
-            40.50175690410996
-          ],
-          [
-            25.528852343559265,
-            40.50175690410996
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52891805768013,
-            40.50175588435278
-          ],
-          [
-            25.528962314128876,
-            40.50175588435278
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.528985112905502,
-            40.5017548645956
-          ],
-          [
-            25.529029369354248,
-            40.5017548645956
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.529095083475113,
-            40.501753844838404
-          ],
-          [
-            25.529052168130875,
-            40.501753844838404
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.529162138700485,
-            40.50175282508119
-          ],
-          [
-            25.529119223356247,
-            40.50175282508119
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.529184937477112,
-            40.50175180532396
-          ],
-          [
-            25.529383420944214,
-            40.50174976580945
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52940621972084,
-            40.50174874605218
-          ],
-          [
-            25.529450476169586,
-            40.50174874605218
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52951753139496,
-            40.50174772629488
-          ],
-          [
-            25.529471933841705,
-            40.50174772629488
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.529540330171585,
-            40.50174670653758
-          ],
-          [
-            25.529583245515823,
-            40.50174670653758
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52960604429245,
-            40.501745686780254
-          ],
-          [
-            25.529650300741196,
-            40.501745686780254
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52971601486206,
-            40.50174466702292
-          ],
-          [
-            25.529673099517822,
-            40.50174466702292
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.529738813638687,
-            40.50174364726556
-          ],
-          [
-            25.529783070087433,
-            40.50174364726556
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52980586886406,
-            40.50174262750819
-          ],
-          [
-            25.53000435233116,
-            40.50174058799341
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530070066452026,
-            40.50173956823599
-          ],
-          [
-            25.530027151107788,
-            40.50173956823599
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530092865228653,
-            40.501738548478556
-          ],
-          [
-            25.5301371216774,
-            40.501738548478556
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530159920454025,
-            40.501737528721115
-          ],
-          [
-            25.53020417690277,
-            40.501737528721115
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530226975679398,
-            40.50173650896366
-          ],
-          [
-            25.530269891023636,
-            40.50173650896366
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530292689800262,
-            40.501735489206176
-          ],
-          [
-            25.530336946249008,
-            40.501735489206176
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530359745025635,
-            40.501734469448685
-          ],
-          [
-            25.530558228492737,
-            40.50173242993365
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530581027269363,
-            40.501731410176106
-          ],
-          [
-            25.53062528371811,
-            40.501731410176106
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530648082494736,
-            40.50173039041855
-          ],
-          [
-            25.530690997838974,
-            40.50173039041855
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.5307137966156,
-            40.50172937066098
-          ],
-          [
-            25.530758053064346,
-            40.50172937066098
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53082376718521,
-            40.5017283509034
-          ],
-          [
-            25.530780851840973,
-            40.5017283509034
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530846565961838,
-            40.501727331145794
-          ],
-          [
-            25.530890822410583,
-            40.501727331145794
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53091362118721,
-            40.501726311388175
-          ],
-          [
-            25.531112104654312,
-            40.501724271872895
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53113490343094,
-            40.50172325211523
-          ],
-          [
-            25.531179159879684,
-            40.50172325211523
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531200617551804,
-            40.50172223235756
-          ],
-          [
-            25.53124487400055,
-            40.50172223235756
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531267672777176,
-            40.501721212599854
-          ],
-          [
-            25.53131192922592,
-            40.501721212599854
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531334728002548,
-            40.50172019284214
-          ],
-          [
-            25.531378984451294,
-            40.50172019284214
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53140178322792,
-            40.501719173084425
-          ],
-          [
-            25.53144469857216,
-            40.501719173084425
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531667321920395,
-            40.50171611381115
-          ],
-          [
-            25.531467497348785,
-            40.501718153326685
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.528840273618698,
-            40.501717133568924
-          ],
-          [
-            25.528840273618698,
-            40.501683481554245
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.528931468725204,
             40.50171509405337
           ],
@@ -798,29 +62,6 @@
           ],
           [
             25.528966337442398,
-            40.50171509405337
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531688779592514,
-            40.50171509405337
-          ],
-          [
-            25.53173303604126,
             40.50171509405337
           ]
         ]
@@ -1886,29 +1127,6 @@
           [
             25.530833154916763,
             40.50113892842448
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53176522254944,
-            40.50169469889435
-          ],
-          [
-            25.53176522254944,
-            40.50166206662703
           ]
         ]
       },
@@ -3029,29 +2247,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528836250305176,
-            40.50151522122765
-          ],
-          [
-            25.52883893251419,
-            40.50166614566132
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.53038388490677,
             40.501407126492154
           ],
@@ -3195,29 +2390,6 @@
           [
             25.530033856630325,
             40.5016498295227
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53176388144493,
-            40.50161107867757
-          ],
-          [
-            25.53176388144493,
-            40.50164371096969
           ]
         ]
       },
@@ -3499,29 +2671,6 @@
           [
             25.52991583943367,
             40.5012256085256
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53175985813141,
-            40.50144281816936
-          ],
-          [
-            25.531762540340424,
-            40.50159374276592
           ]
         ]
       },
@@ -4049,29 +3198,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.52883490920067,
-            40.50146423316657
-          ],
-          [
-            25.52883490920067,
-            40.501497885291236
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.529703944921494,
             40.50144791697884
           ],
@@ -4227,29 +3353,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.52883356809616,
-            40.50144689721697
-          ],
-          [
-            25.52883356809616,
-            40.50141324506674
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.530534088611603,
             40.50130311063882
           ],
@@ -4268,29 +3371,6 @@
           [
             25.530091524124146,
             40.50143364031132
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.5317585170269,
-            40.50142548221423
-          ],
-          [
-            25.5317585170269,
-            40.501391830053244
           ]
         ]
       },
@@ -4413,29 +3493,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528832226991653,
-            40.501396928866605
-          ],
-          [
-            25.528832226991653,
-            40.50136327669129
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.529714673757553,
             40.50136429645443
           ],
@@ -4504,29 +3561,6 @@
           [
             25.530370473861694,
             40.50133574308076
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531757175922394,
-            40.50137449408494
-          ],
-          [
-            25.531757175922394,
-            40.501340841898376
           ]
         ]
       },
@@ -4712,29 +3746,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528830885887146,
-            40.50131228851472
-          ],
-          [
-            25.528830885887146,
-            40.50134594071561
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.529898405075073,
             40.50126945841645
           ],
@@ -4871,29 +3882,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.531755834817886,
-            40.50132452568063
-          ],
-          [
-            25.531755834817886,
-            40.501290873469
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.529439747333527,
             40.50132044662558
           ],
@@ -4939,29 +3927,6 @@
           [
             25.529913157224655,
             40.50120317368664
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52882954478264,
-            40.50126232006408
-          ],
-          [
-            25.52882954478264,
-            40.50129495252586
           ]
         ]
       },
@@ -5124,29 +4089,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.53175449371338,
-            40.5012735374746
-          ],
-          [
-            25.53175449371338,
-            40.501239885237396
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.530276596546173,
             40.50096250857858
           ],
@@ -5264,29 +4206,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528825521469116,
-            40.50109405868108
-          ],
-          [
-            25.52882820367813,
-            40.5012449840623
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.53022563457489,
             40.50122662829083
           ],
@@ -5357,29 +4276,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.53175315260887,
-            40.50118991673282
-          ],
-          [
-            25.53175315260887,
-            40.50122254922982
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.529855489730835,
             40.50119501556152
           ],
@@ -5432,29 +4328,6 @@
           [
             25.530035197734833,
             40.501184817903734
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53174912929535,
-            40.50102063539987
-          ],
-          [
-            25.531751811504364,
-            40.50117156094628
           ]
         ]
       },
@@ -5976,29 +4849,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.52882418036461,
-            40.50107672263582
-          ],
-          [
-            25.52882418036461,
-            40.50104307029987
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.531195253133774,
             40.50107672263582
           ],
@@ -6275,29 +5125,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.5288228392601,
-            40.50102573424144
-          ],
-          [
-            25.5288228392601,
-            40.500992081879915
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.53025782108307,
             40.500993101648696
           ],
@@ -6406,29 +5233,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.53174778819084,
-            40.50100431910424
-          ],
-          [
-            25.53174778819084,
-            40.50097066673197
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.52953228354454,
             40.500993101648696
           ],
@@ -6458,29 +5262,6 @@
           [
             25.53023099899292,
             40.500959449270795
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.528821498155594,
-            40.50097474580829
-          ],
-          [
-            25.528821498155594,
-            40.50094211319075
           ]
         ]
       },
@@ -6782,29 +5563,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.531746447086334,
-            40.50095333065482
-          ],
-          [
-            25.531746447086334,
-            40.500919678256984
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.530695021152496,
             40.500952310885445
           ],
@@ -6971,29 +5729,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528820157051086,
-            40.50089112469406
-          ],
-          [
-            25.528820157051086,
-            40.50092477710623
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.530098229646683,
             40.500917638717176
           ],
@@ -7116,29 +5851,6 @@
           [
             25.529592633247375,
             40.50090234216666
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531745105981827,
-            40.5009033619368
-          ],
-          [
-            25.531745105981827,
-            40.50086970951389
           ]
         ]
       },
@@ -7382,29 +6094,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.52881881594658,
-            40.50087378859636
-          ],
-          [
-            25.52881881594658,
-            40.50084013615861
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.530302077531815,
             40.50074529737959
           ],
@@ -7562,29 +6251,6 @@
           [
             25.530237704515457,
             40.50078812781252
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53174376487732,
-            40.500852373410645
-          ],
-          [
-            25.53174376487732,
-            40.50081872096216
           ]
         ]
       },
@@ -7768,29 +6434,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.52881747484207,
-            40.500823819819075
-          ],
-          [
-            25.528814792633057,
-            40.50067289349029
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.528836250305176,
             40.49996618663605
           ],
@@ -7910,56 +6553,6 @@
           [
             25.52937939763069,
             40.500806483703975
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52885502576828,
-            40.50067595281114
-          ],
-          [
-            25.528869777917862,
-            40.50072286237999
-          ],
-          [
-            25.528857707977295,
-            40.50080342438908
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531742423772812,
-            40.50076875214387
-          ],
-          [
-            25.531742423772812,
-            40.500801384845744
           ]
         ]
       },
@@ -8206,29 +6799,6 @@
           [
             25.529329776763916,
             40.50076365328277
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531739741563797,
-            40.50065045846649
-          ],
-          [
-            25.531741082668304,
-            40.50075039624208
           ]
         ]
       },
@@ -8947,29 +7517,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.52881345152855,
-            40.50065453756228
-          ],
-          [
-            25.52881345152855,
-            40.500621904788964
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.53105041384697,
             40.5006494386925
           ],
@@ -9132,29 +7679,6 @@
           [
             25.531692802906036,
             40.50063414208082
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53173840045929,
-            40.50063312230659
-          ],
-          [
-            25.53173840045929,
-            40.50060048952286
           ]
         ]
       },
@@ -9724,29 +8248,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.52881211042404,
-            40.500604568621696
-          ],
-          [
-            25.52881211042404,
-            40.50057193582408
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.530307441949844,
             40.50059131154957
           ],
@@ -9800,29 +8301,6 @@
           [
             25.53005263209343,
             40.50057397537439
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531737059354782,
-            40.50058315335004
-          ],
-          [
-            25.531737059354782,
-            40.500549500766496
           ]
         ]
       },
@@ -9981,29 +8459,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528810769319534,
-            40.50055357986843
-          ],
-          [
-            25.528810769319534,
-            40.500519927270055
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.53094983100891,
             40.49957254870973
           ],
@@ -10052,24 +8507,20 @@
             40.500308833313326
           ],
           [
-            25.530826449394226,
-            40.50045058246864
+            25.53081974387169,
+            40.50046078023805
           ],
           [
-            25.53081437945366,
-            40.500479136219084
-          ],
-          [
-            25.530815720558167,
-            40.50051890749408
+            25.53081303834915,
+            40.50050259107642
           ],
           [
             25.53082510828972,
             40.50053930301058
           ],
           [
-            25.5308398604393,
-            40.500549500766496
+            25.53085058927536,
+            40.500551540317495
           ],
           [
             25.530904233455658,
@@ -10080,8 +8531,12 @@
             40.50052808547728
           ],
           [
-            25.530979335308075,
-            40.5004842351018
+            25.530964583158493,
+            40.500494432866105
+          ],
+          [
+            25.53098738193512,
+            40.50048015599566
           ],
           [
             25.531058460474014,
@@ -10092,8 +8547,24 @@
             40.50042202870605
           ],
           [
-            25.531211346387863,
-            40.50039041559757
+            25.53122341632843,
+            40.50038531670771
+          ],
+          [
+            25.531310588121414,
+            40.50037511892683
+          ],
+          [
+            25.531372278928757,
+            40.500358802474196
+          ],
+          [
+            25.531421899795532,
+            40.50033534756658
+          ],
+          [
+            25.531467497348785,
+            40.50029965530013
           ]
         ]
       },
@@ -10138,63 +8609,60 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.53115501999855,
-            40.50039041559757
+            25.531089305877686,
+            40.500353703581936
           ],
           [
-            25.53107053041458,
-            40.5004546615766
-          ],
-          [
-            25.53098201751709,
-            40.50046893845246
-          ],
-          [
-            25.530933737754822,
-            40.500516867942096
-          ],
-          [
-            25.530868023633957,
-            40.50053420413203
-          ],
-          [
-            25.530864000320435,
-            40.50050361085264
-          ],
-          [
-            25.53087741136551,
-            40.50048219554876
+            25.531006157398224,
+            40.50037715848313
           ],
           [
             25.53093507885933,
             40.50042508803834
           ],
           [
-            25.530984699726105,
-            40.500389395819624
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531735718250275,
-            40.50053216458051
+            25.53086668252945,
+            40.50049749219509
           ],
           [
-            25.531735718250275,
-            40.50049851197139
+            25.530862659215927,
+            40.500520947046006
+          ],
+          [
+            25.530868023633957,
+            40.50053420413203
+          ],
+          [
+            25.530933737754822,
+            40.500516867942096
+          ],
+          [
+            25.53098201751709,
+            40.50046893845246
+          ],
+          [
+            25.53107053041458,
+            40.5004546615766
+          ],
+          [
+            25.531105399131775,
+            40.50042406826092
+          ],
+          [
+            25.531152337789536,
+            40.50039755404272
+          ],
+          [
+            25.53115501999855,
+            40.500376138704986
+          ],
+          [
+            25.531141608953476,
+            40.500361861809374
+          ],
+          [
+            25.531090646982193,
+            40.500353703581936
           ]
         ]
       },
@@ -10302,29 +8770,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528809428215027,
-            40.500469958229196
-          ],
-          [
-            25.528809428215027,
-            40.50050361085264
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.531510412693024,
             40.50033126845138
           ],
@@ -10381,29 +8826,6 @@
           [
             25.530028492212296,
             40.50049035376057
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531734377145767,
-            40.50044752313752
-          ],
-          [
-            25.531734377145767,
-            40.500481175772215
           ]
         ]
       },
@@ -10494,29 +8916,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.52880808711052,
-            40.50045262202265
-          ],
-          [
-            25.52880808711052,
-            40.50041896937362
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.529807209968567,
             40.5004393649205
           ],
@@ -10586,35 +8985,20 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.53173303604126,
-            40.50039755404272
-          ],
-          [
-            25.53173303604126,
-            40.50043018692517
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.531156361103058,
             40.50042100892859
           ],
           [
-            25.531289130449295,
-            40.500389395819624
+            25.531252920627594,
+            40.500394494709184
+          ],
+          [
+            25.531373620033264,
+            40.500374099148665
+          ],
+          [
+            25.531425923109055,
+            40.500351664024926
           ]
         ]
       },
@@ -10718,58 +9102,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528806746006012,
-            40.500402652931655
-          ],
-          [
-            25.528804063796997,
-            40.50025172565531
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.529866218566895,
             40.5003649211444
           ],
           [
             25.52989035844803,
             40.500394494709184
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531731694936752,
-            40.50034758491071
-          ],
-          [
-            25.531731694936752,
-            40.50038021781747
           ]
         ]
       },
@@ -10895,6 +9233,68 @@
         "type": "LineString",
         "coordinates": [
           [
+            25.531610995531082,
+            40.50017830145215
+          ],
+          [
+            25.53150773048401,
+            40.50023540917267
+          ],
+          [
+            25.53141787648201,
+            40.50032209044126
+          ],
+          [
+            25.531358867883682,
+            40.500349624467844
+          ],
+          [
+            25.531315952539444,
+            40.500349624467844
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": null,
+        "elevation_source": "unlabeled",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531204640865326,
+            40.50032514977811
+          ],
+          [
+            25.53125560283661,
+            40.50032922889368
+          ],
+          [
+            25.53131192922592,
+            40.50034860468929
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": null,
+        "elevation_source": "unlabeled",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
             25.529219806194305,
             40.50033024867254
           ],
@@ -10962,12 +9362,35 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.531730353832245,
-            40.50032922889368
+            25.531177818775177,
+            40.500310872871644
           ],
           [
-            25.531729012727737,
-            40.50022929049065
+            25.531200617551804,
+            40.50032412999918
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": null,
+        "elevation_source": "unlabeled",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531168431043625,
+            40.50028945750623
+          ],
+          [
+            25.531175136566162,
+            40.500306793754945
           ]
         ]
       },
@@ -11177,20 +9600,40 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.531460791826248,
+            25.531679391860962,
+            40.500086521085194
+          ],
+          [
+            25.53164854645729,
+            40.50012017390099
+          ],
+          [
+            25.53157612681389,
+            40.500167083858486
+          ],
+          [
+            25.5314701795578,
+            40.50021807290551
+          ],
+          [
+            25.53139641880989,
+            40.500242547634315
+          ],
+          [
+            25.53132802248001,
+            40.50027925971078
+          ],
+          [
+            25.531287789344788,
             40.500285378388234
           ],
           [
-            25.531478226184845,
+            25.531220734119415,
             40.50025988389515
           ],
           [
-            25.53150773048401,
-            40.50023540917267
-          ],
-          [
-            25.531610995531082,
-            40.50017830145215
+            25.531195253133774,
+            40.50025988389515
           ]
         ]
       },
@@ -11237,6 +9680,61 @@
           [
             25.53152248263359,
             40.500260903675056
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": null,
+        "elevation_source": "unlabeled",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53119257092476,
+            40.500260903675056
+          ],
+          [
+            25.531152337789536,
+            40.50026600257438
+          ],
+          [
+            25.531041026115417,
+            40.500236428952945
+          ],
+          [
+            25.53101286292076,
+            40.50021909268605
+          ],
+          [
+            25.530999451875687,
+            40.500190538824924
+          ],
+          [
+            25.53100749850273,
+            40.50014668822882
+          ],
+          [
+            25.531046390533447,
+            40.50008754086774
+          ],
+          [
+            25.531027615070343,
+            40.49996108771395
+          ],
+          [
+            25.531058460474014,
+            40.499784664770466
+          ],
+          [
+            25.531055778265,
+            40.49968166619013
           ]
         ]
       },
@@ -11346,94 +9844,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.530968606472015,
-            40.500237448733216
-          ],
-          [
-            25.53091898560524,
-            40.50018136079556
-          ],
-          [
-            25.530898869037628,
-            40.50014464866551
-          ],
-          [
-            25.530896186828613,
-            40.50012425302903
-          ],
-          [
-            25.530948489904404,
-            40.500050828686355
-          ],
-          [
-            25.530984699726105,
-            40.4999835229683
-          ],
-          [
-            25.53102359175682,
-            40.499867267478066
-          ],
-          [
-            25.53102895617485,
-            40.499803020936504
-          ],
-          [
-            25.531024932861328,
-            40.499712259844365
-          ],
-          [
-            25.531006157398224,
-            40.499636795472014
-          ],
-          [
-            25.530975311994553,
-            40.49957254870973
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.529925227165222,
             40.50022827071026
           ],
           [
             25.52995204925537,
             40.500236428952945
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52880272269249,
-            40.50023336961206
-          ],
-          [
-            25.52880272269249,
-            40.500200736633865
           ]
         ]
       },
@@ -11497,16 +9913,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.53145945072174,
+            25.531294494867325,
             40.5002211322471
           ],
           [
-            25.531625747680664,
-            40.500137510193454
-          ],
-          [
-            25.531679391860962,
-            40.500086521085194
+            25.531425923109055,
+            40.50021195422191
           ]
         ]
       },
@@ -11570,12 +9982,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.53172767162323,
-            40.50021195422191
+            25.531471520662308,
+            40.50019767729135
           ],
           [
-            25.53172767162323,
-            40.50017830145215
+            25.53142860531807,
+            40.50021093444126
           ]
         ]
       },
@@ -11616,6 +10028,52 @@
         "type": "LineString",
         "coordinates": [
           [
+            25.531222075223923,
+            40.5002088948799
+          ],
+          [
+            25.531168431043625,
+            40.500187479481944
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": null,
+        "elevation_source": "unlabeled",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531332045793533,
+            40.50018849926296
+          ],
+          [
+            25.531293153762817,
+            40.50020481575701
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": null,
+        "elevation_source": "unlabeled",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
             25.52953764796257,
             40.50018543991987
           ],
@@ -11625,6 +10083,29 @@
           ],
           [
             25.529551059007645,
+            40.50019665751048
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": null,
+        "elevation_source": "unlabeled",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531188547611237,
+            40.50018238057666
+          ],
+          [
+            25.5312180519104,
             40.50019665751048
           ]
         ]
@@ -11670,12 +10151,47 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528801381587982,
-            40.50018340035774
+            25.531336069107056,
+            40.50018543991987
           ],
           [
-            25.528801381587982,
-            40.50014974757367
+            25.531383007764816,
+            40.50015790582591
+          ],
+          [
+            25.531452745199203,
+            40.50013037172063
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": null,
+        "elevation_source": "unlabeled",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531393736600876,
+            40.500106916733145
+          ],
+          [
+            25.53126499056816,
+            40.500176261889806
+          ],
+          [
+            25.531232804059982,
+            40.50017524210861
+          ],
+          [
+            25.53120329976082,
+            40.50016300473304
           ]
         ]
       },
@@ -11716,12 +10232,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.531726330518723,
-            40.50012833215683
+            25.53113892674446,
+            40.50014158932044
           ],
           [
-            25.531726330518723,
-            40.500161984951646
+            25.53117647767067,
+            40.5001742223274
           ]
         ]
       },
@@ -11786,15 +10302,164 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.531678050756454,
-            40.500069184779555
+            25.531180500984192,
+            40.49967962661268
           ],
           [
-            25.53163781762123,
-            40.500109976079806
+            25.531172454357147,
+            40.49981423859106
           ],
           [
-            25.531557351350784,
+            25.531145632267,
+            40.49992947438825
+          ],
+          [
+            25.531157702207565,
+            40.49998658232058
+          ],
+          [
+            25.531152337789536,
+            40.50009365956268
+          ],
+          [
+            25.53116574883461,
+            40.5001273123749
+          ],
+          [
+            25.53119257092476,
+            40.50015484648143
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": null,
+        "elevation_source": "unlabeled",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531342774629593,
+            40.50007836282427
+          ],
+          [
+            25.53131327033043,
+            40.50011813433688
+          ],
+          [
+            25.5312542617321,
+            40.50014668822882
+          ],
+          [
+            25.53121268749237,
+            40.500137510193454
+          ],
+          [
+            25.531188547611237,
+            40.500101817821744
+          ],
+          [
+            25.531188547611237,
+            40.50008040238961
+          ],
+          [
+            25.531230121850967,
+            40.499943751375895
+          ],
+          [
+            25.531204640865326,
+            40.499860128976486
+          ],
+          [
+            25.53123950958252,
+            40.49967962661268
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": null,
+        "elevation_source": "unlabeled",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531089305877686,
+            40.49968574534483
+          ],
+          [
+            25.531094670295715,
+            40.49968268597883
+          ],
+          [
+            25.531100034713745,
+            40.499712259844365
+          ],
+          [
+            25.531101375818253,
+            40.49976528881199
+          ],
+          [
+            25.53108125925064,
+            40.499921316108235
+          ],
+          [
+            25.53108125925064,
+            40.50007428369344
+          ],
+          [
+            25.5310919880867,
+            40.50011405520847
+          ],
+          [
+            25.531114786863327,
+            40.500145668447175
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": null,
+        "elevation_source": "unlabeled",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.531152337789536,
+            40.49971837857353
+          ],
+          [
+            25.531126856803894,
+            40.49982341667065
+          ],
+          [
+            25.531117469072342,
+            40.49998760210465
+          ],
+          [
+            25.531116127967834,
+            40.500099778257066
+          ],
+          [
+            25.531136244535446,
             40.50013852997522
           ]
         ]
@@ -11813,12 +10478,16 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528800040483475,
-            40.50013241128436
+            25.531678050756454,
+            40.500069184779555
           ],
           [
-            25.528800040483475,
-            40.500098758474714
+            25.53163781762123,
+            40.500109976079806
+          ],
+          [
+            25.531557351350784,
+            40.50013852997522
           ]
         ]
       },
@@ -11867,8 +10536,8 @@
             40.5001089562976
           ],
           [
-            25.531456768512726,
-            40.50012833215683
+            25.53145542740822,
+            40.50012935193874
           ]
         ]
       },
@@ -12001,29 +10670,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.531724989414215,
-            40.500110995861995
-          ],
-          [
-            25.531724989414215,
-            40.50007734304159
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.530177354812622,
             40.50008754086774
           ],
@@ -12109,12 +10755,16 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528798699378967,
-            40.500048789120136
+            25.53149566054344,
+            40.50007020456236
           ],
           [
-            25.528798699378967,
-            40.50008142217224
+            25.531452745199203,
+            40.500071224345156
+          ],
+          [
+            25.531420558691025,
+            40.500089580432785
           ]
         ]
       },
@@ -12167,6 +10817,33 @@
         "type": "LineString",
         "coordinates": [
           [
+            25.5313441157341,
+            40.50007632325889
+          ],
+          [
+            25.5313803255558,
+            40.500037571504805
+          ],
+          [
+            25.531425923109055,
+            40.500030433021344
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": null,
+        "elevation_source": "unlabeled",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
             25.530095547437668,
             40.500072244127935
           ],
@@ -12194,35 +10871,48 @@
         "type": "LineString",
         "coordinates": [
           [
+            25.53167536854744,
+            40.49996516685166
+          ],
+          [
+            25.53153857588768,
+            40.50001207691754
+          ],
+          [
             25.53149566054344,
-            40.50007020456236
+            40.50001003735014
           ],
           [
-            25.53145542740822,
-            40.500071224345156
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531723648309708,
-            40.500060006733584
+            25.531429946422577,
+            40.499988621888704
           ],
           [
-            25.531723648309708,
-            40.50002737367107
+            25.53139239549637,
+            40.49998658232058
+          ],
+          [
+            25.531310588121414,
+            40.50004572977068
+          ],
+          [
+            25.531267672777176,
+            40.500050828686355
+          ],
+          [
+            25.531243532896042,
+            40.50003655172151
+          ],
+          [
+            25.531236827373505,
+            40.50000697799893
+          ],
+          [
+            25.531293153762817,
+            40.49989888083308
+          ],
+          [
+            25.531298518180847,
+            40.499869307049806
           ]
         ]
       },
@@ -12246,37 +10936,6 @@
           [
             25.5315063893795,
             40.50004572977068
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531037002801895,
-            40.500039611071365
-          ],
-          [
-            25.531027615070343,
-            40.49996108771395
-          ],
-          [
-            25.531058460474014,
-            40.499784664770466
-          ],
-          [
-            25.531055778265,
-            40.49968166619013
           ]
         ]
       },
@@ -12323,254 +10982,6 @@
           [
             25.53008884191513,
             40.500038591288096
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531089305877686,
-            40.49968574534483
-          ],
-          [
-            25.531094670295715,
-            40.49968268597883
-          ],
-          [
-            25.531100034713745,
-            40.499712259844365
-          ],
-          [
-            25.531101375818253,
-            40.49976528881199
-          ],
-          [
-            25.53108125925064,
-            40.499921316108235
-          ],
-          [
-            25.53108125925064,
-            40.500038591288096
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531152337789536,
-            40.49971837857353
-          ],
-          [
-            25.531126856803894,
-            40.49982341667065
-          ],
-          [
-            25.531117469072342,
-            40.500038591288096
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531180500984192,
-            40.49967962661268
-          ],
-          [
-            25.531172454357147,
-            40.49981423859106
-          ],
-          [
-            25.531145632267,
-            40.49990907868635
-          ],
-          [
-            25.531157702207565,
-            40.49998658232058
-          ],
-          [
-            25.531156361103058,
-            40.500037571504805
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53123950958252,
-            40.49967962661268
-          ],
-          [
-            25.531204640865326,
-            40.499860128976486
-          ],
-          [
-            25.531230121850967,
-            40.499930494173185
-          ],
-          [
-            25.531205981969833,
-            40.50003655172151
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531298518180847,
-            40.499869307049806
-          ],
-          [
-            25.531293153762817,
-            40.49989888083308
-          ],
-          [
-            25.531236827373505,
-            40.50000697799893
-          ],
-          [
-            25.53124487400055,
-            40.50003655172151
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531325340270996,
-            40.50003553193818
-          ],
-          [
-            25.53139239549637,
-            40.49998658232058
-          ],
-          [
-            25.531429946422577,
-            40.499988621888704
-          ],
-          [
-            25.53149566054344,
-            40.50001003735014
-          ],
-          [
-            25.53153857588768,
-            40.50001207691754
-          ],
-          [
-            25.53167536854744,
-            40.49996516685166
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53138568997383,
-            40.50003451215484
-          ],
-          [
-            25.531425923109055,
-            40.500030433021344
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52879735827446,
-            40.50003145280475
-          ],
-          [
-            25.52879735827446,
-            40.49999779994444
           ]
         ]
       },
@@ -12742,29 +11153,6 @@
           [
             25.530375838279724,
             40.49999270102474
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.5317223072052,
-            40.49997638447909
-          ],
-          [
-            25.5317223072052,
-            40.50001003735014
           ]
         ]
       },
@@ -12957,29 +11345,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528796017169952,
-            40.49998046361588
-          ],
-          [
-            25.528793334960938,
-            40.499829535389686
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.530563592910767,
             40.49981423859106
           ],
@@ -13010,29 +11375,6 @@
           [
             25.529972165822983,
             40.49995496900691
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531718283891678,
-            40.49980811987063
-          ],
-          [
-            25.531720966100693,
-            40.499959048144994
           ]
         ]
       },
@@ -13886,29 +12228,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.52879199385643,
-            40.49981219901765
-          ],
-          [
-            25.52879199385643,
-            40.499779565834565
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.53057700395584,
             40.499792823067104
           ],
@@ -14115,29 +12434,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.53171694278717,
-            40.49979078349304
-          ],
-          [
-            25.53171694278717,
-            40.49975713051201
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.53131327033043,
             40.4997163389972
           ],
@@ -14300,29 +12596,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528790652751923,
-            40.49972857645425
-          ],
-          [
-            25.528790652751923,
-            40.499761209662125
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.53064540028572,
             40.499742853484655
           ],
@@ -14364,29 +12637,6 @@
           [
             25.529799163341522,
             40.499720418149806
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531715601682663,
-            40.49973979412125
-          ],
-          [
-            25.531715601682663,
-            40.499706141114636
           ]
         ]
       },
@@ -14547,29 +12797,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.528789311647415,
-            40.499678606823935
-          ],
-          [
-            25.528789311647415,
-            40.49971124005611
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.531609654426575,
             40.499691864076425
           ],
@@ -14692,29 +12919,6 @@
           [
             25.531341433525085,
             40.49967758703517
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531714260578156,
-            40.49968982449929
-          ],
-          [
-            25.531714260578156,
-            40.499656171467606
           ]
         ]
       },
@@ -14870,29 +13074,6 @@
           [
             25.531668663024902,
             40.49966738914671
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.528787970542908,
-            40.49962761736688
-          ],
-          [
-            25.528787970542908,
-            40.499661270412886
           ]
         ]
       },
@@ -15414,29 +13595,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            25.531712919473648,
-            40.49963883505076
-          ],
-          [
-            25.531712919473648,
-            40.499605181993495
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             25.529388785362244,
             40.499594984094024
           ],
@@ -15501,29 +13659,6 @@
           [
             25.530644059181213,
             40.49959702367404
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.5287866294384,
-            40.499610280942655
-          ],
-          [
-            25.5287866294384,
-            40.49957662787107
           ]
         ]
       },
@@ -15663,742 +13798,6 @@
           [
             25.531665980815887,
             40.499589885143706
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53171157836914,
-            40.49955521227127
-          ],
-          [
-            25.53171157836914,
-            40.499587845563475
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.5287866294384,
-            40.499567449757706
-          ],
-          [
-            25.528978407382965,
-            40.499565410176785
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52900120615959,
-            40.499564390386304
-          ],
-          [
-            25.529045462608337,
-            40.499564390386304
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.529111176729202,
-            40.49956337059581
-          ],
-          [
-            25.529068261384964,
-            40.49956337059581
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52913397550583,
-            40.49956235080529
-          ],
-          [
-            25.529178231954575,
-            40.49956235080529
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.5292010307312,
-            40.49956133101477
-          ],
-          [
-            25.529245287179947,
-            40.49956133101477
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52931100130081,
-            40.49956031122422
-          ],
-          [
-            25.529268085956573,
-            40.49956031122422
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52933380007744,
-            40.49955929143366
-          ],
-          [
-            25.529466569423676,
-            40.49955827164309
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.529489368200302,
-            40.4995572518525
-          ],
-          [
-            25.52953228354454,
-            40.4995572518525
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.529555082321167,
-            40.49955623206189
-          ],
-          [
-            25.529599338769913,
-            40.49955623206189
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52962213754654,
-            40.49955521227127
-          ],
-          [
-            25.529666393995285,
-            40.49955521227127
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.52973210811615,
-            40.49955419248064
-          ],
-          [
-            25.52968919277191,
-            40.49955419248064
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.529754906892776,
-            40.499553172689986
-          ],
-          [
-            25.529799163341522,
-            40.499553172689986
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53002044558525,
-            40.49955011331792
-          ],
-          [
-            25.52982196211815,
-            40.49955215289931
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530043244361877,
-            40.499549093527214
-          ],
-          [
-            25.530086159706116,
-            40.499549093527214
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53011029958725,
-            40.499548073736484
-          ],
-          [
-            25.530153214931488,
-            40.499548073736484
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53022027015686,
-            40.49954705394574
-          ],
-          [
-            25.530176013708115,
-            40.49954705394574
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530243068933487,
-            40.49954603415498
-          ],
-          [
-            25.530285984277725,
-            40.49954603415498
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530308783054352,
-            40.49954501436421
-          ],
-          [
-            25.530353039503098,
-            40.49954501436421
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530574321746826,
-            40.49954195499178
-          ],
-          [
-            25.530375838279724,
-            40.49954399457341
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530597120523453,
-            40.49954093520094
-          ],
-          [
-            25.5306413769722,
-            40.49954093520094
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530664175748825,
-            40.49953991541008
-          ],
-          [
-            25.530707091093063,
-            40.49953991541008
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530774146318436,
-            40.49953889561922
-          ],
-          [
-            25.53072988986969,
-            40.49953889561922
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530841201543808,
-            40.49953787582833
-          ],
-          [
-            25.530796945095062,
-            40.49953787582833
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.530864000320435,
-            40.49953685603744
-          ],
-          [
-            25.530906915664673,
-            40.49953685603744
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.5311281979084,
-            40.499533796664636
-          ],
-          [
-            25.5309297144413,
-            40.499535836246515
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531150996685028,
-            40.49953277687367
-          ],
-          [
-            25.531195253133774,
-            40.49953277687367
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.5312180519104,
-            40.49953175708269
-          ],
-          [
-            25.53126096725464,
-            40.49953175708269
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53132802248001,
-            40.4995307372917
-          ],
-          [
-            25.531283766031265,
-            40.4995307372917
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531350821256638,
-            40.49952971750069
-          ],
-          [
-            25.531395077705383,
-            40.49952971750069
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.53141787648201,
-            40.49952869770967
-          ],
-          [
-            25.531460791826248,
-            40.49952869770967
-          ]
-        ]
-      },
-      "properties": {
-        "layer": "contours",
-        "plan": "restored",
-        "elevation_m": null,
-        "elevation_source": "unlabeled",
-        "pixel_zoom": 20
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            25.531483590602875,
-            40.499527677918636
-          ],
-          [
-            25.531682074069977,
-            40.4995256383365
           ]
         ]
       },
@@ -17351,6 +14750,73 @@
         "layer": "contours",
         "plan": "restored",
         "elevation_m": 40.0,
+        "elevation_source": "ocr",
+        "pixel_zoom": 20
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            25.53116574883461,
+            40.50028639816776
+          ],
+          [
+            25.531062483787537,
+            40.500278239931156
+          ],
+          [
+            25.530994087457657,
+            40.50025478499536
+          ],
+          [
+            25.530933737754822,
+            40.500201756414675
+          ],
+          [
+            25.530896186828613,
+            40.50013649041166
+          ],
+          [
+            25.530898869037628,
+            40.50011813433688
+          ],
+          [
+            25.530948489904404,
+            40.500050828686355
+          ],
+          [
+            25.530990064144135,
+            40.49997230534206
+          ],
+          [
+            25.53102359175682,
+            40.499867267478066
+          ],
+          [
+            25.53102895617485,
+            40.499803020936504
+          ],
+          [
+            25.531024932861328,
+            40.499712259844365
+          ],
+          [
+            25.531006157398224,
+            40.499636795472014
+          ],
+          [
+            25.530975311994553,
+            40.49957254870973
+          ]
+        ]
+      },
+      "properties": {
+        "layer": "contours",
+        "plan": "restored",
+        "elevation_m": 50.0,
         "elevation_source": "ocr",
         "pixel_zoom": 20
       }

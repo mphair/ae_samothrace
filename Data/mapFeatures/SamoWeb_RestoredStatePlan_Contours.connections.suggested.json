@@ -1,0 +1,5606 @@
+{
+  "plan": "restored",
+  "generatedAt": "2026-10-11T01:25:24.882991+00:00",
+  "connections": [
+    {
+      "connectionId": "restored-auto-gap-0",
+      "source": "auto-gap",
+      "aLon": 25.52992656826973,
+      "aLat": 40.50022317180808,
+      "bLon": 25.529914498329163,
+      "bLat": 40.50021297400255,
+      "distancePx": 13.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-1",
+      "source": "auto-gap",
+      "aLon": 25.530728548765182,
+      "aLat": 40.50093905388204,
+      "bLon": 25.530739277601242,
+      "bLat": 40.50093803411245,
+      "distancePx": 8.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-2",
+      "source": "auto-gap",
+      "aLon": 25.530657470226288,
+      "aLat": 40.4997163389972,
+      "bLon": 25.530638694763184,
+      "bLat": 40.499617419470816,
+      "distancePx": 98.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-3",
+      "source": "auto-gap",
+      "aLon": 25.52999898791313,
+      "aLat": 40.50159476252555,
+      "bLon": 25.5300110578537,
+      "bLat": 40.50157436732995,
+      "distancePx": 21.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-4",
+      "source": "auto-gap",
+      "aLon": 25.52993729710579,
+      "aLat": 40.501670224695346,
+      "bLon": 25.5300110578537,
+      "bLat": 40.50157436732995,
+      "distancePx": 108.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-5",
+      "source": "auto-gap",
+      "aLon": 25.530123710632324,
+      "aLat": 40.50152133979238,
+      "bLon": 25.53013578057289,
+      "bLat": 40.50151420146681,
+      "distancePx": 11.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-6",
+      "source": "auto-gap",
+      "aLon": 25.530563592910767,
+      "aLat": 40.49981423859106,
+      "bLon": 25.53064540028572,
+      "bLat": 40.499742853484655,
+      "distancePx": 92.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-7",
+      "source": "auto-gap",
+      "aLon": 25.530284643173218,
+      "aLat": 40.501158303986216,
+      "bLon": 25.530265867710114,
+      "bLat": 40.50102573424144,
+      "distancePx": 130.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-8",
+      "source": "auto-gap",
+      "aLon": 25.530631989240646,
+      "aLat": 40.49977650647285,
+      "bLon": 25.530621260404587,
+      "bLat": 40.49970410153794,
+      "distancePx": 71.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-9",
+      "source": "auto-gap",
+      "aLon": 25.53120329976082,
+      "aLat": 40.50016300473304,
+      "bLon": 25.53119257092476,
+      "bLat": 40.50015484648143,
+      "distancePx": 11.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-10",
+      "source": "auto-gap",
+      "aLon": 25.531035661697388,
+      "aLat": 40.499700022384346,
+      "bLon": 25.53105041384697,
+      "bLat": 40.499656171467606,
+      "distancePx": 44.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-11",
+      "source": "auto-gap",
+      "aLon": 25.531298518180847,
+      "aLat": 40.499869307049806,
+      "bLon": 25.53132802248001,
+      "bLat": 40.499784664770466,
+      "distancePx": 85.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-12",
+      "source": "auto-gap",
+      "aLon": 25.53137093782425,
+      "aLat": 40.499864208120336,
+      "bLon": 25.53132802248001,
+      "bLat": 40.499784664770466,
+      "distancePx": 84.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-13",
+      "source": "auto-gap",
+      "aLon": 25.529917180538177,
+      "aLat": 40.501078762170785,
+      "bLon": 25.52990511059761,
+      "bLat": 40.501079781938245,
+      "distancePx": 9.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-14",
+      "source": "auto-gap",
+      "aLon": 25.531393736600876,
+      "aLat": 40.500106916733145,
+      "bLon": 25.531420558691025,
+      "bLat": 40.500089580432785,
+      "distancePx": 26.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-15",
+      "source": "auto-gap",
+      "aLon": 25.5302631855011,
+      "aLat": 40.50096148880934,
+      "bLon": 25.53026184439659,
+      "bLat": 40.50088296653099,
+      "distancePx": 77.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-16",
+      "source": "auto-gap",
+      "aLon": 25.52956312894821,
+      "aLat": 40.501560090689345,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 121.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-17",
+      "source": "auto-gap",
+      "aLon": 25.52998960018158,
+      "aLat": 40.50159374276592,
+      "bLon": 25.530086159706116,
+      "bLat": 40.50153765596226,
+      "distancePx": 90.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-18",
+      "source": "auto-gap",
+      "aLon": 25.52976295351982,
+      "aLat": 40.50023234983173,
+      "bLon": 25.52986890077591,
+      "bLat": 40.50019767729135,
+      "distancePx": 86.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-19",
+      "source": "auto-gap",
+      "aLon": 25.530028492212296,
+      "aLat": 40.50142548221423,
+      "bLon": 25.530071407556534,
+      "bLat": 40.50144689721697,
+      "distancePx": 38.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-20",
+      "source": "auto-gap",
+      "aLon": 25.531488955020905,
+      "aLat": 40.5001089562976,
+      "bLon": 25.531505048274994,
+      "bLat": 40.50010283760406,
+      "distancePx": 13.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-21",
+      "source": "auto-gap",
+      "aLon": 25.52952155470848,
+      "aLat": 40.500785068496796,
+      "bLon": 25.52957519888878,
+      "bLat": 40.50074427760704,
+      "distancePx": 56.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-22",
+      "source": "auto-gap",
+      "aLon": 25.530453622341156,
+      "aLat": 40.50095333065482,
+      "bLon": 25.530501902103424,
+      "bLat": 40.50085441295244,
+      "distancePx": 103.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-23",
+      "source": "auto-gap",
+      "aLon": 25.531510412693024,
+      "aLat": 40.50033126845138,
+      "bLon": 25.531541258096695,
+      "bLat": 40.50028129927,
+      "distancePx": 54.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-24",
+      "source": "auto-gap",
+      "aLon": 25.530563592910767,
+      "aLat": 40.499937632667276,
+      "bLon": 25.53057834506035,
+      "bLat": 40.49981219901765,
+      "distancePx": 123.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-25",
+      "source": "auto-gap",
+      "aLon": 25.531153678894043,
+      "aLat": 40.50042202870605,
+      "bLon": 25.531156361103058,
+      "bLat": 40.50042100892859,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-26",
+      "source": "auto-gap",
+      "aLon": 25.530644059181213,
+      "aLat": 40.49974489306017,
+      "bLon": 25.53064540028572,
+      "bLat": 40.499742853484655,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-27",
+      "source": "auto-gap",
+      "aLon": 25.530344992876053,
+      "aLat": 40.500014116484884,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 106.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-28",
+      "source": "auto-gap",
+      "aLon": 25.531310588121414,
+      "aLat": 40.499675547457606,
+      "bLon": 25.531447380781174,
+      "bLat": 40.4996551516785,
+      "distancePx": 103.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-29",
+      "source": "auto-gap",
+      "aLon": 25.529286861419678,
+      "aLat": 40.500808523247166,
+      "bLon": 25.529302954673767,
+      "bLat": 40.500808523247166,
+      "distancePx": 12.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-30",
+      "source": "auto-gap",
+      "aLon": 25.531640499830246,
+      "aLat": 40.49970308174955,
+      "bLon": 25.531498342752457,
+      "bLat": 40.4996551516785,
+      "distancePx": 116.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-31",
+      "source": "auto-gap",
+      "aLon": 25.530118346214294,
+      "aLat": 40.49989888083308,
+      "bLon": 25.530279278755188,
+      "bLat": 40.49989888083308,
+      "distancePx": 120.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-32",
+      "source": "auto-gap",
+      "aLon": 25.530342310667038,
+      "aLat": 40.500717763515404,
+      "bLon": 25.53035169839859,
+      "bLat": 40.500628023435176,
+      "distancePx": 88.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-33",
+      "source": "auto-gap",
+      "aLon": 25.530253797769547,
+      "aLat": 40.50096148880934,
+      "bLon": 25.53026184439659,
+      "bLat": 40.50088296653099,
+      "distancePx": 77.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-34",
+      "source": "auto-gap",
+      "aLon": 25.52956312894821,
+      "aLat": 40.50163555289815,
+      "bLon": 25.529565811157227,
+      "bLat": 40.50163249362106,
+      "distancePx": 3.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-35",
+      "source": "auto-gap",
+      "aLon": 25.529602020978928,
+      "aLat": 40.5009492515772,
+      "bLon": 25.52954837679863,
+      "bLat": 40.500886025842256,
+      "distancePx": 73.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-36",
+      "source": "auto-gap",
+      "aLon": 25.531403124332428,
+      "aLat": 40.49984585197105,
+      "bLon": 25.531395077705383,
+      "bLat": 40.499843812398595,
+      "distancePx": 6.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-37",
+      "source": "auto-gap",
+      "aLon": 25.529682487249374,
+      "aLat": 40.50153663620175,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 55.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-38",
+      "source": "auto-gap",
+      "aLon": 25.531222075223923,
+      "aLat": 40.5002088948799,
+      "bLon": 25.531293153762817,
+      "bLat": 40.50020481575701,
+      "distancePx": 53.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-39",
+      "source": "auto-gap",
+      "aLon": 25.53020551800728,
+      "aLat": 40.50009569912754,
+      "bLon": 25.530350357294083,
+      "bLat": 40.50001309670122,
+      "distancePx": 135.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-40",
+      "source": "auto-gap",
+      "aLon": 25.53002178668976,
+      "aLat": 40.50061782569119,
+      "bLon": 25.530044585466385,
+      "bLat": 40.50054134256189,
+      "distancePx": 76.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-41",
+      "source": "auto-gap",
+      "aLon": 25.530007034540176,
+      "aLat": 40.501139948191025,
+      "bLon": 25.529913157224655,
+      "bLat": 40.50107774240331,
+      "distancePx": 92.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-42",
+      "source": "auto-gap",
+      "aLon": 25.529661029577255,
+      "aLat": 40.50163759241613,
+      "bLon": 25.52961140871048,
+      "bLat": 40.50154377452493,
+      "distancePx": 99.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-43",
+      "source": "auto-gap",
+      "aLon": 25.529917180538177,
+      "aLat": 40.501078762170785,
+      "bLon": 25.529913157224655,
+      "bLat": 40.50107774240331,
+      "distancePx": 3.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-44",
+      "source": "auto-gap",
+      "aLon": 25.529286861419678,
+      "aLat": 40.500808523247166,
+      "bLon": 25.52937939763069,
+      "bLat": 40.500806483703975,
+      "distancePx": 69.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-45",
+      "source": "auto-gap",
+      "aLon": 25.530275255441666,
+      "aLat": 40.49989990061847,
+      "bLon": 25.530279278755188,
+      "bLat": 40.49989888083308,
+      "distancePx": 3.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-46",
+      "source": "auto-gap",
+      "aLon": 25.5302993953228,
+      "aLat": 40.50096352834781,
+      "bLon": 25.530308783054352,
+      "bLat": 40.50089214446437,
+      "distancePx": 70.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-47",
+      "source": "auto-gap",
+      "aLon": 25.53025111556053,
+      "aLat": 40.50124804335706,
+      "bLon": 25.53025245666504,
+      "bLat": 40.501246003827234,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-48",
+      "source": "auto-gap",
+      "aLon": 25.52961140871048,
+      "aLat": 40.50151216194509,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50139284981595,
+      "distancePx": 127.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-49",
+      "source": "auto-gap",
+      "aLon": 25.531404465436935,
+      "aLat": 40.4996745276688,
+      "bLon": 25.531510412693024,
+      "bLat": 40.499673507879976,
+      "distancePx": 79.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-50",
+      "source": "auto-gap",
+      "aLon": 25.529683828353882,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529809892177582,
+      "bLat": 40.50113179005822,
+      "distancePx": 130.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-51",
+      "source": "auto-gap",
+      "aLon": 25.529050827026367,
+      "aLat": 40.5015917032466,
+      "bLon": 25.52904948592186,
+      "bLat": 40.50158966372723,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-52",
+      "source": "auto-gap",
+      "aLon": 25.531332045793533,
+      "aLat": 40.50018849926296,
+      "bLon": 25.531420558691025,
+      "bLat": 40.500089580432785,
+      "distancePx": 117.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-53",
+      "source": "auto-gap",
+      "aLon": 25.52957385778427,
+      "aLat": 40.50074631715212,
+      "bLon": 25.529587268829346,
+      "bLat": 40.500692269186644,
+      "distancePx": 53.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-54",
+      "source": "auto-gap",
+      "aLon": 25.530344992876053,
+      "aLat": 40.500014116484884,
+      "bLon": 25.530350357294083,
+      "bLat": 40.50001309670122,
+      "distancePx": 4.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-55",
+      "source": "auto-gap",
+      "aLon": 25.53120329976082,
+      "aLat": 40.50016300473304,
+      "bLon": 25.531136244535446,
+      "bLat": 40.50013852997522,
+      "distancePx": 55.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-56",
+      "source": "auto-gap",
+      "aLon": 25.529305636882782,
+      "aLat": 40.49981117923091,
+      "bLon": 25.529365986585617,
+      "bLat": 40.499738774333416,
+      "distancePx": 84.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-57",
+      "source": "auto-gap",
+      "aLon": 25.52984207868576,
+      "aLat": 40.50111139472186,
+      "bLon": 25.529917180538177,
+      "bLat": 40.501078762170785,
+      "distancePx": 64.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-58",
+      "source": "auto-gap",
+      "aLon": 25.531326681375504,
+      "aLat": 40.49974183369686,
+      "bLon": 25.531310588121414,
+      "bLat": 40.499654131889386,
+      "distancePx": 86.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-59",
+      "source": "auto-gap",
+      "aLon": 25.53050860762596,
+      "aLat": 40.50041896937362,
+      "bLon": 25.53050994873047,
+      "bLat": 40.500354723360424,
+      "distancePx": 63.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-60",
+      "source": "auto-gap",
+      "aLon": 25.529657006263733,
+      "aLat": 40.500980864422324,
+      "bLon": 25.529801845550537,
+      "bLat": 40.500913559637375,
+      "distancePx": 126.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-61",
+      "source": "auto-gap",
+      "aLon": 25.53139239549637,
+      "aLat": 40.499654131889386,
+      "bLon": 25.53140714764595,
+      "bLat": 40.4996765672464,
+      "distancePx": 24.6,
+      "elevationM": 50.0
+    },
+    {
+      "connectionId": "restored-auto-gap-62",
+      "source": "auto-gap",
+      "aLon": 25.531452745199203,
+      "aLat": 40.50013037172063,
+      "bLon": 25.531505048274994,
+      "bLat": 40.50010283760406,
+      "distancePx": 47.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-63",
+      "source": "auto-gap",
+      "aLon": 25.529659688472748,
+      "aLat": 40.50098290396021,
+      "bLon": 25.529657006263733,
+      "bLat": 40.50097168650108,
+      "distancePx": 11.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-64",
+      "source": "auto-gap",
+      "aLon": 25.52998960018158,
+      "aLat": 40.50159374276592,
+      "bLon": 25.530035197734833,
+      "bLat": 40.50156213020962,
+      "distancePx": 46.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-65",
+      "source": "auto-gap",
+      "aLon": 25.530500560998917,
+      "aLat": 40.500690229639915,
+      "bLon": 25.53050994873047,
+      "bLat": 40.50061068726948,
+      "distancePx": 78.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-66",
+      "source": "auto-gap",
+      "aLon": 25.530563592910767,
+      "aLat": 40.49981423859106,
+      "bLon": 25.530633330345154,
+      "bLat": 40.49977344711098,
+      "distancePx": 65.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-67",
+      "source": "auto-gap",
+      "aLon": 25.529925227165222,
+      "aLat": 40.50022827071026,
+      "bLon": 25.529901087284088,
+      "bLat": 40.50020991466059,
+      "distancePx": 25.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-68",
+      "source": "auto-gap",
+      "aLon": 25.529160797595978,
+      "aLat": 40.50071674374244,
+      "bLon": 25.529155433177948,
+      "bLat": 40.50071470419646,
+      "distancePx": 4.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-69",
+      "source": "auto-gap",
+      "aLon": 25.530028492212296,
+      "aLat": 40.50142548221423,
+      "bLon": 25.530091524124146,
+      "bLat": 40.50143364031132,
+      "distancePx": 47.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-70",
+      "source": "auto-gap",
+      "aLon": 25.5300472676754,
+      "aLat": 40.501631473862005,
+      "bLon": 25.530091524124146,
+      "bLat": 40.501599861323484,
+      "distancePx": 45.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-71",
+      "source": "auto-gap",
+      "aLon": 25.52913397550583,
+      "aLat": 40.50085033386879,
+      "bLon": 25.529302954673767,
+      "bLat": 40.500808523247166,
+      "distancePx": 132.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-72",
+      "source": "auto-gap",
+      "aLon": 25.53050860762596,
+      "aLat": 40.50041896937362,
+      "bLon": 25.53050994873047,
+      "bLat": 40.50041692981859,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-73",
+      "source": "auto-gap",
+      "aLon": 25.531326681375504,
+      "aLat": 40.49974183369686,
+      "bLon": 25.531340092420578,
+      "bLat": 40.499654131889386,
+      "distancePx": 86.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-74",
+      "source": "auto-gap",
+      "aLon": 25.530350357294083,
+      "aLat": 40.50001309670122,
+      "bLon": 25.530176013708115,
+      "bLat": 40.50000085929607,
+      "distancePx": 130.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-75",
+      "source": "auto-gap",
+      "aLon": 25.52993729710579,
+      "aLat": 40.501670224695346,
+      "bLon": 25.529981553554535,
+      "bLat": 40.501618216992824,
+      "distancePx": 60.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-76",
+      "source": "auto-gap",
+      "aLon": 25.52919700741768,
+      "aLat": 40.50081056279029,
+      "bLon": 25.52920237183571,
+      "bLat": 40.50081056279029,
+      "distancePx": 4.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-77",
+      "source": "auto-gap",
+      "aLon": 25.52998960018158,
+      "aLat": 40.50159374276592,
+      "bLon": 25.53013578057289,
+      "bLat": 40.50151420146681,
+      "distancePx": 134.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-78",
+      "source": "auto-gap",
+      "aLon": 25.531388372182846,
+      "aLat": 40.499656171467606,
+      "bLon": 25.531447380781174,
+      "bLat": 40.4996551516785,
+      "distancePx": 44.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-79",
+      "source": "auto-gap",
+      "aLon": 25.529925227165222,
+      "aLat": 40.50022827071026,
+      "bLon": 25.52985817193985,
+      "bLat": 40.50021603334437,
+      "distancePx": 51.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-80",
+      "source": "auto-gap",
+      "aLon": 25.530480444431305,
+      "aLat": 40.5001742223274,
+      "bLon": 25.530476421117783,
+      "bLat": 40.50015892560736,
+      "distancePx": 15.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-81",
+      "source": "auto-gap",
+      "aLon": 25.530119687318802,
+      "aLat": 40.501579466129435,
+      "bLon": 25.530123710632324,
+      "bLat": 40.5015764068498,
+      "distancePx": 4.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-82",
+      "source": "auto-gap",
+      "aLon": 25.531330704689026,
+      "aLat": 40.499893781905854,
+      "bLon": 25.53132802248001,
+      "bLat": 40.499784664770466,
+      "distancePx": 107.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-83",
+      "source": "auto-gap",
+      "aLon": 25.53000971674919,
+      "aLat": 40.501682461795966,
+      "bLon": 25.530123710632324,
+      "bLat": 40.5015764068498,
+      "distancePx": 134.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-84",
+      "source": "auto-gap",
+      "aLon": 25.52993729710579,
+      "aLat": 40.501670224695346,
+      "bLon": 25.5299574136734,
+      "bLat": 40.50165390855772,
+      "distancePx": 21.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-85",
+      "source": "auto-gap",
+      "aLon": 25.529615432024002,
+      "aLat": 40.5009492515772,
+      "bLon": 25.52954837679863,
+      "bLat": 40.500886025842256,
+      "distancePx": 79.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-86",
+      "source": "auto-gap",
+      "aLon": 25.531510412693024,
+      "aLat": 40.499675547457606,
+      "bLon": 25.531525164842606,
+      "bLat": 40.499578667451644,
+      "distancePx": 95.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-87",
+      "source": "auto-gap",
+      "aLon": 25.52981123328209,
+      "aLat": 40.501190936498595,
+      "bLon": 25.52975222468376,
+      "bLat": 40.50122458876036,
+      "distancePx": 55.0,
+      "elevationM": 30.0
+    },
+    {
+      "connectionId": "restored-auto-gap-88",
+      "source": "auto-gap",
+      "aLon": 25.53152248263359,
+      "aLat": 40.500260903675056,
+      "bLon": 25.531661957502365,
+      "bLat": 40.500176261889806,
+      "distancePx": 133.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-89",
+      "source": "auto-gap",
+      "aLon": 25.52958995103836,
+      "aLat": 40.50166818517836,
+      "bLon": 25.52961140871048,
+      "bLat": 40.50154377452493,
+      "distancePx": 123.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-90",
+      "source": "auto-gap",
+      "aLon": 25.530375838279724,
+      "aLat": 40.50107672263582,
+      "bLon": 25.53033024072647,
+      "bLat": 40.501035931923404,
+      "distancePx": 52.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-91",
+      "source": "auto-gap",
+      "aLon": 25.531478226184845,
+      "aLat": 40.500039611071365,
+      "bLon": 25.531542599201202,
+      "bLat": 40.500050828686355,
+      "distancePx": 49.2,
+      "elevationM": 55.0
+    },
+    {
+      "connectionId": "restored-auto-gap-92",
+      "source": "auto-gap",
+      "aLon": 25.52957385778427,
+      "aLat": 40.50074631715212,
+      "bLon": 25.52957519888878,
+      "bLat": 40.50074427760704,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-93",
+      "source": "auto-gap",
+      "aLon": 25.529683828353882,
+      "aLat": 40.50151216194509,
+      "bLon": 25.529750883579254,
+      "bLat": 40.50138571147671,
+      "distancePx": 133.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-94",
+      "source": "auto-gap",
+      "aLon": 25.53000971674919,
+      "aLat": 40.501682461795966,
+      "bLon": 25.530091524124146,
+      "bLat": 40.501599861323484,
+      "distancePx": 101.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-95",
+      "source": "auto-gap",
+      "aLon": 25.531471520662308,
+      "aLat": 40.50019767729135,
+      "bLon": 25.531557351350784,
+      "bLat": 40.50013852997522,
+      "distancePx": 86.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-96",
+      "source": "auto-gap",
+      "aLon": 25.530375838279724,
+      "aLat": 40.49999270102474,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 75.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-97",
+      "source": "auto-gap",
+      "aLon": 25.52956312894821,
+      "aLat": 40.501560090689345,
+      "bLon": 25.529565811157227,
+      "bLat": 40.50155703140882,
+      "distancePx": 3.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-98",
+      "source": "auto-gap",
+      "aLon": 25.529666393995285,
+      "aLat": 40.50158660444806,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 105.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-99",
+      "source": "auto-gap",
+      "aLon": 25.52958995103836,
+      "aLat": 40.50166818517836,
+      "bLon": 25.529603362083435,
+      "bLat": 40.501580485889285,
+      "distancePx": 86.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-100",
+      "source": "auto-gap",
+      "aLon": 25.530810356140137,
+      "aLat": 40.50133574308076,
+      "bLon": 25.53081303834915,
+      "bLat": 40.501334723317186,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-101",
+      "source": "auto-gap",
+      "aLon": 25.531332045793533,
+      "aLat": 40.50018849926296,
+      "bLon": 25.53145542740822,
+      "bLat": 40.50012935193874,
+      "distancePx": 108.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-102",
+      "source": "auto-gap",
+      "aLon": 25.53145408630371,
+      "aLat": 40.500792206899945,
+      "bLon": 25.53145542740822,
+      "bLat": 40.50077589054876,
+      "distancePx": 16.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-103",
+      "source": "auto-gap",
+      "aLon": 25.530245751142502,
+      "aLat": 40.50120521321777,
+      "bLon": 25.530249774456024,
+      "bLat": 40.501198074858564,
+      "distancePx": 7.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-104",
+      "source": "auto-gap",
+      "aLon": 25.531277060508728,
+      "aLat": 40.499846871757256,
+      "bLon": 25.531403124332428,
+      "bLat": 40.49984585197105,
+      "distancePx": 94.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-105",
+      "source": "auto-gap",
+      "aLon": 25.531425923109055,
+      "aLat": 40.50021195422191,
+      "bLon": 25.53147554397583,
+      "bLat": 40.50019563772959,
+      "distancePx": 40.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-106",
+      "source": "auto-gap",
+      "aLon": 25.531429946422577,
+      "aLat": 40.4996765672464,
+      "bLon": 25.531405806541443,
+      "bLat": 40.499654131889386,
+      "distancePx": 28.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-107",
+      "source": "auto-gap",
+      "aLon": 25.531298518180847,
+      "aLat": 40.499869307049806,
+      "bLon": 25.531301200389862,
+      "bLat": 40.49984483218483,
+      "distancePx": 24.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-108",
+      "source": "auto-gap",
+      "aLon": 25.531035661697388,
+      "aLat": 40.499700022384346,
+      "bLon": 25.53115501999855,
+      "bLat": 40.49967758703517,
+      "distancePx": 91.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-109",
+      "source": "auto-gap",
+      "aLon": 25.5315063893795,
+      "aLat": 40.50004572977068,
+      "bLon": 25.531478226184845,
+      "bLat": 40.500039611071365,
+      "distancePx": 21.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-110",
+      "source": "auto-gap",
+      "aLon": 25.531168431043625,
+      "aLat": 40.500187479481944,
+      "bLon": 25.531114786863327,
+      "bLat": 40.500145668447175,
+      "distancePx": 57.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-111",
+      "source": "auto-gap",
+      "aLon": 25.531326681375504,
+      "aLat": 40.49974183369686,
+      "bLon": 25.531277060508728,
+      "bLat": 40.4996551516785,
+      "distancePx": 92.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-112",
+      "source": "auto-gap",
+      "aLon": 25.53162708878517,
+      "aLat": 40.499654131889386,
+      "bLon": 25.53161770105362,
+      "bLat": 40.499653112100255,
+      "distancePx": 7.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-113",
+      "source": "auto-gap",
+      "aLon": 25.5302993953228,
+      "aLat": 40.50096352834781,
+      "bLon": 25.530229657888412,
+      "bLat": 40.50086970951389,
+      "distancePx": 105.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-114",
+      "source": "auto-gap",
+      "aLon": 25.531425923109055,
+      "aLat": 40.500030433021344,
+      "bLon": 25.5315063893795,
+      "bLat": 40.50004572977068,
+      "distancePx": 61.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-115",
+      "source": "auto-gap",
+      "aLon": 25.531267672777176,
+      "aLat": 40.499657191256695,
+      "bLon": 25.53132936358452,
+      "bLat": 40.499657191256695,
+      "distancePx": 46.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-116",
+      "source": "auto-gap",
+      "aLon": 25.530563592910767,
+      "aLat": 40.49981423859106,
+      "bLon": 25.530564934015274,
+      "bLat": 40.49981219901765,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-117",
+      "source": "auto-gap",
+      "aLon": 25.529914498329163,
+      "aLat": 40.50115422492105,
+      "bLon": 25.529855489730835,
+      "bLat": 40.50116748188193,
+      "distancePx": 45.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-118",
+      "source": "auto-gap",
+      "aLon": 25.531425923109055,
+      "aLat": 40.50021195422191,
+      "bLon": 25.53142860531807,
+      "bLat": 40.50021093444126,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-119",
+      "source": "auto-gap",
+      "aLon": 25.52932307124138,
+      "aLat": 40.500730000789765,
+      "bLon": 25.529155433177948,
+      "bLat": 40.50071470419646,
+      "distancePx": 125.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-120",
+      "source": "auto-gap",
+      "aLon": 25.530028492212296,
+      "aLat": 40.50142548221423,
+      "bLon": 25.530086159706116,
+      "bLat": 40.50144281816936,
+      "distancePx": 46.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-121",
+      "source": "auto-gap",
+      "aLon": 25.530082136392593,
+      "aLat": 40.5015417350041,
+      "bLon": 25.530086159706116,
+      "bLat": 40.50153765596226,
+      "distancePx": 5.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-122",
+      "source": "auto-gap",
+      "aLon": 25.529812574386597,
+      "aLat": 40.50120623298331,
+      "bLon": 25.52975222468376,
+      "bLat": 40.50122458876036,
+      "distancePx": 48.5,
+      "elevationM": 30.0
+    },
+    {
+      "connectionId": "restored-auto-gap-123",
+      "source": "auto-gap",
+      "aLon": 25.531557351350784,
+      "aLat": 40.50026192345495,
+      "bLon": 25.531661957502365,
+      "bLat": 40.500176261889806,
+      "distancePx": 114.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-124",
+      "source": "auto-gap",
+      "aLon": 25.529992282390594,
+      "aLat": 40.50140916601707,
+      "bLon": 25.53010493516922,
+      "bLat": 40.50141324506674,
+      "distancePx": 84.1,
+      "elevationM": 30.0
+    },
+    {
+      "connectionId": "restored-auto-gap-125",
+      "source": "auto-gap",
+      "aLon": 25.531168431043625,
+      "aLat": 40.500187479481944,
+      "bLon": 25.531136244535446,
+      "bLat": 40.50013852997522,
+      "distancePx": 53.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-126",
+      "source": "auto-gap",
+      "aLon": 25.53119659423828,
+      "aLat": 40.501079781938245,
+      "bLon": 25.531195253133774,
+      "bLat": 40.50107672263582,
+      "distancePx": 3.2,
+      "elevationM": 46.0
+    },
+    {
+      "connectionId": "restored-auto-gap-127",
+      "source": "auto-gap",
+      "aLon": 25.53023636341095,
+      "aLat": 40.50121847016856,
+      "bLon": 25.530249774456024,
+      "bLat": 40.501198074858564,
+      "distancePx": 22.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-128",
+      "source": "auto-gap",
+      "aLon": 25.529661029577255,
+      "aLat": 40.50166614566132,
+      "bLon": 25.52961140871048,
+      "bLat": 40.50154377452493,
+      "distancePx": 125.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-129",
+      "source": "auto-gap",
+      "aLon": 25.53057700395584,
+      "aLat": 40.499792823067104,
+      "bLon": 25.53064540028572,
+      "bLat": 40.499742853484655,
+      "distancePx": 70.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-130",
+      "source": "auto-gap",
+      "aLon": 25.529614090919495,
+      "aLat": 40.50151420146681,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50139284981595,
+      "distancePx": 128.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-131",
+      "source": "auto-gap",
+      "aLon": 25.530563592910767,
+      "aLat": 40.49981423859106,
+      "bLon": 25.530586391687393,
+      "bLat": 40.499778546047345,
+      "distancePx": 38.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-132",
+      "source": "auto-gap",
+      "aLon": 25.529610067605972,
+      "aLat": 40.50155907092919,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 96.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-133",
+      "source": "auto-gap",
+      "aLon": 25.529050827026367,
+      "aLat": 40.50057193582408,
+      "bLon": 25.52904948592186,
+      "bLat": 40.50056989627369,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-134",
+      "source": "auto-gap",
+      "aLon": 25.530453622341156,
+      "aLat": 40.50095333065482,
+      "bLon": 25.53049921989441,
+      "bLat": 40.500824839590415,
+      "distancePx": 130.5,
+      "elevationM": 45.0
+    },
+    {
+      "connectionId": "restored-auto-gap-135",
+      "source": "auto-gap",
+      "aLon": 25.529597997665405,
+      "aLat": 40.50158966372723,
+      "bLon": 25.52961140871048,
+      "bLat": 40.50154377452493,
+      "distancePx": 46.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-136",
+      "source": "auto-gap",
+      "aLon": 25.531452745199203,
+      "aLat": 40.50013037172063,
+      "bLon": 25.53145542740822,
+      "bLat": 40.50012935193874,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-137",
+      "source": "auto-gap",
+      "aLon": 25.529597997665405,
+      "aLat": 40.50158966372723,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 126.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-138",
+      "source": "auto-gap",
+      "aLon": 25.53045228123665,
+      "aLat": 40.50107060403054,
+      "bLon": 25.530413389205933,
+      "bLat": 40.501023694704855,
+      "distancePx": 54.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-139",
+      "source": "auto-gap",
+      "aLon": 25.52994266152382,
+      "aLat": 40.50167124445382,
+      "bLon": 25.5300110578537,
+      "bLat": 40.50157436732995,
+      "distancePx": 107.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-140",
+      "source": "auto-gap",
+      "aLon": 25.530585050582886,
+      "aLat": 40.49978262519616,
+      "bLon": 25.530586391687393,
+      "bLat": 40.499778546047345,
+      "distancePx": 4.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-141",
+      "source": "auto-gap",
+      "aLon": 25.53131327033043,
+      "aLat": 40.4997163389972,
+      "bLon": 25.531236827373505,
+      "bLat": 40.499654131889386,
+      "distancePx": 83.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-142",
+      "source": "auto-gap",
+      "aLon": 25.530007034540176,
+      "aLat": 40.501139948191025,
+      "bLon": 25.53000435233116,
+      "bLat": 40.50113892842448,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-143",
+      "source": "auto-gap",
+      "aLon": 25.53020551800728,
+      "aLat": 40.50009569912754,
+      "bLon": 25.530349016189575,
+      "bLat": 40.50001105713385,
+      "distancePx": 135.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-144",
+      "source": "auto-gap",
+      "aLon": 25.531152337789536,
+      "aLat": 40.49969696301899,
+      "bLon": 25.531145632267,
+      "bLat": 40.499656171467606,
+      "distancePx": 40.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-145",
+      "source": "auto-gap",
+      "aLon": 25.529661029577255,
+      "aLat": 40.50166614566132,
+      "bLon": 25.52966371178627,
+      "bLat": 40.50160496012103,
+      "distancePx": 60.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-146",
+      "source": "auto-gap",
+      "aLon": 25.531452745199203,
+      "aLat": 40.501575387089886,
+      "bLon": 25.53145408630371,
+      "bLat": 40.501573347570016,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-147",
+      "source": "auto-gap",
+      "aLon": 25.52956312894821,
+      "aLat": 40.50163555289815,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50153255715959,
+      "distancePx": 132.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-148",
+      "source": "auto-gap",
+      "aLon": 25.530631989240646,
+      "aLat": 40.49977650647285,
+      "bLon": 25.53064540028572,
+      "bLat": 40.499742853484655,
+      "distancePx": 34.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-149",
+      "source": "auto-gap",
+      "aLon": 25.52952155470848,
+      "aLat": 40.500785068496796,
+      "bLon": 25.529524236917496,
+      "bLat": 40.500784048724846,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-150",
+      "source": "auto-gap",
+      "aLon": 25.53131327033043,
+      "aLat": 40.4997163389972,
+      "bLon": 25.531310588121414,
+      "bLat": 40.499654131889386,
+      "distancePx": 61.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-151",
+      "source": "auto-gap",
+      "aLon": 25.530249774456024,
+      "aLat": 40.501198074858564,
+      "bLon": 25.53022563457489,
+      "bLat": 40.50122662829083,
+      "distancePx": 33.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-152",
+      "source": "auto-gap",
+      "aLon": 25.531315952539444,
+      "aLat": 40.500349624467844,
+      "bLon": 25.53131192922592,
+      "bLat": 40.50034860468929,
+      "distancePx": 3.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-153",
+      "source": "auto-gap",
+      "aLon": 25.531467497348785,
+      "aLat": 40.50029965530013,
+      "bLon": 25.531503707170486,
+      "bLat": 40.50027925971078,
+      "distancePx": 33.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-154",
+      "source": "auto-gap",
+      "aLon": 25.531330704689026,
+      "aLat": 40.499893781905854,
+      "bLon": 25.531325340270996,
+      "bLat": 40.49978568455761,
+      "distancePx": 106.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-155",
+      "source": "auto-gap",
+      "aLon": 25.53162708878517,
+      "aLat": 40.499654131889386,
+      "bLon": 25.531498342752457,
+      "bLat": 40.4996551516785,
+      "distancePx": 96.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-156",
+      "source": "auto-gap",
+      "aLon": 25.530029833316803,
+      "aLat": 40.50165594807514,
+      "bLon": 25.530123710632324,
+      "bLat": 40.5015764068498,
+      "distancePx": 104.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-157",
+      "source": "auto-gap",
+      "aLon": 25.53119257092476,
+      "aLat": 40.500260903675056,
+      "bLon": 25.531336069107056,
+      "bLat": 40.50018543991987,
+      "distancePx": 130.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-158",
+      "source": "auto-gap",
+      "aLon": 25.5302993953228,
+      "aLat": 40.50096352834781,
+      "bLon": 25.53026184439659,
+      "bLat": 40.50088296653099,
+      "distancePx": 83.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-159",
+      "source": "auto-gap",
+      "aLon": 25.530213564634323,
+      "aLat": 40.501246003827234,
+      "bLon": 25.530249774456024,
+      "bLat": 40.501198074858564,
+      "distancePx": 54.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-160",
+      "source": "auto-gap",
+      "aLon": 25.52963688969612,
+      "aLat": 40.5014387391215,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50139284981595,
+      "distancePx": 54.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-161",
+      "source": "auto-gap",
+      "aLon": 25.530353039503098,
+      "aLat": 40.50148054935033,
+      "bLon": 25.53049921989441,
+      "bLat": 40.501399988154425,
+      "distancePx": 134.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-162",
+      "source": "auto-gap",
+      "aLon": 25.531400442123413,
+      "aLat": 40.49984789154344,
+      "bLon": 25.531395077705383,
+      "bLat": 40.499843812398595,
+      "distancePx": 5.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-163",
+      "source": "auto-gap",
+      "aLon": 25.531180500984192,
+      "aLat": 40.49967962661268,
+      "bLon": 25.531179159879684,
+      "bLat": 40.4996551516785,
+      "distancePx": 24.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-164",
+      "source": "auto-gap",
+      "aLon": 25.531195253133774,
+      "aLat": 40.50025988389515,
+      "bLon": 25.53119257092476,
+      "bLat": 40.500260903675056,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-165",
+      "source": "auto-gap",
+      "aLon": 25.531404465436935,
+      "aLat": 40.4996745276688,
+      "bLon": 25.531566739082336,
+      "bLat": 40.499653112100255,
+      "distancePx": 122.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-166",
+      "source": "auto-gap",
+      "aLon": 25.53131327033043,
+      "aLat": 40.4997163389972,
+      "bLon": 25.531340092420578,
+      "bLat": 40.499654131889386,
+      "distancePx": 64.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-167",
+      "source": "auto-gap",
+      "aLon": 25.531405806541443,
+      "aLat": 40.499654131889386,
+      "bLon": 25.53140714764595,
+      "bLat": 40.4996765672464,
+      "distancePx": 22.0,
+      "elevationM": 50.0
+    },
+    {
+      "connectionId": "restored-auto-gap-168",
+      "source": "auto-gap",
+      "aLon": 25.531204640865326,
+      "aLat": 40.50032514977811,
+      "bLon": 25.53116574883461,
+      "bLat": 40.50028639816776,
+      "distancePx": 47.8,
+      "elevationM": 50.0
+    },
+    {
+      "connectionId": "restored-auto-gap-169",
+      "source": "auto-gap",
+      "aLon": 25.530644059181213,
+      "aLat": 40.49974489306017,
+      "bLon": 25.530638694763184,
+      "bLat": 40.499617419470816,
+      "distancePx": 125.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-170",
+      "source": "auto-gap",
+      "aLon": 25.531629770994186,
+      "aLat": 40.50021093444126,
+      "bLon": 25.531661957502365,
+      "bLat": 40.500176261889806,
+      "distancePx": 41.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-171",
+      "source": "auto-gap",
+      "aLon": 25.530082136392593,
+      "aLat": 40.5015417350041,
+      "bLon": 25.53013578057289,
+      "bLat": 40.50151420146681,
+      "distancePx": 48.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-172",
+      "source": "auto-gap",
+      "aLon": 25.531330704689026,
+      "aLat": 40.499893781905854,
+      "bLon": 25.531301200389862,
+      "bLat": 40.49984483218483,
+      "distancePx": 52.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-173",
+      "source": "auto-gap",
+      "aLon": 25.531205981969833,
+      "aLat": 40.49967758703517,
+      "bLon": 25.53132936358452,
+      "bLat": 40.499657191256695,
+      "distancePx": 94.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-174",
+      "source": "auto-gap",
+      "aLon": 25.528836250305176,
+      "aLat": 40.49996618663605,
+      "bLon": 25.52883490920067,
+      "bLat": 40.49986828726394,
+      "distancePx": 96.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-175",
+      "source": "auto-gap",
+      "aLon": 25.531510412693024,
+      "aLat": 40.499675547457606,
+      "bLon": 25.53150102496147,
+      "bLat": 40.499653112100255,
+      "distancePx": 23.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-176",
+      "source": "auto-gap",
+      "aLon": 25.530213564634323,
+      "aLat": 40.501246003827234,
+      "bLon": 25.530216246843338,
+      "bLat": 40.501242944532386,
+      "distancePx": 3.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-177",
+      "source": "auto-gap",
+      "aLon": 25.52963688969612,
+      "aLat": 40.5014387391215,
+      "bLon": 25.529750883579254,
+      "bLat": 40.50138571147671,
+      "distancePx": 99.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-178",
+      "source": "auto-gap",
+      "aLon": 25.531342774629593,
+      "aLat": 40.4997163389972,
+      "bLon": 25.531342774629593,
+      "bLat": 40.49969492344201,
+      "distancePx": 21.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-179",
+      "source": "auto-gap",
+      "aLon": 25.529607385396957,
+      "aLat": 40.50155703140882,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 96.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-180",
+      "source": "auto-gap",
+      "aLon": 25.531315952539444,
+      "aLat": 40.500349624467844,
+      "bLon": 25.531200617551804,
+      "bLat": 40.50032412999918,
+      "distancePx": 89.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-181",
+      "source": "auto-gap",
+      "aLon": 25.531498342752457,
+      "aLat": 40.4996551516785,
+      "bLon": 25.531566739082336,
+      "bLat": 40.499653112100255,
+      "distancePx": 51.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-182",
+      "source": "auto-gap",
+      "aLon": 25.529050827026367,
+      "aLat": 40.50067595281114,
+      "bLon": 25.52904948592186,
+      "bLat": 40.500673913263924,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-183",
+      "source": "auto-gap",
+      "aLon": 25.52934855222702,
+      "aLat": 40.500808523247166,
+      "bLon": 25.529524236917496,
+      "bLat": 40.500784048724846,
+      "distancePx": 133.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-184",
+      "source": "auto-gap",
+      "aLon": 25.53050860762596,
+      "aLat": 40.50035676291734,
+      "bLon": 25.53050994873047,
+      "bLat": 40.500354723360424,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-185",
+      "source": "auto-gap",
+      "aLon": 25.53153857588768,
+      "aLat": 40.50004980890325,
+      "bLon": 25.531542599201202,
+      "bLat": 40.500050828686355,
+      "distancePx": 3.2,
+      "elevationM": 55.0
+    },
+    {
+      "connectionId": "restored-auto-gap-186",
+      "source": "auto-gap",
+      "aLon": 25.531195253133774,
+      "aLat": 40.50164371096969,
+      "bLon": 25.53119659423828,
+      "bLat": 40.5016416714519,
+      "distancePx": 2.2,
+      "elevationM": 47.0
+    },
+    {
+      "connectionId": "restored-auto-gap-187",
+      "source": "auto-gap",
+      "aLon": 25.530594438314438,
+      "aLat": 40.499756110724434,
+      "bLon": 25.530621260404587,
+      "bLat": 40.49970410153794,
+      "distancePx": 54.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-188",
+      "source": "auto-gap",
+      "aLon": 25.53005263209343,
+      "aLat": 40.50057397537439,
+      "bLon": 25.53002581000328,
+      "bLat": 40.50049035376057,
+      "distancePx": 84.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-189",
+      "source": "auto-gap",
+      "aLon": 25.52956312894821,
+      "aLat": 40.50163555289815,
+      "bLon": 25.529565811157227,
+      "bLat": 40.50155703140882,
+      "distancePx": 77.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-190",
+      "source": "auto-gap",
+      "aLon": 25.529714673757553,
+      "aLat": 40.50136429645443,
+      "bLon": 25.529835373163223,
+      "bLat": 40.50134492095219,
+      "distancePx": 92.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-191",
+      "source": "auto-gap",
+      "aLon": 25.531342774629593,
+      "aLat": 40.49982341667065,
+      "bLon": 25.53132802248001,
+      "bLat": 40.499784664770466,
+      "distancePx": 39.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-192",
+      "source": "auto-gap",
+      "aLon": 25.53123950958252,
+      "aLat": 40.49967962661268,
+      "bLon": 25.531236827373505,
+      "bLat": 40.499654131889386,
+      "distancePx": 25.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-193",
+      "source": "auto-gap",
+      "aLon": 25.53137093782425,
+      "aLat": 40.499864208120336,
+      "bLon": 25.531356185674667,
+      "bLat": 40.49984483218483,
+      "distancePx": 22.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-194",
+      "source": "auto-gap",
+      "aLon": 25.531152337789536,
+      "aLat": 40.49971837857353,
+      "bLon": 25.531145632267,
+      "bLat": 40.499656171467606,
+      "distancePx": 61.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-195",
+      "source": "auto-gap",
+      "aLon": 25.528998523950577,
+      "aLat": 40.500944152729815,
+      "bLon": 25.528995841741562,
+      "bLat": 40.50094313296029,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-196",
+      "source": "auto-gap",
+      "aLon": 25.529898405075073,
+      "aLat": 40.50136123716497,
+      "bLon": 25.529939979314804,
+      "bLat": 40.501307189694934,
+      "distancePx": 61.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-197",
+      "source": "auto-gap",
+      "aLon": 25.53141251206398,
+      "aLat": 40.50044344402913,
+      "bLon": 25.531413853168488,
+      "bLat": 40.50044140447485,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-198",
+      "source": "auto-gap",
+      "aLon": 25.53119257092476,
+      "aLat": 40.500260903675056,
+      "bLon": 25.531293153762817,
+      "bLat": 40.50020481575701,
+      "distancePx": 93.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-199",
+      "source": "auto-gap",
+      "aLon": 25.53002581000328,
+      "aLat": 40.500470978005914,
+      "bLon": 25.530076771974564,
+      "bLat": 40.50037002003582,
+      "distancePx": 106.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-200",
+      "source": "auto-gap",
+      "aLon": 25.529683828353882,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529812574386597,
+      "bLat": 40.50120623298331,
+      "distancePx": 97.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-201",
+      "source": "auto-gap",
+      "aLon": 25.531425923109055,
+      "aLat": 40.500030433021344,
+      "bLon": 25.53143933415413,
+      "bLat": 40.500032472588124,
+      "distancePx": 10.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-202",
+      "source": "auto-gap",
+      "aLon": 25.52994266152382,
+      "aLat": 40.50167124445382,
+      "bLon": 25.529981553554535,
+      "bLat": 40.501618216992824,
+      "distancePx": 59.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-203",
+      "source": "auto-gap",
+      "aLon": 25.531332045793533,
+      "aLat": 40.50018849926296,
+      "bLon": 25.531336069107056,
+      "bLat": 40.50018543991987,
+      "distancePx": 4.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-204",
+      "source": "auto-gap",
+      "aLon": 25.53005263209343,
+      "aLat": 40.50057397537439,
+      "bLon": 25.530028492212296,
+      "bLat": 40.50049035376057,
+      "distancePx": 84.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-205",
+      "source": "auto-gap",
+      "aLon": 25.52998960018158,
+      "aLat": 40.50159374276592,
+      "bLon": 25.5300110578537,
+      "bLat": 40.50157436732995,
+      "distancePx": 24.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-206",
+      "source": "auto-gap",
+      "aLon": 25.52997350692749,
+      "aLat": 40.50162943434384,
+      "bLon": 25.530086159706116,
+      "bLat": 40.50153765596226,
+      "distancePx": 123.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-207",
+      "source": "auto-gap",
+      "aLon": 25.531425923109055,
+      "aLat": 40.500351664024926,
+      "bLon": 25.531541258096695,
+      "bLat": 40.50028129927,
+      "distancePx": 110.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-208",
+      "source": "auto-gap",
+      "aLon": 25.530631989240646,
+      "aLat": 40.49977650647285,
+      "bLon": 25.530633330345154,
+      "bLat": 40.49977344711098,
+      "distancePx": 3.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-209",
+      "source": "auto-gap",
+      "aLon": 25.53131327033043,
+      "aLat": 40.4997163389972,
+      "bLon": 25.531277060508728,
+      "bLat": 40.4996551516785,
+      "distancePx": 65.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-210",
+      "source": "auto-gap",
+      "aLon": 25.529817938804626,
+      "aLat": 40.50022623114943,
+      "bLon": 25.52982062101364,
+      "bLat": 40.500225211369,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-211",
+      "source": "auto-gap",
+      "aLon": 25.52969992160797,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529809892177582,
+      "bLat": 40.50113179005822,
+      "distancePx": 122.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-212",
+      "source": "auto-gap",
+      "aLon": 25.531388372182846,
+      "aLat": 40.499656171467606,
+      "bLon": 25.531525164842606,
+      "bLat": 40.499578667451644,
+      "distancePx": 127.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-213",
+      "source": "auto-gap",
+      "aLon": 25.529809892177582,
+      "aLat": 40.50136123716497,
+      "bLon": 25.529835373163223,
+      "bLat": 40.50134492095219,
+      "distancePx": 24.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-214",
+      "source": "auto-gap",
+      "aLon": 25.52994266152382,
+      "aLat": 40.50167124445382,
+      "bLon": 25.5299574136734,
+      "bLat": 40.50165390855772,
+      "distancePx": 20.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-215",
+      "source": "auto-gap",
+      "aLon": 25.529683828353882,
+      "aLat": 40.50122458876036,
+      "bLon": 25.52981123328209,
+      "bLat": 40.501190936498595,
+      "distancePx": 100.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-216",
+      "source": "auto-gap",
+      "aLon": 25.52997350692749,
+      "aLat": 40.50162943434384,
+      "bLon": 25.5300110578537,
+      "bLat": 40.50157436732995,
+      "distancePx": 60.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-217",
+      "source": "auto-gap",
+      "aLon": 25.530176013708115,
+      "aLat": 40.50000085929607,
+      "bLon": 25.53035169839859,
+      "bLat": 40.499988621888704,
+      "distancePx": 131.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-218",
+      "source": "auto-gap",
+      "aLon": 25.531425923109055,
+      "aLat": 40.500351664024926,
+      "bLon": 25.531503707170486,
+      "bLat": 40.50027925971078,
+      "distancePx": 91.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-219",
+      "source": "auto-gap",
+      "aLon": 25.531429946422577,
+      "aLat": 40.4996765672464,
+      "bLon": 25.531424582004547,
+      "bLat": 40.499653112100255,
+      "distancePx": 23.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-220",
+      "source": "auto-gap",
+      "aLon": 25.530276596546173,
+      "aLat": 40.50096250857858,
+      "bLon": 25.53026184439659,
+      "bLat": 40.50088296653099,
+      "distancePx": 78.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-221",
+      "source": "auto-gap",
+      "aLon": 25.531425923109055,
+      "aLat": 40.50021195422191,
+      "bLon": 25.531557351350784,
+      "bLat": 40.50013852997522,
+      "distancePx": 121.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-222",
+      "source": "auto-gap",
+      "aLon": 25.53038790822029,
+      "aLat": 40.49999168124075,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 68.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-223",
+      "source": "auto-gap",
+      "aLon": 25.52956447005272,
+      "aLat": 40.50136837550682,
+      "bLon": 25.529565811157227,
+      "bLat": 40.501366335980656,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-224",
+      "source": "auto-gap",
+      "aLon": 25.529929250478745,
+      "aLat": 40.499797922002,
+      "bLon": 25.529760271310806,
+      "bLat": 40.49980200114963,
+      "distancePx": 126.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-225",
+      "source": "auto-gap",
+      "aLon": 25.531157702207565,
+      "aLat": 40.49969696301899,
+      "bLon": 25.531145632267,
+      "bLat": 40.499656171467606,
+      "distancePx": 41.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-226",
+      "source": "auto-gap",
+      "aLon": 25.52932173013687,
+      "aLat": 40.49974795242334,
+      "bLon": 25.529365986585617,
+      "bLat": 40.499738774333416,
+      "distancePx": 34.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-227",
+      "source": "auto-gap",
+      "aLon": 25.52993729710579,
+      "aLat": 40.501670224695346,
+      "bLon": 25.529938638210297,
+      "bLat": 40.50166818517836,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-228",
+      "source": "auto-gap",
+      "aLon": 25.529608726501465,
+      "aLat": 40.500950271346625,
+      "bLon": 25.52954837679863,
+      "bLat": 40.500886025842256,
+      "distancePx": 77.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-229",
+      "source": "auto-gap",
+      "aLon": 25.529529601335526,
+      "aLat": 40.50040775182019,
+      "bLon": 25.52960067987442,
+      "bLat": 40.50029353662398,
+      "distancePx": 123.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-230",
+      "source": "auto-gap",
+      "aLon": 25.529470592737198,
+      "aLat": 40.50033534756658,
+      "bLon": 25.52950009703636,
+      "bLat": 40.50029863552082,
+      "distancePx": 42.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-231",
+      "source": "auto-gap",
+      "aLon": 25.531294494867325,
+      "aLat": 40.5002211322471,
+      "bLon": 25.53117647767067,
+      "bLat": 40.5001742223274,
+      "distancePx": 99.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-232",
+      "source": "auto-gap",
+      "aLon": 25.531150996685028,
+      "aLat": 40.49965923083482,
+      "bLon": 25.531211346387863,
+      "bLat": 40.49965821104576,
+      "distancePx": 45.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-233",
+      "source": "auto-gap",
+      "aLon": 25.531510412693024,
+      "aLat": 40.499673507879976,
+      "bLon": 25.531388372182846,
+      "bLat": 40.499656171467606,
+      "distancePx": 92.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-234",
+      "source": "auto-gap",
+      "aLon": 25.52999898791313,
+      "aLat": 40.50159476252555,
+      "bLon": 25.530086159706116,
+      "bLat": 40.50153765596226,
+      "distancePx": 85.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-235",
+      "source": "auto-gap",
+      "aLon": 25.53145945072174,
+      "aLat": 40.499675547457606,
+      "bLon": 25.53145006299019,
+      "bLat": 40.499653112100255,
+      "distancePx": 23.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-236",
+      "source": "auto-gap",
+      "aLon": 25.530495196580887,
+      "aLat": 40.500955370193545,
+      "bLon": 25.530501902103424,
+      "bLat": 40.50085441295244,
+      "distancePx": 99.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-237",
+      "source": "auto-gap",
+      "aLon": 25.52969992160797,
+      "aLat": 40.50122458876036,
+      "bLon": 25.52981123328209,
+      "bLat": 40.50116442258349,
+      "distancePx": 101.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-238",
+      "source": "auto-gap",
+      "aLon": 25.530594438314438,
+      "aLat": 40.499756110724434,
+      "bLon": 25.530638694763184,
+      "bLat": 40.499617419470816,
+      "distancePx": 139.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-239",
+      "source": "auto-gap",
+      "aLon": 25.52934855222702,
+      "aLat": 40.500808523247166,
+      "bLon": 25.52937939763069,
+      "bLat": 40.500806483703975,
+      "distancePx": 23.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-240",
+      "source": "auto-gap",
+      "aLon": 25.53037315607071,
+      "aLat": 40.49995292943777,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 58.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-241",
+      "source": "auto-gap",
+      "aLon": 25.53057700395584,
+      "aLat": 40.499792823067104,
+      "bLon": 25.530586391687393,
+      "bLat": 40.499778546047345,
+      "distancePx": 15.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-242",
+      "source": "auto-gap",
+      "aLon": 25.529848784208298,
+      "aLat": 40.50107570286831,
+      "bLon": 25.529854148626328,
+      "bLat": 40.50107570286831,
+      "distancePx": 4.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-243",
+      "source": "auto-gap",
+      "aLon": 25.531431287527084,
+      "aLat": 40.500673913263924,
+      "bLon": 25.5314339697361,
+      "bLat": 40.50056071829622,
+      "distancePx": 111.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-244",
+      "source": "auto-gap",
+      "aLon": 25.529683828353882,
+      "aLat": 40.50122458876036,
+      "bLon": 25.52981123328209,
+      "bLat": 40.50116442258349,
+      "distancePx": 111.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-245",
+      "source": "auto-gap",
+      "aLon": 25.530500560998917,
+      "aLat": 40.500690229639915,
+      "bLon": 25.53050994873047,
+      "bLat": 40.500670853942985,
+      "distancePx": 20.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-246",
+      "source": "auto-gap",
+      "aLon": 25.529529601335526,
+      "aLat": 40.50040775182019,
+      "bLon": 25.52962750196457,
+      "bLat": 40.50029353662398,
+      "distancePx": 133.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-247",
+      "source": "auto-gap",
+      "aLon": 25.52997350692749,
+      "aLat": 40.50162943434384,
+      "bLon": 25.530035197734833,
+      "bLat": 40.50156213020962,
+      "distancePx": 80.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-248",
+      "source": "auto-gap",
+      "aLon": 25.52908703684807,
+      "aLat": 40.499726536878235,
+      "bLon": 25.52908569574356,
+      "bLat": 40.499720418149806,
+      "distancePx": 6.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-249",
+      "source": "auto-gap",
+      "aLon": 25.529817938804626,
+      "aLat": 40.50022623114943,
+      "bLon": 25.529923886060715,
+      "bLat": 40.50023336961206,
+      "distancePx": 79.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-250",
+      "source": "auto-gap",
+      "aLon": 25.530350357294083,
+      "aLat": 40.50108386100794,
+      "bLon": 25.53033024072647,
+      "bLat": 40.501035931923404,
+      "distancePx": 49.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-251",
+      "source": "auto-gap",
+      "aLon": 25.531342774629593,
+      "aLat": 40.50007836282427,
+      "bLon": 25.5313441157341,
+      "bLat": 40.50007632325889,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-252",
+      "source": "auto-gap",
+      "aLon": 25.529913157224655,
+      "aLat": 40.50120317368664,
+      "bLon": 25.529855489730835,
+      "bLat": 40.50119501556152,
+      "distancePx": 43.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-253",
+      "source": "auto-gap",
+      "aLon": 25.52981123328209,
+      "aLat": 40.50116442258349,
+      "bLon": 25.52975222468376,
+      "bLat": 40.50122458876036,
+      "distancePx": 73.6,
+      "elevationM": 30.0
+    },
+    {
+      "connectionId": "restored-auto-gap-254",
+      "source": "auto-gap",
+      "aLon": 25.531452745199203,
+      "aLat": 40.501366335980656,
+      "bLon": 25.53145408630371,
+      "bLat": 40.50136429645443,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-255",
+      "source": "auto-gap",
+      "aLon": 25.5300472676754,
+      "aLat": 40.501631473862005,
+      "bLon": 25.53013578057289,
+      "bLat": 40.50151420146681,
+      "distancePx": 132.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-256",
+      "source": "auto-gap",
+      "aLon": 25.529671758413315,
+      "aLat": 40.50167124445382,
+      "bLon": 25.52961140871048,
+      "bLat": 40.50154377452493,
+      "distancePx": 132.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-257",
+      "source": "auto-gap",
+      "aLon": 25.531195253133774,
+      "aLat": 40.500917638717176,
+      "bLon": 25.53119659423828,
+      "bLat": 40.50091559917731,
+      "distancePx": 2.2,
+      "elevationM": 47.0
+    },
+    {
+      "connectionId": "restored-auto-gap-258",
+      "source": "auto-gap",
+      "aLon": 25.529115200042725,
+      "aLat": 40.50151216194509,
+      "bLon": 25.528940856456757,
+      "bLat": 40.50146729245133,
+      "distancePx": 137.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-259",
+      "source": "auto-gap",
+      "aLon": 25.530060678720474,
+      "aLat": 40.50144383793129,
+      "bLon": 25.530071407556534,
+      "bLat": 40.50144689721697,
+      "distancePx": 8.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-260",
+      "source": "auto-gap",
+      "aLon": 25.5299212038517,
+      "aLat": 40.49981933752432,
+      "bLon": 25.529760271310806,
+      "bLat": 40.49980200114963,
+      "distancePx": 121.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-261",
+      "source": "auto-gap",
+      "aLon": 25.531294494867325,
+      "aLat": 40.5002211322471,
+      "bLon": 25.53119257092476,
+      "bLat": 40.50015484648143,
+      "distancePx": 100.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-262",
+      "source": "auto-gap",
+      "aLon": 25.529817938804626,
+      "aLat": 40.50022623114943,
+      "bLon": 25.529925227165222,
+      "bLat": 40.50022827071026,
+      "distancePx": 80.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-263",
+      "source": "auto-gap",
+      "aLon": 25.529687851667404,
+      "aLat": 40.50150400385754,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 23.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-264",
+      "source": "auto-gap",
+      "aLon": 25.530350357294083,
+      "aLat": 40.50108386100794,
+      "bLon": 25.53025647997856,
+      "bLat": 40.50099004234231,
+      "distancePx": 115.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-265",
+      "source": "auto-gap",
+      "aLon": 25.531388372182846,
+      "aLat": 40.499656171467606,
+      "bLon": 25.531566739082336,
+      "bLat": 40.499653112100255,
+      "distancePx": 133.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-266",
+      "source": "auto-gap",
+      "aLon": 25.52958458662033,
+      "aLat": 40.50071572396946,
+      "bLon": 25.529587268829346,
+      "bLat": 40.500692269186644,
+      "distancePx": 23.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-267",
+      "source": "auto-gap",
+      "aLon": 25.530444234609604,
+      "aLat": 40.501431600787136,
+      "bLon": 25.53049921989441,
+      "bLat": 40.501399988154425,
+      "distancePx": 51.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-268",
+      "source": "auto-gap",
+      "aLon": 25.52969992160797,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529808551073074,
+      "bLat": 40.50111139472186,
+      "distancePx": 137.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-269",
+      "source": "auto-gap",
+      "aLon": 25.531341433525085,
+      "aLat": 40.49967758703517,
+      "bLon": 25.531340092420578,
+      "bLat": 40.499654131889386,
+      "distancePx": 23.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-270",
+      "source": "auto-gap",
+      "aLon": 25.52932173013687,
+      "aLat": 40.49974795242334,
+      "bLon": 25.529339164495468,
+      "bLat": 40.499734695181935,
+      "distancePx": 18.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-271",
+      "source": "auto-gap",
+      "aLon": 25.529965460300446,
+      "aLat": 40.49963577568261,
+      "bLon": 25.52996277809143,
+      "bLat": 40.4996347558932,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-272",
+      "source": "auto-gap",
+      "aLon": 25.53013041615486,
+      "aLat": 40.50151420146681,
+      "bLon": 25.53013578057289,
+      "bLat": 40.50151420146681,
+      "distancePx": 4.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-273",
+      "source": "auto-gap",
+      "aLon": 25.530563592910767,
+      "aLat": 40.501139948191025,
+      "bLon": 25.53056627511978,
+      "bLat": 40.50113892842448,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-274",
+      "source": "auto-gap",
+      "aLon": 25.530375838279724,
+      "aLat": 40.4999835229683,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 69.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-275",
+      "source": "auto-gap",
+      "aLon": 25.52999898791313,
+      "aLat": 40.50159476252555,
+      "bLon": 25.530035197734833,
+      "bLat": 40.50156213020962,
+      "distancePx": 41.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-276",
+      "source": "auto-gap",
+      "aLon": 25.52993729710579,
+      "aLat": 40.501670224695346,
+      "bLon": 25.530035197734833,
+      "bLat": 40.50156213020962,
+      "distancePx": 128.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-277",
+      "source": "auto-gap",
+      "aLon": 25.531342774629593,
+      "aLat": 40.49982341667065,
+      "bLon": 25.531325340270996,
+      "bLat": 40.49978568455761,
+      "distancePx": 39.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-278",
+      "source": "auto-gap",
+      "aLon": 25.53000971674919,
+      "aLat": 40.501682461795966,
+      "bLon": 25.530033856630325,
+      "bLat": 40.5016498295227,
+      "distancePx": 36.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-279",
+      "source": "auto-gap",
+      "aLon": 25.530495196580887,
+      "aLat": 40.500955370193545,
+      "bLon": 25.530517995357513,
+      "bLat": 40.50082789890433,
+      "distancePx": 126.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-280",
+      "source": "auto-gap",
+      "aLon": 25.530563592910767,
+      "aLat": 40.49981423859106,
+      "bLon": 25.530621260404587,
+      "bLat": 40.49970410153794,
+      "distancePx": 116.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-281",
+      "source": "auto-gap",
+      "aLon": 25.531204640865326,
+      "aLat": 40.50032514977811,
+      "bLon": 25.531200617551804,
+      "bLat": 40.50032412999918,
+      "distancePx": 3.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-282",
+      "source": "auto-gap",
+      "aLon": 25.529671758413315,
+      "aLat": 40.50167124445382,
+      "bLon": 25.52966371178627,
+      "bLat": 40.50160496012103,
+      "distancePx": 65.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-283",
+      "source": "auto-gap",
+      "aLon": 25.531055778265,
+      "aLat": 40.49968166619013,
+      "bLon": 25.53105041384697,
+      "bLat": 40.499656171467606,
+      "distancePx": 25.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-284",
+      "source": "auto-gap",
+      "aLon": 25.529776364564896,
+      "aLat": 40.50137347432196,
+      "bLon": 25.529835373163223,
+      "bLat": 40.50134492095219,
+      "distancePx": 52.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-285",
+      "source": "auto-gap",
+      "aLon": 25.531153678894043,
+      "aLat": 40.50042202870605,
+      "bLon": 25.531240850687027,
+      "bLat": 40.50042100892859,
+      "distancePx": 65.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-286",
+      "source": "auto-gap",
+      "aLon": 25.52930697798729,
+      "aLat": 40.50153663620175,
+      "bLon": 25.529308319091797,
+      "bLat": 40.501534596680706,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-287",
+      "source": "auto-gap",
+      "aLon": 25.52997350692749,
+      "aLat": 40.50162943434384,
+      "bLon": 25.529981553554535,
+      "bLat": 40.501618216992824,
+      "distancePx": 12.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-288",
+      "source": "auto-gap",
+      "aLon": 25.530028492212296,
+      "aLat": 40.50142548221423,
+      "bLon": 25.53010493516922,
+      "bLat": 40.50141324506674,
+      "distancePx": 58.2,
+      "elevationM": 30.0
+    },
+    {
+      "connectionId": "restored-auto-gap-289",
+      "source": "auto-gap",
+      "aLon": 25.530284643173218,
+      "aLat": 40.501158303986216,
+      "bLon": 25.530279278755188,
+      "bLat": 40.50112975052486,
+      "distancePx": 28.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-290",
+      "source": "auto-gap",
+      "aLon": 25.52956312894821,
+      "aLat": 40.50163555289815,
+      "bLon": 25.52961140871048,
+      "bLat": 40.50154377452493,
+      "distancePx": 96.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-291",
+      "source": "auto-gap",
+      "aLon": 25.53149566054344,
+      "aLat": 40.50007020456236,
+      "bLon": 25.53150102496147,
+      "bLat": 40.500071224345156,
+      "distancePx": 4.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-292",
+      "source": "auto-gap",
+      "aLon": 25.52999898791313,
+      "aLat": 40.50159476252555,
+      "bLon": 25.53013578057289,
+      "bLat": 40.50151420146681,
+      "distancePx": 129.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-293",
+      "source": "auto-gap",
+      "aLon": 25.530585050582886,
+      "aLat": 40.49978262519616,
+      "bLon": 25.530621260404587,
+      "bLat": 40.49970410153794,
+      "distancePx": 81.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-294",
+      "source": "auto-gap",
+      "aLon": 25.531204640865326,
+      "aLat": 40.50032514977811,
+      "bLon": 25.531175136566162,
+      "bLat": 40.500306793754945,
+      "distancePx": 28.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-295",
+      "source": "auto-gap",
+      "aLon": 25.5300472676754,
+      "aLat": 40.501631473862005,
+      "bLon": 25.530123710632324,
+      "bLat": 40.5015764068498,
+      "distancePx": 78.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-296",
+      "source": "auto-gap",
+      "aLon": 25.531608313322067,
+      "aLat": 40.49989990061847,
+      "bLon": 25.531610995531082,
+      "bLat": 40.49989888083308,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-297",
+      "source": "auto-gap",
+      "aLon": 25.529602020978928,
+      "aLat": 40.50097474580829,
+      "bLon": 25.529666393995285,
+      "bLat": 40.50097372603924,
+      "distancePx": 48.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-298",
+      "source": "auto-gap",
+      "aLon": 25.530417412519455,
+      "aLat": 40.50144893674069,
+      "bLon": 25.53049921989441,
+      "bLat": 40.501399988154425,
+      "distancePx": 77.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-299",
+      "source": "auto-gap",
+      "aLon": 25.52956312894821,
+      "aLat": 40.50163555289815,
+      "bLon": 25.529603362083435,
+      "bLat": 40.501580485889285,
+      "distancePx": 61.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-300",
+      "source": "auto-gap",
+      "aLon": 25.529610067605972,
+      "aLat": 40.50155907092919,
+      "bLon": 25.52961140871048,
+      "bLat": 40.50154377452493,
+      "distancePx": 15.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-301",
+      "source": "auto-gap",
+      "aLon": 25.529683828353882,
+      "aLat": 40.50151216194509,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 31.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-302",
+      "source": "auto-gap",
+      "aLon": 25.531342774629593,
+      "aLat": 40.4997163389972,
+      "bLon": 25.531310588121414,
+      "bLat": 40.499654131889386,
+      "distancePx": 65.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-303",
+      "source": "auto-gap",
+      "aLon": 25.52919700741768,
+      "aLat": 40.50081056279029,
+      "bLon": 25.529329776763916,
+      "bLat": 40.50076365328277,
+      "distancePx": 109.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-304",
+      "source": "auto-gap",
+      "aLon": 25.531177818775177,
+      "aLat": 40.500310872871644,
+      "bLon": 25.531175136566162,
+      "bLat": 40.500306793754945,
+      "distancePx": 4.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-305",
+      "source": "auto-gap",
+      "aLon": 25.531342774629593,
+      "aLat": 40.49982341667065,
+      "bLon": 25.531342774629593,
+      "bLat": 40.49969492344201,
+      "distancePx": 126.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-306",
+      "source": "auto-gap",
+      "aLon": 25.53100749850273,
+      "aLat": 40.50042202870605,
+      "bLon": 25.531156361103058,
+      "bLat": 40.50042100892859,
+      "distancePx": 111.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-307",
+      "source": "auto-gap",
+      "aLon": 25.53035169839859,
+      "aLat": 40.49999779994444,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 92.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-308",
+      "source": "auto-gap",
+      "aLon": 25.529666393995285,
+      "aLat": 40.50158660444806,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50153255715959,
+      "distancePx": 53.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-309",
+      "source": "auto-gap",
+      "aLon": 25.52903339266777,
+      "aLat": 40.50152439907453,
+      "bLon": 25.5289489030838,
+      "bLat": 40.50140610672966,
+      "distancePx": 132.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-310",
+      "source": "auto-gap",
+      "aLon": 25.53025782108307,
+      "aLat": 40.500993101648696,
+      "bLon": 25.53025647997856,
+      "bLat": 40.50099004234231,
+      "distancePx": 3.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-311",
+      "source": "auto-gap",
+      "aLon": 25.529050827026367,
+      "aLat": 40.50067595281114,
+      "bLon": 25.52904948592186,
+      "bLat": 40.50056989627369,
+      "distancePx": 104.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-312",
+      "source": "auto-gap",
+      "aLon": 25.53155466914177,
+      "aLat": 40.50013954975698,
+      "bLon": 25.531557351350784,
+      "bLat": 40.50013852997522,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-313",
+      "source": "auto-gap",
+      "aLon": 25.53012102842331,
+      "aLat": 40.49989990061847,
+      "bLon": 25.530118346214294,
+      "bLat": 40.49989888083308,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-314",
+      "source": "auto-gap",
+      "aLon": 25.531238168478012,
+      "aLat": 40.50042202870605,
+      "bLon": 25.531240850687027,
+      "bLat": 40.50042100892859,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-315",
+      "source": "auto-gap",
+      "aLon": 25.531315952539444,
+      "aLat": 40.500349624467844,
+      "bLon": 25.53116574883461,
+      "bLat": 40.50028639816776,
+      "distancePx": 128.0,
+      "elevationM": 50.0
+    },
+    {
+      "connectionId": "restored-auto-gap-316",
+      "source": "auto-gap",
+      "aLon": 25.531342774629593,
+      "aLat": 40.4997163389972,
+      "bLon": 25.531340092420578,
+      "bLat": 40.499654131889386,
+      "distancePx": 61.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-317",
+      "source": "auto-gap",
+      "aLon": 25.53031414747238,
+      "aLat": 40.50096352834781,
+      "bLon": 25.53033158183098,
+      "bLat": 40.500886025842256,
+      "distancePx": 77.1,
+      "elevationM": 40.0
+    },
+    {
+      "connectionId": "restored-auto-gap-318",
+      "source": "auto-gap",
+      "aLon": 25.529597997665405,
+      "aLat": 40.50158966372723,
+      "bLon": 25.529603362083435,
+      "bLat": 40.501580485889285,
+      "distancePx": 9.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-319",
+      "source": "auto-gap",
+      "aLon": 25.530308783054352,
+      "aLat": 40.50089214446437,
+      "bLon": 25.53031414747238,
+      "bLat": 40.50096352834781,
+      "distancePx": 70.1,
+      "elevationM": 40.0
+    },
+    {
+      "connectionId": "restored-auto-gap-320",
+      "source": "auto-gap",
+      "aLon": 25.531425923109055,
+      "aLat": 40.500030433021344,
+      "bLon": 25.531542599201202,
+      "bLat": 40.500050828686355,
+      "distancePx": 89.3,
+      "elevationM": 55.0
+    },
+    {
+      "connectionId": "restored-auto-gap-321",
+      "source": "auto-gap",
+      "aLon": 25.530342310667038,
+      "aLat": 40.500717763515404,
+      "bLon": 25.53033158183098,
+      "bLat": 40.50061374659316,
+      "distancePx": 102.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-322",
+      "source": "auto-gap",
+      "aLon": 25.52985280752182,
+      "aLat": 40.501140967957554,
+      "bLon": 25.529918521642685,
+      "bLat": 40.50111343425578,
+      "distancePx": 55.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-323",
+      "source": "auto-gap",
+      "aLon": 25.531150996685028,
+      "aLat": 40.49965923083482,
+      "bLon": 25.53132936358452,
+      "bLat": 40.499657191256695,
+      "distancePx": 133.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-324",
+      "source": "auto-gap",
+      "aLon": 25.52919700741768,
+      "aLat": 40.50081056279029,
+      "bLon": 25.529302954673767,
+      "bLat": 40.500808523247166,
+      "distancePx": 79.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-325",
+      "source": "auto-gap",
+      "aLon": 25.530269891023636,
+      "aLat": 40.50108488077532,
+      "bLon": 25.53025647997856,
+      "bLat": 40.50099004234231,
+      "distancePx": 93.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-326",
+      "source": "auto-gap",
+      "aLon": 25.529718697071075,
+      "aLat": 40.50135409882237,
+      "bLon": 25.529835373163223,
+      "bLat": 40.50134492095219,
+      "distancePx": 87.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-327",
+      "source": "auto-gap",
+      "aLon": 25.531188547611237,
+      "aLat": 40.50018238057666,
+      "bLon": 25.53117647767067,
+      "bLat": 40.5001742223274,
+      "distancePx": 12.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-328",
+      "source": "auto-gap",
+      "aLon": 25.530563592910767,
+      "aLat": 40.499937632667276,
+      "bLon": 25.530622601509094,
+      "bLat": 40.49982341667065,
+      "distancePx": 120.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-329",
+      "source": "auto-gap",
+      "aLon": 25.531298518180847,
+      "aLat": 40.499869307049806,
+      "bLon": 25.531325340270996,
+      "bLat": 40.49978568455761,
+      "distancePx": 84.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-330",
+      "source": "auto-gap",
+      "aLon": 25.53006872534752,
+      "aLat": 40.5015417350041,
+      "bLon": 25.530086159706116,
+      "bLat": 40.50153765596226,
+      "distancePx": 13.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-331",
+      "source": "auto-gap",
+      "aLon": 25.53137093782425,
+      "aLat": 40.499864208120336,
+      "bLon": 25.531325340270996,
+      "bLat": 40.49978568455761,
+      "distancePx": 84.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-332",
+      "source": "auto-gap",
+      "aLon": 25.531089305877686,
+      "aLat": 40.49968574534483,
+      "bLon": 25.531035661697388,
+      "bLat": 40.499700022384346,
+      "distancePx": 42.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-333",
+      "source": "auto-gap",
+      "aLon": 25.531294494867325,
+      "aLat": 40.5002211322471,
+      "bLon": 25.5312180519104,
+      "bLat": 40.50019665751048,
+      "distancePx": 61.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-334",
+      "source": "auto-gap",
+      "aLon": 25.52919700741768,
+      "aLat": 40.50081056279029,
+      "bLon": 25.52937939763069,
+      "bLat": 40.500806483703975,
+      "distancePx": 136.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-335",
+      "source": "auto-gap",
+      "aLon": 25.530269891023636,
+      "aLat": 40.50108488077532,
+      "bLon": 25.530269891023636,
+      "bLat": 40.5010267540097,
+      "distancePx": 57.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-336",
+      "source": "auto-gap",
+      "aLon": 25.530302077531815,
+      "aLat": 40.50074529737959,
+      "bLon": 25.53035169839859,
+      "bLat": 40.500628023435176,
+      "distancePx": 120.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-337",
+      "source": "auto-gap",
+      "aLon": 25.531283766031265,
+      "aLat": 40.49967962661268,
+      "bLon": 25.531277060508728,
+      "bLat": 40.4996551516785,
+      "distancePx": 24.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-338",
+      "source": "auto-gap",
+      "aLon": 25.530276596546173,
+      "aLat": 40.50096250857858,
+      "bLon": 25.530229657888412,
+      "bLat": 40.50086970951389,
+      "distancePx": 97.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-339",
+      "source": "auto-gap",
+      "aLon": 25.531326681375504,
+      "aLat": 40.49974183369686,
+      "bLon": 25.531342774629593,
+      "bLat": 40.49969492344201,
+      "distancePx": 47.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-340",
+      "source": "auto-gap",
+      "aLon": 25.530029833316803,
+      "aLat": 40.50165594807514,
+      "bLon": 25.530091524124146,
+      "bLat": 40.501599861323484,
+      "distancePx": 71.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-341",
+      "source": "auto-gap",
+      "aLon": 25.530495196580887,
+      "aLat": 40.500955370193545,
+      "bLon": 25.53049921989441,
+      "bLat": 40.500824839590415,
+      "distancePx": 128.0,
+      "elevationM": 45.0
+    },
+    {
+      "connectionId": "restored-auto-gap-342",
+      "source": "auto-gap",
+      "aLon": 25.530563592910767,
+      "aLat": 40.499937632667276,
+      "bLon": 25.530564934015274,
+      "bLat": 40.49981219901765,
+      "distancePx": 123.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-343",
+      "source": "auto-gap",
+      "aLon": 25.53007408976555,
+      "aLat": 40.50162229602978,
+      "bLon": 25.530123710632324,
+      "bLat": 40.5015764068498,
+      "distancePx": 58.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-344",
+      "source": "auto-gap",
+      "aLon": 25.529866218566895,
+      "aLat": 40.5003649211444,
+      "bLon": 25.529813915491104,
+      "bLat": 40.500358802474196,
+      "distancePx": 39.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-345",
+      "source": "auto-gap",
+      "aLon": 25.531393736600876,
+      "aLat": 40.500106916733145,
+      "bLon": 25.53150102496147,
+      "bLat": 40.500071224345156,
+      "distancePx": 87.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-346",
+      "source": "auto-gap",
+      "aLon": 25.530060678720474,
+      "aLat": 40.50144383793129,
+      "bLon": 25.530086159706116,
+      "bLat": 40.50144281816936,
+      "distancePx": 19.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-347",
+      "source": "auto-gap",
+      "aLon": 25.531195253133774,
+      "aLat": 40.501454035549706,
+      "bLon": 25.53119659423828,
+      "bLat": 40.50145199602615,
+      "distancePx": 2.2,
+      "elevationM": 46.0
+    },
+    {
+      "connectionId": "restored-auto-gap-348",
+      "source": "auto-gap",
+      "aLon": 25.531452745199203,
+      "aLat": 40.501423442689806,
+      "bLon": 25.53145408630371,
+      "bLat": 40.50142140316532,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-349",
+      "source": "auto-gap",
+      "aLon": 25.5302993953228,
+      "aLat": 40.50096352834781,
+      "bLon": 25.53033158183098,
+      "bLat": 40.500886025842256,
+      "distancePx": 79.7,
+      "elevationM": 40.0
+    },
+    {
+      "connectionId": "restored-auto-gap-350",
+      "source": "auto-gap",
+      "aLon": 25.529607385396957,
+      "aLat": 40.50155703140882,
+      "bLon": 25.52961140871048,
+      "bLat": 40.50154377452493,
+      "distancePx": 13.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-351",
+      "source": "auto-gap",
+      "aLon": 25.530269891023636,
+      "aLat": 40.50108488077532,
+      "bLon": 25.530265867710114,
+      "bLat": 40.50102573424144,
+      "distancePx": 58.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-352",
+      "source": "auto-gap",
+      "aLon": 25.53000971674919,
+      "aLat": 40.501682461795966,
+      "bLon": 25.53001508116722,
+      "bLat": 40.50167532348755,
+      "distancePx": 8.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-353",
+      "source": "auto-gap",
+      "aLon": 25.531649887561798,
+      "aLat": 40.499691864076425,
+      "bLon": 25.531620383262634,
+      "bLat": 40.49965107252194,
+      "distancePx": 45.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-354",
+      "source": "auto-gap",
+      "aLon": 25.531293153762817,
+      "aLat": 40.50020481575701,
+      "bLon": 25.5312180519104,
+      "bLat": 40.50019665751048,
+      "distancePx": 56.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-355",
+      "source": "auto-gap",
+      "aLon": 25.529470592737198,
+      "aLat": 40.50033534756658,
+      "bLon": 25.529492050409317,
+      "bLat": 40.50021195422191,
+      "distancePx": 122.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-356",
+      "source": "auto-gap",
+      "aLon": 25.530029833316803,
+      "aLat": 40.50165594807514,
+      "bLon": 25.530033856630325,
+      "bLat": 40.5016498295227,
+      "distancePx": 6.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-357",
+      "source": "auto-gap",
+      "aLon": 25.53025782108307,
+      "aLat": 40.500993101648696,
+      "bLon": 25.530229657888412,
+      "bLat": 40.50086970951389,
+      "distancePx": 122.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-358",
+      "source": "auto-gap",
+      "aLon": 25.531610995531082,
+      "aLat": 40.499691864076425,
+      "bLon": 25.531498342752457,
+      "bLat": 40.4996551516785,
+      "distancePx": 91.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-359",
+      "source": "auto-gap",
+      "aLon": 25.53150102496147,
+      "aLat": 40.500787108040626,
+      "bLon": 25.531510412693024,
+      "bLat": 40.50064535959639,
+      "distancePx": 139.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-360",
+      "source": "auto-gap",
+      "aLon": 25.53007408976555,
+      "aLat": 40.50162229602978,
+      "bLon": 25.530091524124146,
+      "bLat": 40.501599861323484,
+      "distancePx": 25.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-361",
+      "source": "auto-gap",
+      "aLon": 25.530496537685394,
+      "aLat": 40.50140202767957,
+      "bLon": 25.53049921989441,
+      "bLat": 40.501399988154425,
+      "distancePx": 2.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-362",
+      "source": "auto-gap",
+      "aLon": 25.52967444062233,
+      "aLat": 40.501583545168735,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 101.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-363",
+      "source": "auto-gap",
+      "aLon": 25.53162708878517,
+      "aLat": 40.499654131889386,
+      "bLon": 25.53151711821556,
+      "bLat": 40.49959192472388,
+      "distancePx": 102.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-364",
+      "source": "auto-gap",
+      "aLon": 25.529666393995285,
+      "aLat": 40.50097372603924,
+      "bLon": 25.52953228354454,
+      "bLat": 40.500993101648696,
+      "distancePx": 101.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-365",
+      "source": "auto-gap",
+      "aLon": 25.530045926570892,
+      "aLat": 40.500030433021344,
+      "bLon": 25.530043244361877,
+      "bLat": 40.50002941323794,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-366",
+      "source": "auto-gap",
+      "aLon": 25.53113892674446,
+      "aLat": 40.50014158932044,
+      "bLon": 25.531136244535446,
+      "bLat": 40.50013852997522,
+      "distancePx": 3.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-367",
+      "source": "auto-gap",
+      "aLon": 25.53025111556053,
+      "aLat": 40.50124804335706,
+      "bLon": 25.530279278755188,
+      "bLat": 40.50112975052486,
+      "distancePx": 117.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-368",
+      "source": "auto-gap",
+      "aLon": 25.531452745199203,
+      "aLat": 40.501423442689806,
+      "bLon": 25.53145408630371,
+      "bLat": 40.50136429645443,
+      "distancePx": 58.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-369",
+      "source": "auto-gap",
+      "aLon": 25.52994132041931,
+      "aLat": 40.49977344711098,
+      "bLon": 25.529777705669403,
+      "bLat": 40.49976222944961,
+      "distancePx": 122.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-370",
+      "source": "auto-gap",
+      "aLon": 25.531400442123413,
+      "aLat": 40.49984789154344,
+      "bLon": 25.531325340270996,
+      "bLat": 40.49978568455761,
+      "distancePx": 82.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-371",
+      "source": "auto-gap",
+      "aLon": 25.529817938804626,
+      "aLat": 40.50022623114943,
+      "bLon": 25.52992656826973,
+      "bLat": 40.50022317180808,
+      "distancePx": 81.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-372",
+      "source": "auto-gap",
+      "aLon": 25.52969992160797,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529812574386597,
+      "bLat": 40.50120623298331,
+      "distancePx": 85.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-373",
+      "source": "auto-gap",
+      "aLon": 25.529776364564896,
+      "aLat": 40.501223568995094,
+      "bLon": 25.529812574386597,
+      "bLat": 40.50120623298331,
+      "distancePx": 31.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-374",
+      "source": "auto-gap",
+      "aLon": 25.529703944921494,
+      "aLat": 40.50144791697884,
+      "bLon": 25.529750883579254,
+      "bLat": 40.50138571147671,
+      "distancePx": 70.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-375",
+      "source": "auto-gap",
+      "aLon": 25.52992656826973,
+      "aLat": 40.50022317180808,
+      "bLon": 25.529901087284088,
+      "bLat": 40.50020991466059,
+      "distancePx": 23.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-376",
+      "source": "auto-gap",
+      "aLon": 25.5302631855011,
+      "aLat": 40.50096148880934,
+      "bLon": 25.530229657888412,
+      "bLat": 40.50086970951389,
+      "distancePx": 93.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-377",
+      "source": "auto-gap",
+      "aLon": 25.531294494867325,
+      "aLat": 40.5002211322471,
+      "bLon": 25.531222075223923,
+      "bLat": 40.5002088948799,
+      "distancePx": 55.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-378",
+      "source": "auto-gap",
+      "aLon": 25.531168431043625,
+      "aLat": 40.50028945750623,
+      "bLon": 25.53116574883461,
+      "bLat": 40.50028639816776,
+      "distancePx": 3.6,
+      "elevationM": 50.0
+    },
+    {
+      "connectionId": "restored-auto-gap-379",
+      "source": "auto-gap",
+      "aLon": 25.530284643173218,
+      "aLat": 40.501158303986216,
+      "bLon": 25.53033024072647,
+      "bLat": 40.501035931923404,
+      "distancePx": 124.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-380",
+      "source": "auto-gap",
+      "aLon": 25.531471520662308,
+      "aLat": 40.50019767729135,
+      "bLon": 25.53147554397583,
+      "bLat": 40.50019563772959,
+      "distancePx": 3.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-381",
+      "source": "auto-gap",
+      "aLon": 25.52969992160797,
+      "aLat": 40.50122458876036,
+      "bLon": 25.52981123328209,
+      "bLat": 40.501190936498595,
+      "distancePx": 89.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-382",
+      "source": "auto-gap",
+      "aLon": 25.529776364564896,
+      "aLat": 40.501223568995094,
+      "bLon": 25.52981123328209,
+      "bLat": 40.501190936498595,
+      "distancePx": 41.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-383",
+      "source": "auto-gap",
+      "aLon": 25.530370473861694,
+      "aLat": 40.50133574308076,
+      "bLon": 25.53037315607071,
+      "bLat": 40.501334723317186,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-384",
+      "source": "auto-gap",
+      "aLon": 25.531188547611237,
+      "aLat": 40.50018238057666,
+      "bLon": 25.531114786863327,
+      "bLat": 40.500145668447175,
+      "distancePx": 65.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-385",
+      "source": "auto-gap",
+      "aLon": 25.52992656826973,
+      "aLat": 40.50022317180808,
+      "bLon": 25.52985817193985,
+      "bLat": 40.50021603334437,
+      "distancePx": 51.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-386",
+      "source": "auto-gap",
+      "aLon": 25.53006872534752,
+      "aLat": 40.5015417350041,
+      "bLon": 25.53013578057289,
+      "bLat": 40.50151420146681,
+      "distancePx": 56.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-387",
+      "source": "auto-gap",
+      "aLon": 25.530253797769547,
+      "aLat": 40.50096148880934,
+      "bLon": 25.530229657888412,
+      "bLat": 40.50086970951389,
+      "distancePx": 91.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-388",
+      "source": "auto-gap",
+      "aLon": 25.53057700395584,
+      "aLat": 40.499792823067104,
+      "bLon": 25.530621260404587,
+      "bLat": 40.49970410153794,
+      "distancePx": 93.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-389",
+      "source": "auto-gap",
+      "aLon": 25.53023099899292,
+      "aLat": 40.500959449270795,
+      "bLon": 25.53020015358925,
+      "bLat": 40.500852373410645,
+      "distancePx": 107.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-390",
+      "source": "auto-gap",
+      "aLon": 25.529772341251373,
+      "aLat": 40.50137041503292,
+      "bLon": 25.529835373163223,
+      "bLat": 40.50134492095219,
+      "distancePx": 53.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-391",
+      "source": "auto-gap",
+      "aLon": 25.530375838279724,
+      "aLat": 40.50107672263582,
+      "bLon": 25.5303892493248,
+      "bLat": 40.501009417947046,
+      "distancePx": 66.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-392",
+      "source": "auto-gap",
+      "aLon": 25.529160797595978,
+      "aLat": 40.50071674374244,
+      "bLon": 25.52904948592186,
+      "bLat": 40.500673913263924,
+      "distancePx": 93.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-393",
+      "source": "auto-gap",
+      "aLon": 25.529305636882782,
+      "aLat": 40.49981117923091,
+      "bLon": 25.52939549088478,
+      "bLat": 40.49974489306017,
+      "distancePx": 93.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-394",
+      "source": "auto-gap",
+      "aLon": 25.531035661697388,
+      "aLat": 40.499700022384346,
+      "bLon": 25.531211346387863,
+      "bLat": 40.49965821104576,
+      "distancePx": 137.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-395",
+      "source": "auto-gap",
+      "aLon": 25.531188547611237,
+      "aLat": 40.50018238057666,
+      "bLon": 25.531136244535446,
+      "bLat": 40.50013852997522,
+      "distancePx": 58.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-396",
+      "source": "auto-gap",
+      "aLon": 25.530007034540176,
+      "aLat": 40.501139948191025,
+      "bLon": 25.529976189136505,
+      "bLat": 40.501062445889296,
+      "distancePx": 79.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-397",
+      "source": "auto-gap",
+      "aLon": 25.530028492212296,
+      "aLat": 40.50047199778261,
+      "bLon": 25.530076771974564,
+      "bLat": 40.50037002003582,
+      "distancePx": 106.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-398",
+      "source": "auto-gap",
+      "aLon": 25.52967444062233,
+      "aLat": 40.501583545168735,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50153255715959,
+      "distancePx": 50.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-399",
+      "source": "auto-gap",
+      "aLon": 25.52903339266777,
+      "aLat": 40.50152439907453,
+      "bLon": 25.528940856456757,
+      "bLat": 40.50146729245133,
+      "distancePx": 88.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-400",
+      "source": "auto-gap",
+      "aLon": 25.53050994873047,
+      "aLat": 40.500098758474714,
+      "bLon": 25.53050860762596,
+      "bLat": 40.500096718909944,
+      "distancePx": 2.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-401",
+      "source": "auto-gap",
+      "aLon": 25.53162708878517,
+      "aLat": 40.499654131889386,
+      "bLon": 25.531620383262634,
+      "bLat": 40.49965107252194,
+      "distancePx": 5.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-402",
+      "source": "auto-gap",
+      "aLon": 25.529661029577255,
+      "aLat": 40.50166614566132,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50153255715959,
+      "distancePx": 131.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-403",
+      "source": "auto-gap",
+      "aLon": 25.53050860762596,
+      "aLat": 40.50061374659316,
+      "bLon": 25.53050994873047,
+      "bLat": 40.50061068726948,
+      "distancePx": 3.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-404",
+      "source": "auto-gap",
+      "aLon": 25.530637353658676,
+      "aLat": 40.4996204788398,
+      "bLon": 25.530638694763184,
+      "bLat": 40.499617419470816,
+      "distancePx": 3.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-405",
+      "source": "auto-gap",
+      "aLon": 25.529659688472748,
+      "aLat": 40.50098290396021,
+      "bLon": 25.52966371178627,
+      "bLat": 40.50097168650108,
+      "distancePx": 11.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-406",
+      "source": "auto-gap",
+      "aLon": 25.531267672777176,
+      "aLat": 40.499657191256695,
+      "bLon": 25.531447380781174,
+      "bLat": 40.4996551516785,
+      "distancePx": 134.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-407",
+      "source": "auto-gap",
+      "aLon": 25.52994266152382,
+      "aLat": 40.50167124445382,
+      "bLon": 25.530035197734833,
+      "bLat": 40.50156213020962,
+      "distancePx": 127.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-408",
+      "source": "auto-gap",
+      "aLon": 25.52994132041931,
+      "aLat": 40.49977344711098,
+      "bLon": 25.529799163341522,
+      "bLat": 40.499720418149806,
+      "distancePx": 118.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-409",
+      "source": "auto-gap",
+      "aLon": 25.529817938804626,
+      "aLat": 40.50022623114943,
+      "bLon": 25.5299212038517,
+      "bLat": 40.500237448733216,
+      "distancePx": 77.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-410",
+      "source": "auto-gap",
+      "aLon": 25.529817938804626,
+      "aLat": 40.499720418149806,
+      "bLon": 25.529799163341522,
+      "bLat": 40.499720418149806,
+      "distancePx": 14.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-411",
+      "source": "auto-gap",
+      "aLon": 25.530284643173218,
+      "aLat": 40.501158303986216,
+      "bLon": 25.530269891023636,
+      "bLat": 40.5010267540097,
+      "distancePx": 129.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-412",
+      "source": "auto-gap",
+      "aLon": 25.53025782108307,
+      "aLat": 40.500993101648696,
+      "bLon": 25.53026184439659,
+      "bLat": 40.50088296653099,
+      "distancePx": 108.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-413",
+      "source": "auto-gap",
+      "aLon": 25.529776364564896,
+      "aLat": 40.501223568995094,
+      "bLon": 25.52981123328209,
+      "bLat": 40.50116442258349,
+      "distancePx": 63.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-auto-gap-414",
+      "source": "auto-gap",
+      "aLon": 25.530279278755188,
+      "aLat": 40.50112975052486,
+      "bLon": 25.530264526605606,
+      "bLat": 40.50118175860609,
+      "distancePx": 52.2,
+      "elevationM": 35.0
+    },
+    {
+      "connectionId": "restored-auto-gap-415",
+      "source": "auto-gap",
+      "aLon": 25.53000971674919,
+      "aLat": 40.501682461795966,
+      "bLon": 25.5300110578537,
+      "bLat": 40.50157436732995,
+      "distancePx": 106.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-416",
+      "source": "stream-guided",
+      "aLon": 25.53035169839859,
+      "aLat": 40.49999779994444,
+      "bLon": 25.53057834506035,
+      "bLat": 40.49981219901765,
+      "distancePx": 248.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-417",
+      "source": "stream-guided",
+      "aLon": 25.530375838279724,
+      "aLat": 40.4999835229683,
+      "bLon": 25.530622601509094,
+      "bLat": 40.49982341667065,
+      "distancePx": 241.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-418",
+      "source": "stream-guided",
+      "aLon": 25.529666393995285,
+      "aLat": 40.50158660444806,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50139284981595,
+      "distancePx": 190.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-419",
+      "source": "stream-guided",
+      "aLon": 25.530043244361877,
+      "aLat": 40.50002941323794,
+      "bLon": 25.530350357294083,
+      "bLat": 40.50001309670122,
+      "distancePx": 229.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-420",
+      "source": "stream-guided",
+      "aLon": 25.52961140871048,
+      "aLat": 40.50151216194509,
+      "bLon": 25.529750883579254,
+      "bLat": 40.50138571147671,
+      "distancePx": 161.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-421",
+      "source": "stream-guided",
+      "aLon": 25.52956312894821,
+      "aLat": 40.50163555289815,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50139284981595,
+      "distancePx": 253.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-422",
+      "source": "stream-guided",
+      "aLon": 25.529683828353882,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529917180538177,
+      "bLat": 40.501078762170785,
+      "distancePx": 225.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-423",
+      "source": "stream-guided",
+      "aLon": 25.53049921989441,
+      "aLat": 40.501399988154425,
+      "bLon": 25.530177354812622,
+      "bLat": 40.50148666791822,
+      "distancePx": 254.6,
+      "elevationM": 25.0
+    },
+    {
+      "connectionId": "restored-stream-guided-424",
+      "source": "stream-guided",
+      "aLon": 25.529918521642685,
+      "aLat": 40.50111343425578,
+      "bLon": 25.52975222468376,
+      "bLat": 40.50122458876036,
+      "distancePx": 165.1,
+      "elevationM": 30.0
+    },
+    {
+      "connectionId": "restored-stream-guided-425",
+      "source": "stream-guided",
+      "aLon": 25.529703944921494,
+      "aLat": 40.50144791697884,
+      "bLon": 25.529812574386597,
+      "bLat": 40.50120623298331,
+      "distancePx": 250.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-426",
+      "source": "stream-guided",
+      "aLon": 25.529607385396957,
+      "aLat": 40.50155703140882,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50139284981595,
+      "distancePx": 169.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-427",
+      "source": "stream-guided",
+      "aLon": 25.529776364564896,
+      "aLat": 40.50137347432196,
+      "bLon": 25.52981123328209,
+      "bLat": 40.501190936498595,
+      "distancePx": 180.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-428",
+      "source": "stream-guided",
+      "aLon": 25.52981123328209,
+      "aLat": 40.501190936498595,
+      "bLon": 25.52974283695221,
+      "bLat": 40.501397948629226,
+      "distancePx": 209.3,
+      "elevationM": 25.0
+    },
+    {
+      "connectionId": "restored-stream-guided-429",
+      "source": "stream-guided",
+      "aLon": 25.53008884191513,
+      "aLat": 40.500038591288096,
+      "bLon": 25.53035169839859,
+      "bLat": 40.499988621888704,
+      "distancePx": 202.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-430",
+      "source": "stream-guided",
+      "aLon": 25.529860854148865,
+      "aLat": 40.50061884546566,
+      "bLon": 25.529848784208298,
+      "bLat": 40.50047607688926,
+      "distancePx": 140.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-431",
+      "source": "stream-guided",
+      "aLon": 25.530233681201935,
+      "aLat": 40.501528478117194,
+      "bLon": 25.53049921989441,
+      "bLat": 40.501399988154425,
+      "distancePx": 234.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-432",
+      "source": "stream-guided",
+      "aLon": 25.529683828353882,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529918521642685,
+      "bLat": 40.50111343425578,
+      "distancePx": 206.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-433",
+      "source": "stream-guided",
+      "aLon": 25.52967444062233,
+      "aLat": 40.501583545168735,
+      "bLon": 25.529565811157227,
+      "bLat": 40.501366335980656,
+      "distancePx": 227.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-434",
+      "source": "stream-guided",
+      "aLon": 25.530725866556168,
+      "aLat": 40.501175640010395,
+      "bLon": 25.53085595369339,
+      "bLat": 40.501035931923404,
+      "distancePx": 167.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-435",
+      "source": "stream-guided",
+      "aLon": 25.529683828353882,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529914498329163,
+      "bLat": 40.50115422492105,
+      "distancePx": 185.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-436",
+      "source": "stream-guided",
+      "aLon": 25.531425923109055,
+      "aLat": 40.500351664024926,
+      "bLon": 25.531557351350784,
+      "bLat": 40.50013852997522,
+      "distancePx": 230.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-437",
+      "source": "stream-guided",
+      "aLon": 25.529772341251373,
+      "aLat": 40.50137041503292,
+      "bLon": 25.52981123328209,
+      "bLat": 40.501190936498595,
+      "distancePx": 178.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-438",
+      "source": "stream-guided",
+      "aLon": 25.531471520662308,
+      "aLat": 40.50019767729135,
+      "bLon": 25.531661957502365,
+      "bLat": 40.500176261889806,
+      "distancePx": 143.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-439",
+      "source": "stream-guided",
+      "aLon": 25.53008884191513,
+      "aLat": 40.500038591288096,
+      "bLon": 25.530349016189575,
+      "bLat": 40.50001105713385,
+      "distancePx": 195.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-440",
+      "source": "stream-guided",
+      "aLon": 25.53131192922592,
+      "aLat": 40.50034860468929,
+      "bLon": 25.531541258096695,
+      "bLat": 40.50028129927,
+      "distancePx": 183.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-441",
+      "source": "stream-guided",
+      "aLon": 25.529772341251373,
+      "aLat": 40.50137041503292,
+      "bLon": 25.52981123328209,
+      "bLat": 40.50116442258349,
+      "distancePx": 204.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-442",
+      "source": "stream-guided",
+      "aLon": 25.529703944921494,
+      "aLat": 40.50144791697884,
+      "bLon": 25.529835373163223,
+      "bLat": 40.50134492095219,
+      "distancePx": 140.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-443",
+      "source": "stream-guided",
+      "aLon": 25.530563592910767,
+      "aLat": 40.499937632667276,
+      "bLon": 25.530633330345154,
+      "bLat": 40.49977344711098,
+      "distancePx": 169.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-444",
+      "source": "stream-guided",
+      "aLon": 25.530375838279724,
+      "aLat": 40.4999835229683,
+      "bLon": 25.530586391687393,
+      "bLat": 40.499778546047345,
+      "distancePx": 255.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-445",
+      "source": "stream-guided",
+      "aLon": 25.52967444062233,
+      "aLat": 40.501583545168735,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50139284981595,
+      "distancePx": 187.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-446",
+      "source": "stream-guided",
+      "aLon": 25.53038790822029,
+      "aLat": 40.49999168124075,
+      "bLon": 25.53057834506035,
+      "bLat": 40.49981219901765,
+      "distancePx": 226.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-447",
+      "source": "stream-guided",
+      "aLon": 25.531429946422577,
+      "aLat": 40.50041285070835,
+      "bLon": 25.531541258096695,
+      "bLat": 40.50028129927,
+      "distancePx": 153.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-448",
+      "source": "stream-guided",
+      "aLon": 25.530741959810257,
+      "aLat": 40.50115932375247,
+      "bLon": 25.53085595369339,
+      "bLat": 40.501035931923404,
+      "distancePx": 147.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-449",
+      "source": "stream-guided",
+      "aLon": 25.53083047270775,
+      "aLat": 40.50065759688397,
+      "bLon": 25.53105041384697,
+      "bLat": 40.5006494386925,
+      "distancePx": 164.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-450",
+      "source": "stream-guided",
+      "aLon": 25.529776364564896,
+      "aLat": 40.50137347432196,
+      "bLon": 25.529809892177582,
+      "bLat": 40.50113179005822,
+      "distancePx": 238.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-451",
+      "source": "stream-guided",
+      "aLon": 25.52956312894821,
+      "aLat": 40.501560090689345,
+      "bLon": 25.529750883579254,
+      "bLat": 40.50138571147671,
+      "distancePx": 221.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-452",
+      "source": "stream-guided",
+      "aLon": 25.529682487249374,
+      "aLat": 40.50153663620175,
+      "bLon": 25.529750883579254,
+      "bLat": 40.50138571147671,
+      "distancePx": 156.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-453",
+      "source": "stream-guided",
+      "aLon": 25.53057700395584,
+      "aLat": 40.499792823067104,
+      "bLon": 25.530638694763184,
+      "bLat": 40.499617419470816,
+      "distancePx": 178.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-454",
+      "source": "stream-guided",
+      "aLon": 25.530233681201935,
+      "aLat": 40.501528478117194,
+      "bLon": 25.53037315607071,
+      "bLat": 40.501334723317186,
+      "distancePx": 216.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-455",
+      "source": "stream-guided",
+      "aLon": 25.529671758413315,
+      "aLat": 40.50167124445382,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 187.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-456",
+      "source": "stream-guided",
+      "aLon": 25.52997350692749,
+      "aLat": 40.50162943434384,
+      "bLon": 25.53013578057289,
+      "bLat": 40.50151420146681,
+      "distancePx": 165.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-457",
+      "source": "stream-guided",
+      "aLon": 25.529610067605972,
+      "aLat": 40.50155907092919,
+      "bLon": 25.529750883579254,
+      "bLat": 40.50138571147671,
+      "distancePx": 199.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-458",
+      "source": "stream-guided",
+      "aLon": 25.530095547437668,
+      "aLat": 40.500072244127935,
+      "bLon": 25.53035169839859,
+      "bLat": 40.499988621888704,
+      "distancePx": 207.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-459",
+      "source": "stream-guided",
+      "aLon": 25.530375838279724,
+      "aLat": 40.49999270102474,
+      "bLon": 25.530564934015274,
+      "bLat": 40.49981219901765,
+      "distancePx": 226.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-460",
+      "source": "stream-guided",
+      "aLon": 25.53064540028572,
+      "aLat": 40.499742853484655,
+      "bLon": 25.530501902103424,
+      "bLat": 40.49996516685166,
+      "distancePx": 242.8,
+      "elevationM": 40.0
+    },
+    {
+      "connectionId": "restored-stream-guided-461",
+      "source": "stream-guided",
+      "aLon": 25.53008884191513,
+      "aLat": 40.500038591288096,
+      "bLon": 25.530350357294083,
+      "bLat": 40.50001309670122,
+      "distancePx": 196.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-462",
+      "source": "stream-guided",
+      "aLon": 25.529812574386597,
+      "aLat": 40.50120623298331,
+      "bLon": 25.52974283695221,
+      "bLat": 40.501397948629226,
+      "distancePx": 195.1,
+      "elevationM": 25.0
+    },
+    {
+      "connectionId": "restored-stream-guided-463",
+      "source": "stream-guided",
+      "aLon": 25.53081303834915,
+      "aLat": 40.50085645249417,
+      "bLon": 25.531022250652313,
+      "bLat": 40.50066473530069,
+      "distancePx": 244.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-464",
+      "source": "stream-guided",
+      "aLon": 25.530563592910767,
+      "aLat": 40.499937632667276,
+      "bLon": 25.530586391687393,
+      "bLat": 40.499778546047345,
+      "distancePx": 156.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-465",
+      "source": "stream-guided",
+      "aLon": 25.530564934015274,
+      "aLat": 40.49981219901765,
+      "bLon": 25.530501902103424,
+      "bLat": 40.49996516685166,
+      "distancePx": 157.2,
+      "elevationM": 40.0
+    },
+    {
+      "connectionId": "restored-stream-guided-466",
+      "source": "stream-guided",
+      "aLon": 25.530095547437668,
+      "aLat": 40.500072244127935,
+      "bLon": 25.530349016189575,
+      "bLat": 40.50001105713385,
+      "distancePx": 198.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-467",
+      "source": "stream-guided",
+      "aLon": 25.529776364564896,
+      "aLat": 40.501223568995094,
+      "bLon": 25.529917180538177,
+      "bLat": 40.501078762170785,
+      "distancePx": 176.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-468",
+      "source": "stream-guided",
+      "aLon": 25.530563592910767,
+      "aLat": 40.499937632667276,
+      "bLon": 25.53064540028572,
+      "bLat": 40.499742853484655,
+      "distancePx": 200.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-469",
+      "source": "stream-guided",
+      "aLon": 25.529772341251373,
+      "aLat": 40.50137041503292,
+      "bLon": 25.529809892177582,
+      "bLat": 40.50113179005822,
+      "distancePx": 235.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-470",
+      "source": "stream-guided",
+      "aLon": 25.53020015358925,
+      "aLat": 40.500094679345125,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 240.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-471",
+      "source": "stream-guided",
+      "aLon": 25.53141251206398,
+      "aLat": 40.50044344402913,
+      "bLon": 25.531541258096695,
+      "bLat": 40.50028129927,
+      "distancePx": 185.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-472",
+      "source": "stream-guided",
+      "aLon": 25.52958995103836,
+      "aLat": 40.50166818517836,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 198.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-473",
+      "source": "stream-guided",
+      "aLon": 25.529597997665405,
+      "aLat": 40.50158966372723,
+      "bLon": 25.529750883579254,
+      "bLat": 40.50138571147671,
+      "distancePx": 230.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-474",
+      "source": "stream-guided",
+      "aLon": 25.53037315607071,
+      "aLat": 40.49995292943777,
+      "bLon": 25.53057834506035,
+      "bLat": 40.49981219901765,
+      "distancePx": 206.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-475",
+      "source": "stream-guided",
+      "aLon": 25.529776364564896,
+      "aLat": 40.501223568995094,
+      "bLon": 25.529918521642685,
+      "bLat": 40.50111343425578,
+      "distancePx": 151.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-476",
+      "source": "stream-guided",
+      "aLon": 25.52994266152382,
+      "aLat": 40.50167124445382,
+      "bLon": 25.530086159706116,
+      "bLat": 40.50153765596226,
+      "distancePx": 169.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-477",
+      "source": "stream-guided",
+      "aLon": 25.529607385396957,
+      "aLat": 40.50155703140882,
+      "bLon": 25.529750883579254,
+      "bLat": 40.50138571147671,
+      "distancePx": 199.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-478",
+      "source": "stream-guided",
+      "aLon": 25.531425923109055,
+      "aLat": 40.500351664024926,
+      "bLon": 25.531661957502365,
+      "bLat": 40.500176261889806,
+      "distancePx": 246.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-479",
+      "source": "stream-guided",
+      "aLon": 25.53038790822029,
+      "aLat": 40.49999168124075,
+      "bLon": 25.530622601509094,
+      "bLat": 40.49982341667065,
+      "distancePx": 240.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-480",
+      "source": "stream-guided",
+      "aLon": 25.52994266152382,
+      "aLat": 40.50167124445382,
+      "bLon": 25.53013578057289,
+      "bLat": 40.50151420146681,
+      "distancePx": 210.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-481",
+      "source": "stream-guided",
+      "aLon": 25.53019478917122,
+      "aLat": 40.50009365956268,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 242.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-482",
+      "source": "stream-guided",
+      "aLon": 25.52994266152382,
+      "aLat": 40.50167124445382,
+      "bLon": 25.530123710632324,
+      "bLat": 40.5015764068498,
+      "distancePx": 163.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-483",
+      "source": "stream-guided",
+      "aLon": 25.530375838279724,
+      "aLat": 40.4999835229683,
+      "bLon": 25.530564934015274,
+      "bLat": 40.49981219901765,
+      "distancePx": 219.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-484",
+      "source": "stream-guided",
+      "aLon": 25.530631989240646,
+      "aLat": 40.49977650647285,
+      "bLon": 25.530638694763184,
+      "bLat": 40.499617419470816,
+      "distancePx": 156.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-485",
+      "source": "stream-guided",
+      "aLon": 25.529666393995285,
+      "aLat": 40.50158660444806,
+      "bLon": 25.529750883579254,
+      "bLat": 40.50138571147671,
+      "distancePx": 206.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-486",
+      "source": "stream-guided",
+      "aLon": 25.531510412693024,
+      "aLat": 40.50033126845138,
+      "bLon": 25.531557351350784,
+      "bLat": 40.50013852997522,
+      "distancePx": 192.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-487",
+      "source": "stream-guided",
+      "aLon": 25.531429946422577,
+      "aLat": 40.50041285070835,
+      "bLon": 25.53147554397583,
+      "bLat": 40.50019563772959,
+      "distancePx": 215.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-488",
+      "source": "stream-guided",
+      "aLon": 25.530563592910767,
+      "aLat": 40.499937632667276,
+      "bLon": 25.530621260404587,
+      "bLat": 40.49970410153794,
+      "distancePx": 233.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-489",
+      "source": "stream-guided",
+      "aLon": 25.53131192922592,
+      "aLat": 40.50034860468929,
+      "bLon": 25.531503707170486,
+      "bLat": 40.50027925971078,
+      "distancePx": 158.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-490",
+      "source": "stream-guided",
+      "aLon": 25.52956312894821,
+      "aLat": 40.50163555289815,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 178.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-491",
+      "source": "stream-guided",
+      "aLon": 25.530095547437668,
+      "aLat": 40.500072244127935,
+      "bLon": 25.530350357294083,
+      "bLat": 40.50001309670122,
+      "distancePx": 198.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-492",
+      "source": "stream-guided",
+      "aLon": 25.53072988986969,
+      "aLat": 40.50123784570733,
+      "bLon": 25.53085595369339,
+      "bLat": 40.501035931923404,
+      "distancePx": 219.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-493",
+      "source": "stream-guided",
+      "aLon": 25.529860854148865,
+      "aLat": 40.50061884546566,
+      "bLon": 25.52989035844803,
+      "bLat": 40.500394494709184,
+      "distancePx": 221.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-494",
+      "source": "stream-guided",
+      "aLon": 25.530029833316803,
+      "aLat": 40.50165594807514,
+      "bLon": 25.53013578057289,
+      "bLat": 40.50151420146681,
+      "distancePx": 159.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-495",
+      "source": "stream-guided",
+      "aLon": 25.529776364564896,
+      "aLat": 40.50137347432196,
+      "bLon": 25.529812574386597,
+      "bLat": 40.50120623298331,
+      "distancePx": 166.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-496",
+      "source": "stream-guided",
+      "aLon": 25.531083941459656,
+      "aLat": 40.50061578614221,
+      "bLon": 25.531156361103058,
+      "bLat": 40.50042100892859,
+      "distancePx": 198.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-497",
+      "source": "stream-guided",
+      "aLon": 25.530177354812622,
+      "aLat": 40.50155397212816,
+      "bLon": 25.53037315607071,
+      "bLat": 40.501334723317186,
+      "distancePx": 259.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-498",
+      "source": "stream-guided",
+      "aLon": 25.530177354812622,
+      "aLat": 40.50008754086774,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 249.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-499",
+      "source": "stream-guided",
+      "aLon": 25.530375838279724,
+      "aLat": 40.49999270102474,
+      "bLon": 25.53057834506035,
+      "bLat": 40.49981219901765,
+      "distancePx": 232.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-500",
+      "source": "stream-guided",
+      "aLon": 25.530176013708115,
+      "aLat": 40.50000085929607,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 212.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-501",
+      "source": "stream-guided",
+      "aLon": 25.530586391687393,
+      "aLat": 40.499778546047345,
+      "bLon": 25.530501902103424,
+      "bLat": 40.49996516685166,
+      "distancePx": 193.5,
+      "elevationM": 40.0
+    },
+    {
+      "connectionId": "restored-stream-guided-502",
+      "source": "stream-guided",
+      "aLon": 25.529772341251373,
+      "aLat": 40.50137041503292,
+      "bLon": 25.529812574386597,
+      "bLat": 40.50120623298331,
+      "distancePx": 163.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-503",
+      "source": "stream-guided",
+      "aLon": 25.53038790822029,
+      "aLat": 40.49999168124075,
+      "bLon": 25.530586391687393,
+      "bLat": 40.499778546047345,
+      "distancePx": 256.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-504",
+      "source": "stream-guided",
+      "aLon": 25.53000971674919,
+      "aLat": 40.501682461795966,
+      "bLon": 25.53013578057289,
+      "bLat": 40.50151420146681,
+      "distancePx": 189.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-505",
+      "source": "stream-guided",
+      "aLon": 25.53020015358925,
+      "aLat": 40.500094679345125,
+      "bLon": 25.530118346214294,
+      "bLat": 40.49989888083308,
+      "distancePx": 201.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-506",
+      "source": "stream-guided",
+      "aLon": 25.530563592910767,
+      "aLat": 40.49981423859106,
+      "bLon": 25.530638694763184,
+      "bLat": 40.499617419470816,
+      "distancePx": 201.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-507",
+      "source": "stream-guided",
+      "aLon": 25.52967444062233,
+      "aLat": 40.501583545168735,
+      "bLon": 25.529750883579254,
+      "bLat": 40.50138571147671,
+      "distancePx": 202.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-508",
+      "source": "stream-guided",
+      "aLon": 25.53035169839859,
+      "aLat": 40.49999779994444,
+      "bLon": 25.530564934015274,
+      "bLat": 40.49981219901765,
+      "distancePx": 241.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-509",
+      "source": "stream-guided",
+      "aLon": 25.531467497348785,
+      "aLat": 40.50029965530013,
+      "bLon": 25.531661957502365,
+      "bLat": 40.500176261889806,
+      "distancePx": 188.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-510",
+      "source": "stream-guided",
+      "aLon": 25.531429946422577,
+      "aLat": 40.50041285070835,
+      "bLon": 25.531503707170486,
+      "bLat": 40.50027925971078,
+      "distancePx": 142.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-511",
+      "source": "stream-guided",
+      "aLon": 25.530045926570892,
+      "aLat": 40.50054542166431,
+      "bLon": 25.529795140028,
+      "bLat": 40.50047607688926,
+      "distancePx": 199.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-512",
+      "source": "stream-guided",
+      "aLon": 25.529661029577255,
+      "aLat": 40.50166614566132,
+      "bLon": 25.529687851667404,
+      "bLat": 40.50148054935033,
+      "distancePx": 183.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-513",
+      "source": "stream-guided",
+      "aLon": 25.52958995103836,
+      "aLat": 40.50166818517836,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50153255715959,
+      "distancePx": 148.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-514",
+      "source": "stream-guided",
+      "aLon": 25.52956312894821,
+      "aLat": 40.501560090689345,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50139284981595,
+      "distancePx": 185.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-515",
+      "source": "stream-guided",
+      "aLon": 25.530375838279724,
+      "aLat": 40.4999835229683,
+      "bLon": 25.53057834506035,
+      "bLat": 40.49981219901765,
+      "distancePx": 225.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-516",
+      "source": "stream-guided",
+      "aLon": 25.529682487249374,
+      "aLat": 40.50153663620175,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50139284981595,
+      "distancePx": 141.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-517",
+      "source": "stream-guided",
+      "aLon": 25.53000971674919,
+      "aLat": 40.501682461795966,
+      "bLon": 25.530086159706116,
+      "bLat": 40.50153765596226,
+      "distancePx": 153.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-518",
+      "source": "stream-guided",
+      "aLon": 25.53019478917122,
+      "aLat": 40.50009365956268,
+      "bLon": 25.530118346214294,
+      "bLat": 40.49989888083308,
+      "distancePx": 199.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-519",
+      "source": "stream-guided",
+      "aLon": 25.53037315607071,
+      "aLat": 40.49995292943777,
+      "bLon": 25.530622601509094,
+      "bLat": 40.49982341667065,
+      "distancePx": 225.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-520",
+      "source": "stream-guided",
+      "aLon": 25.52969992160797,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529913157224655,
+      "bLat": 40.50120317368664,
+      "distancePx": 160.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-521",
+      "source": "stream-guided",
+      "aLon": 25.53020551800728,
+      "aLat": 40.50009569912754,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 237.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-522",
+      "source": "stream-guided",
+      "aLon": 25.530622601509094,
+      "aLat": 40.49982341667065,
+      "bLon": 25.530501902103424,
+      "bLat": 40.49996516685166,
+      "distancePx": 165.6,
+      "elevationM": 40.0
+    },
+    {
+      "connectionId": "restored-stream-guided-523",
+      "source": "stream-guided",
+      "aLon": 25.529917180538177,
+      "aLat": 40.501078762170785,
+      "bLon": 25.52972674369812,
+      "bLat": 40.50106040635384,
+      "distancePx": 143.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-524",
+      "source": "stream-guided",
+      "aLon": 25.529917180538177,
+      "aLat": 40.501078762170785,
+      "bLon": 25.52975222468376,
+      "bLat": 40.50122458876036,
+      "distancePx": 188.6,
+      "elevationM": 30.0
+    },
+    {
+      "connectionId": "restored-stream-guided-525",
+      "source": "stream-guided",
+      "aLon": 25.530043244361877,
+      "aLat": 40.50002941323794,
+      "bLon": 25.53035169839859,
+      "bLat": 40.499988621888704,
+      "distancePx": 233.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-526",
+      "source": "stream-guided",
+      "aLon": 25.530344992876053,
+      "aLat": 40.500014116484884,
+      "bLon": 25.530564934015274,
+      "bLat": 40.49981219901765,
+      "distancePx": 257.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-527",
+      "source": "stream-guided",
+      "aLon": 25.529614090919495,
+      "aLat": 40.50151420146681,
+      "bLon": 25.529835373163223,
+      "bLat": 40.50134492095219,
+      "distancePx": 234.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-528",
+      "source": "stream-guided",
+      "aLon": 25.530889481306076,
+      "aLat": 40.50091457940735,
+      "bLon": 25.53087204694748,
+      "bLat": 40.500688190093136,
+      "distancePx": 222.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-529",
+      "source": "stream-guided",
+      "aLon": 25.53141251206398,
+      "aLat": 40.50044344402913,
+      "bLon": 25.53147554397583,
+      "bLat": 40.50019563772959,
+      "distancePx": 247.5,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-530",
+      "source": "stream-guided",
+      "aLon": 25.530489832162857,
+      "aLat": 40.499931513958096,
+      "bLon": 25.530622601509094,
+      "bLat": 40.49982341667065,
+      "distancePx": 145.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-531",
+      "source": "stream-guided",
+      "aLon": 25.529610067605972,
+      "aLat": 40.50155907092919,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50139284981595,
+      "distancePx": 170.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-532",
+      "source": "stream-guided",
+      "aLon": 25.53018942475319,
+      "aLat": 40.50009060021529,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 244.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-533",
+      "source": "stream-guided",
+      "aLon": 25.52963688969612,
+      "aLat": 40.5014387391215,
+      "bLon": 25.529835373163223,
+      "bLat": 40.50134492095219,
+      "distancePx": 174.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-534",
+      "source": "stream-guided",
+      "aLon": 25.529614090919495,
+      "aLat": 40.50151420146681,
+      "bLon": 25.529750883579254,
+      "bLat": 40.50138571147671,
+      "distancePx": 162.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-535",
+      "source": "stream-guided",
+      "aLon": 25.530043244361877,
+      "aLat": 40.50002941323794,
+      "bLon": 25.530349016189575,
+      "bLat": 40.50001105713385,
+      "distancePx": 228.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-536",
+      "source": "stream-guided",
+      "aLon": 25.53081303834915,
+      "aLat": 40.50085645249417,
+      "bLon": 25.530994087457657,
+      "bLat": 40.50066983416931,
+      "distancePx": 227.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-537",
+      "source": "stream-guided",
+      "aLon": 25.52969992160797,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529918521642685,
+      "bLat": 40.50111343425578,
+      "distancePx": 196.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-538",
+      "source": "stream-guided",
+      "aLon": 25.53018406033516,
+      "aLat": 40.500089580432785,
+      "bLon": 25.530449599027634,
+      "bLat": 40.49993967223687,
+      "distancePx": 246.6,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-539",
+      "source": "stream-guided",
+      "aLon": 25.531510412693024,
+      "aLat": 40.50033126845138,
+      "bLon": 25.531661957502365,
+      "bLat": 40.500176261889806,
+      "distancePx": 189.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-540",
+      "source": "stream-guided",
+      "aLon": 25.53020551800728,
+      "aLat": 40.50009569912754,
+      "bLon": 25.530118346214294,
+      "bLat": 40.49989888083308,
+      "distancePx": 203.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-541",
+      "source": "stream-guided",
+      "aLon": 25.52993729710579,
+      "aLat": 40.501670224695346,
+      "bLon": 25.530086159706116,
+      "bLat": 40.50153765596226,
+      "distancePx": 170.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-542",
+      "source": "stream-guided",
+      "aLon": 25.52969992160797,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529917180538177,
+      "bLat": 40.501078762170785,
+      "distancePx": 216.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-543",
+      "source": "stream-guided",
+      "aLon": 25.53038790822029,
+      "aLat": 40.49999168124075,
+      "bLon": 25.530564934015274,
+      "bLat": 40.49981219901765,
+      "distancePx": 220.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-544",
+      "source": "stream-guided",
+      "aLon": 25.529683828353882,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529913157224655,
+      "bLat": 40.50120317368664,
+      "distancePx": 172.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-545",
+      "source": "stream-guided",
+      "aLon": 25.53081303834915,
+      "aLat": 40.50085645249417,
+      "bLon": 25.530973970890045,
+      "bLat": 40.50067289349029,
+      "distancePx": 216.3,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-546",
+      "source": "stream-guided",
+      "aLon": 25.530375838279724,
+      "aLat": 40.49999270102474,
+      "bLon": 25.530622601509094,
+      "bLat": 40.49982341667065,
+      "distancePx": 247.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-547",
+      "source": "stream-guided",
+      "aLon": 25.530633330345154,
+      "aLat": 40.49977344711098,
+      "bLon": 25.530501902103424,
+      "bLat": 40.49996516685166,
+      "distancePx": 212.0,
+      "elevationM": 40.0
+    },
+    {
+      "connectionId": "restored-stream-guided-548",
+      "source": "stream-guided",
+      "aLon": 25.52993729710579,
+      "aLat": 40.501670224695346,
+      "bLon": 25.53013578057289,
+      "bLat": 40.50151420146681,
+      "distancePx": 212.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-549",
+      "source": "stream-guided",
+      "aLon": 25.53057834506035,
+      "aLat": 40.49981219901765,
+      "bLon": 25.530501902103424,
+      "bLat": 40.49996516685166,
+      "distancePx": 160.5,
+      "elevationM": 40.0
+    },
+    {
+      "connectionId": "restored-stream-guided-550",
+      "source": "stream-guided",
+      "aLon": 25.529597997665405,
+      "aLat": 40.50158966372723,
+      "bLon": 25.529678463935852,
+      "bLat": 40.50139284981595,
+      "distancePx": 202.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-551",
+      "source": "stream-guided",
+      "aLon": 25.52993729710579,
+      "aLat": 40.501670224695346,
+      "bLon": 25.530123710632324,
+      "bLat": 40.5015764068498,
+      "distancePx": 166.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-552",
+      "source": "stream-guided",
+      "aLon": 25.530585050582886,
+      "aLat": 40.49978262519616,
+      "bLon": 25.530638694763184,
+      "bLat": 40.499617419470816,
+      "distancePx": 166.9,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-553",
+      "source": "stream-guided",
+      "aLon": 25.529666393995285,
+      "aLat": 40.50158660444806,
+      "bLon": 25.529565811157227,
+      "bLat": 40.501366335980656,
+      "distancePx": 228.7,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-554",
+      "source": "stream-guided",
+      "aLon": 25.53141251206398,
+      "aLat": 40.50044344402913,
+      "bLon": 25.531503707170486,
+      "bLat": 40.50027925971078,
+      "distancePx": 174.8,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-555",
+      "source": "stream-guided",
+      "aLon": 25.531425923109055,
+      "aLat": 40.500351664024926,
+      "bLon": 25.53147554397583,
+      "bLat": 40.50019563772959,
+      "distancePx": 157.4,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-556",
+      "source": "stream-guided",
+      "aLon": 25.52961140871048,
+      "aLat": 40.50151216194509,
+      "bLon": 25.529835373163223,
+      "bLat": 40.50134492095219,
+      "distancePx": 234.1,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-557",
+      "source": "stream-guided",
+      "aLon": 25.531083941459656,
+      "aLat": 40.50061578614221,
+      "bLon": 25.531240850687027,
+      "bLat": 40.50042100892859,
+      "distancePx": 224.0,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-558",
+      "source": "stream-guided",
+      "aLon": 25.52969992160797,
+      "aLat": 40.50122458876036,
+      "bLon": 25.529914498329163,
+      "bLat": 40.50115422492105,
+      "distancePx": 174.2,
+      "elevationM": null
+    },
+    {
+      "connectionId": "restored-stream-guided-559",
+      "source": "stream-guided",
+      "aLon": 25.529776364564896,
+      "aLat": 40.50137347432196,
+      "bLon": 25.52981123328209,
+      "bLat": 40.50116442258349,
+      "distancePx": 206.6,
+      "elevationM": null
+    }
+  ]
+}

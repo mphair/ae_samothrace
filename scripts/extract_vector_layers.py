@@ -56,7 +56,21 @@ seen in isolation rather than only inferred from the final result:
    symbols) without needing any text-specific logic. See
    `.desk_temp` chat history / commit message for the prototyping that
    led here (classify_check.png through classify_check5.png in /tmp).
-4. CIRCLE-CHAIN EXCLUSION (new): "stretches of lines made of circles"
+4. BORDER/FRAME EXCLUSION (new): the plan's own thick solid border
+   rectangle and the lighter, irregularly dash-dot survey-boundary line
+   just outside it (what the border is actually trying to convey isn't
+   known and wasn't investigated further -- see "I don't want to dump
+   any more time into it" in the chat history -- it's excluded purely
+   because it isn't terrain, the same reason buildings are) are neither
+   one terrain, but both are thin enough to otherwise pass stage 2's
+   stroke-width filter. Distinguished from real contour linework (which
+   can run close alongside, even near-parallel, in places) by requiring
+   ALL of: unusually straight, parallel to the plan's own nearest
+   content edge, close to that edge (measured from the plan's own inked
+   extent, not the raster's blank-padded extent), and short (both border
+   lines come through fragment-tracing pre-broken into many short
+   pieces). See find_border_frame_fragments's own header comment.
+5. CIRCLE-CHAIN EXCLUSION (new): "stretches of lines made of circles"
    (confirmed by direct inspection -- a chain of touching/overlapping
    open rings, likely a stone-alignment or reinforcement convention,
    distinct from the solid filled dots inside mapped footprints that
@@ -65,7 +79,7 @@ seen in isolation rather than only inferred from the final result:
    small circle just as often) -- only a CLUSTER of several similarly
    -sized round fragments close together gets excluded. See
    find_circular_chain_fragments's own header comment.
-5. Elevation labels interrupt their contour line with a genuine gap (no
+6. Elevation labels interrupt their contour line with a genuine gap (no
    ink at all) rather than touching it -- so the label text ends up as
    its own small, isolated connected component in the *original* ink
    mask. For each such small isolated component, look for a pair of
@@ -94,7 +108,7 @@ seen in isolation rather than only inferred from the final result:
        human about (the overwhelming majority of label-shaped candidates
        are non-label symbols: tick marks, scree-pattern dots, ...);
        keeping this bucket silent is what keeps the review queue small.
-6. MINOR-CONTOUR BANDING (new): between two adjacent (5m-apart) labeled
+7. MINOR-CONTOUR BANDING (new): between two adjacent (5m-apart) labeled
    index contours there should be CONTOUR_INTERVAL_M - 1 = 4 unlabeled
    1m contours (confirmed by direct visual inspection -- a labeled
    index contour is visibly drawn bolder than the minor contours
@@ -108,9 +122,29 @@ seen in isolation rather than only inferred from the final result:
    this is a real heuristic over genuinely ambiguous terrain, not a
    solved problem -- expect a substantial share of groups to need
    human review, by design.
-7. Reproject pixel coordinates to lon/lat with the same Web Mercator
+8. GAP-CONNECTION SUGGESTIONS (new): "be greedier with extending
+   contours across gaps" -- rather than loosen the strict, already
+   -calibrated label-gap merge (stage 6) itself, this proposes
+   connections as their own separate, clearly-marked layer instead of
+   silently splicing geometry: suggest_auto_gap_connections finds
+   fragment-endpoint pairs across a gap too wide for stage 6's own
+   merge but still plausibly the same line (close, well-aligned), for
+   both plans; suggest_stream_guided_connections additionally uses the
+   ACTUAL plan's own extracted stream paths as a guide for the RESTORED
+   plan specifically -- the Restored plan's waterway was cleared,
+   bordered, and in places built over, interrupting contour lines that
+   the Actual plan's stream line shows still crossing there (see "use
+   the dashed blue lines in the actual state plan as a guide" in the
+   chat history). Every suggestion here is a PROPOSAL, never
+   auto-applied to the output geometry -- written to
+   `*.connections.suggested.json` for a human to accept, reject, or
+   draw their own via the ContourConnector widget (which also lets a
+   confirmed connection be visually distinguished, permanently, from a
+   real extracted contour fragment -- see that widget's own comment for
+   why connections are never merged into the base geometry at all).
+9. Reproject pixel coordinates to lon/lat with the same Web Mercator
    math every other widget/service in this project already uses.
-8. Write one GeoJSON FeatureCollection per plan/layer to
+10. Write one GeoJSON FeatureCollection per plan/layer to
    Data/mapFeatures/, 2D LineString geometries (not 3D/XYZ) with the
    elevation as a feature property -- this matches the real-world GIS
    convention (gdal_contour's own default output shape: 2D geometry +
@@ -136,11 +170,23 @@ verified survey-grade digitization)
   structure wall) is cut into separate features at each crossing,
   rather than reconstructed as one continuous line -- each piece is
   geometrically correct, just not merged across the crossing.
-- The long dash-dot *survey boundary* line around the whole plan is
-  thin enough to pass the stroke-width filter and can leak into the
-  contour output as a few extra features; it's visually distinctive
-  (runs along the plan's own border) and was not specifically filtered
-  out.
+- Structure exclusion (stage 1) skips feature FID 27 ("South
+  Nekropolis") entirely -- see STRUCTURE_EXCLUSION_SKIP_FIDS's own
+  comment. If a future Overlay.geojson revision turns out to have other
+  footprints that are similarly over-aggressive to exclude (stippled
+  /dotted boundary rather than a solid wall, genuine contours crossing
+  through), they'd need to be added to that same set by hand -- nothing
+  here detects that case automatically.
+- Border/frame exclusion (stage 4) is a calibrated heuristic, not a
+  geometric certainty -- it was tuned against both plans' real fragment
+  output to remove zero observed real contours while catching the large
+  majority of the border/survey-boundary frame, but a few short
+  border/dash remnants can still slip through here and there (they
+  didn't meet all four exclusion conditions), and in principle an
+  unusually straight, short, edge-hugging, axis-parallel real contour
+  fragment could be wrongly caught -- none were observed in either
+  plan's output at current tuning, but it's a heuristic over real
+  linework, not a proof.
 - Resolution is zoom-20 (~0.11 m/pixel); never re-reads the original
   CAD/GIS source (if one still exists outside this exported repo), so
   this can't be more accurate than that pixel grid allows.
@@ -153,7 +199,7 @@ verified survey-grade digitization)
   existing corrections for that plan. There's no automatic reconciliation
   for this yet; a re-run needs a manual recheck of existing
   *.corrections.json entries against the new output.
-- Minor-contour banding (stage 6) currently auto-accepts only a small
+- Minor-contour banding (stage 7) currently auto-accepts only a small
   minority of groups -- most real terrain here doesn't offer a clean
   "exactly 4 well-separated fragments" between two index contours
   (crossings/structures/gaps fragment what's really one 1m line into
@@ -162,6 +208,16 @@ verified survey-grade digitization)
   ~150+ per plan at current tuning), most of them small (1-3
   fragments) -- genuinely more review volume than the label-review
   queue ever produced, flagged here rather than hidden.
+- Gap-connection suggestions (stage 8) are exactly that -- suggestions,
+  both the generic auto-gap pass and the stream-guided one. Neither is
+  ever spliced into a plan's own *.geojson output; they live entirely in
+  *.connections.suggested.json (plus *.connections.confirmed.json once a
+  human has accepted/added some via the ContourConnector widget) as
+  their own, separately-rendered layer, deliberately never merged into
+  "real" extracted geometry -- a judgment call about where a line
+  probably continues is categorically different from what was actually
+  drawn on the source plan, and conflating the two would make it
+  impossible to later tell which is which.
 
 Usage:
     python3 scripts/extract_vector_layers.py
@@ -276,8 +332,25 @@ def lonlat_to_pixel(mosaic: Mosaic, lon: float, lat: float) -> tuple[float, floa
 # few pixels of the polygon boundary) and a useful cross-check on it.
 
 
+# Footprint FIDs to never rasterize into the structure-exclusion mask,
+# despite being real mapped buildings -- confirmed by direct inspection
+# (see "feature #27 is not well-served by removing the corresponding
+# building area" in the chat history): feature 27, "South Nekropolis",
+# is drawn as a light stippled/dotted outline rather than a solid wall,
+# and several genuine, continuous hillside contours run straight through
+# its footprint -- excluding that area was throwing away real contour
+# data for no good reason (unlike the solid-walled buildings elsewhere,
+# which really do sit on built-up/leveled ground that has no terrain
+# contours of its own to lose). Keyed by the Overlay.geojson feature's
+# own FID/id property (see its two different key names handled below --
+# the Actual and Restored Overlay files were exported with different
+# property schemas for the same underlying numbering).
+STRUCTURE_EXCLUSION_SKIP_FIDS = {27}
+
+
 def load_structure_polygons(plan: str) -> list[list[tuple[float, float]]]:
-    """Every building/monument footprint ring (lon, lat) for `plan`.
+    """Every building/monument footprint ring (lon, lat) for `plan`,
+    except any feature listed in STRUCTURE_EXCLUSION_SKIP_FIDS.
     MultiPolygon holes aren't modeled (every ring is treated as a solid
     fill) -- none of this project's monument footprints are annotated
     with one, so this is a simplification with no actual effect here,
@@ -289,6 +362,10 @@ def load_structure_polygons(plan: str) -> list[list[tuple[float, float]]]:
     data = json.loads(path.read_text())
     rings: list[list[tuple[float, float]]] = []
     for feature in data["features"]:
+        props = feature.get("properties") or {}
+        fid = props.get("FID", props.get("id"))  # Actual uses "FID", Restored uses "id" -- same numbering
+        if fid in STRUCTURE_EXCLUSION_SKIP_FIDS:
+            continue
         geom = feature["geometry"]
         polys = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
         for poly in polys:
@@ -432,6 +509,108 @@ def find_circular_chain_fragments(fragments: list[Fragment]) -> set[int]:
     for members in cluster_by_proximity(round_candidates, CIRCULARITY_CLUSTER_RADIUS_PX):
         if len(members) >= MIN_CHAIN_CLUSTER_SIZE:
             excluded.update(members)
+    return excluded
+
+
+# ── Border/frame-line exclusion ──
+# Two things run all the way around the plan, just inside its own tile
+# extent, confirmed by direct visual inspection of all four corners of
+# both plans (see the chat history around "please clear it out along
+# with the thick inner border"): a THICK SOLID rectangle enclosing the
+# whole drawn plan, and -- a bit further out, not perfectly concentric
+# with it (the plan's own padding differs per side; e.g. on the Actual
+# plan the solid border sits ~250px from the mosaic's left edge but only
+# ~30px from its top edge) -- a lighter, irregularly dash-dot "survey
+# boundary" line. Neither is terrain, and the module docstring already
+# flagged the dash-dot one as a known leak before this stage existed.
+# What makes these reliably distinguishable from real contour fragments,
+# even ones that run close alongside them (confirmed: real contours
+# approach to within ~15-20px in places): a border/frame fragment is
+# unusually STRAIGHT (contours visibly curve -- that's the same
+# "long smooth arcs" property stage 2's length filter leans on) AND runs
+# close to PARALLEL with whichever edge of the plan's own content it's
+# nearest to (a real contour near the edge can point any which way) AND
+# sits close to that content edge specifically (not just close to the
+# raw mosaic edge -- the mosaic has blank padding on some sides, so
+# measuring from the plan's own inked extent, not pixel (0,0)/(w,h), is
+# what correctly catches the ~250px-inset left border above) AND is
+# fairly short (both border lines come through fragment-tracing already
+# broken into many short, ~20-50px pieces -- by their own dash pattern
+# for the dash-dot line, by antialiasing dropouts along the solid one --
+# so a long straight run near the edge is more likely a real, if
+# unusually straight, contour than a border remnant). All four
+# conditions together, calibrated against both plans' actual fragment
+# output, catch the great majority of both lines with no observed false
+# positive against real contour linework (an earlier, looser version of
+# this check -- no length cap, no content-bbox correction -- did catch
+# one genuine ~300px contour fragment; narrowing to these four
+# conditions removed it).
+
+# How close (px) a fragment's centroid needs to be to the plan's own
+# inked-content bounding box edge (not the raw mosaic edge -- see this
+# section's header comment) to be considered for border exclusion at
+# all.
+BORDER_BAND_MARGIN_PX = 75.0
+# Chord-length / total-path-length ratio (1.0 = perfectly straight) a
+# fragment needs to meet or exceed.
+BORDER_STRAIGHTNESS_MIN = 0.85
+# How many degrees off perfectly parallel to its nearest content edge a
+# fragment's own chord direction is allowed to be.
+BORDER_ANGLE_TOLERANCE_DEG = 10.0
+# Longest a single fragment is allowed to be and still be considered
+# border/frame -- both border lines come through tracing pre-broken into
+# short pieces (see header comment); a long straight run this close to
+# the edge is far more likely a genuine (if straight) contour.
+BORDER_MAX_FRAGMENT_LEN_PX = 150.0
+
+
+def _fragment_straightness_and_angle(path: list[tuple[int, int]]) -> tuple[float, float, float]:
+    """Returns (straightness, angle_deg, total_path_length_px).
+    straightness is the endpoint-to-endpoint chord length divided by the
+    sum of the path's own segment lengths (1.0 = dead straight, lower =
+    curvier). angle_deg is the chord's own direction, 0..180 (a line and
+    its reverse are the same angle)."""
+    pts = np.array(path, dtype=float)
+    r0, c0 = pts[0]
+    r1, c1 = pts[-1]
+    chord = math.hypot(r1 - r0, c1 - c0)
+    seg_lengths = np.hypot(np.diff(pts[:, 0]), np.diff(pts[:, 1])).sum()
+    straightness = chord / seg_lengths if seg_lengths > 0 else 0.0
+    angle = math.degrees(math.atan2(r1 - r0, c1 - c0)) % 180
+    return straightness, angle, float(seg_lengths)
+
+
+def find_border_frame_fragments(fragments: list[Fragment], ink_mask: np.ndarray) -> set[int]:
+    """Returns the set of indices into `fragments` that look like part of
+    the plan's own border/survey-boundary frame rather than real
+    terrain contour linework -- see this section's own header comment
+    for the four-condition detection strategy."""
+    rows_any = np.where(ink_mask.any(axis=1))[0]
+    cols_any = np.where(ink_mask.any(axis=0))[0]
+    if rows_any.size == 0 or cols_any.size == 0:
+        return set()
+    row_min, row_max = float(rows_any.min()), float(rows_any.max())
+    col_min, col_max = float(cols_any.min()), float(cols_any.max())
+
+    excluded: set[int] = set()
+    for idx, frag in enumerate(fragments):
+        rows = [p[0] for p in frag.path]
+        cols = [p[1] for p in frag.path]
+        cy, cx = sum(rows) / len(rows), sum(cols) / len(cols)
+        d_top, d_bot = cy - row_min, row_max - cy
+        d_left, d_right = cx - col_min, col_max - cx
+        near_edge = min(d_top, d_bot, d_left, d_right)
+        if near_edge > BORDER_BAND_MARGIN_PX:
+            continue
+        straightness, angle, length = _fragment_straightness_and_angle(frag.path)
+        if length > BORDER_MAX_FRAGMENT_LEN_PX or straightness < BORDER_STRAIGHTNESS_MIN:
+            continue
+        if near_edge in (d_top, d_bot):
+            parallel = min(abs(angle - 0), abs(angle - 180)) <= BORDER_ANGLE_TOLERANCE_DEG
+        else:
+            parallel = abs(angle - 90) <= BORDER_ANGLE_TOLERANCE_DEG
+        if parallel:
+            excluded.add(idx)
     return excluded
 
 
@@ -972,9 +1151,10 @@ PIPELINE_STAGES = [
     (0, "raw-ink", "Raw ink mask (ink/blue split)"),
     (1, "after-structure-exclusion", "After structure (building) exclusion"),
     (2, "candidate-fragments", "Candidate fragments (thin/thick split + length filter)"),
-    (3, "after-chain-exclusion", "After decorative circle-chain exclusion"),
-    (4, "labeled-contours", "After label-gap merge (index contours get elevation)"),
-    (5, "with-minor-bands", "After minor-contour banding (1m interpolation)"),
+    (3, "after-border-exclusion", "After border/survey-frame exclusion"),
+    (4, "after-chain-exclusion", "After decorative circle-chain exclusion"),
+    (5, "labeled-contours", "After label-gap merge (index contours get elevation)"),
+    (6, "with-minor-bands", "After minor-contour banding (1m interpolation)"),
 ]
 
 
@@ -1001,7 +1181,21 @@ def save_stage_fragments(
     img = Image.new("RGB", (shape[1], shape[0]), (255, 255, 255))
     draw = ImageDraw.Draw(img)
     for frag in fragments:
-        color = (180, 20, 170) if frag.elevation_m is not None else (30, 30, 30)
+        # Three shades, not two -- a labeled INDEX contour (read straight
+        # off an OCR'd/confirmed elevation label) and an INTERPOLATED
+        # minor (1m) contour from stage 7's banding are different kinds
+        # of "labeled" and were confusingly the same color before (see
+        # "please use different shades to distinguish between recognized
+        # major and minor contours" in the chat history) -- keep this in
+        # sync with the same major/minor/unlabeled palette the
+        # ContourConnector and TopoCompare widgets use (see each one's
+        # own color constants).
+        if frag.elevation_source in ("ocr", "review-confirmed"):
+            color = (180, 20, 170)  # major/index -- magenta
+        elif frag.elevation_source == "interpolated":
+            color = (230, 126, 34)  # minor (1m band) -- orange
+        else:
+            color = (30, 30, 30)  # unlabeled -- near-black
         if len(frag.path) >= 2:
             draw.line([(c, r) for r, c in frag.path], fill=color, width=1)
     if excluded:
@@ -1154,10 +1348,246 @@ def write_minor_review_queue(plan: str, groups: list[MinorBandGroup], fragments:
     return out_path
 
 
+# ── Gap-connection suggestions ──
+# "We can be greedier with extending contours across gaps" (chat
+# history) -- rather than loosen the already-calibrated label-gap merge
+# (MAX_LABEL_GAP_PX, which exists specifically to NOT bridge unrelated
+# nearby fragments -- see its own comment), this proposes connections as
+# a separate, clearly-marked layer instead: *.connections.suggested.json
+# per plan, never spliced into the plan's own *.geojson geometry. A
+# human (or, eventually, a bulk-accept pass) decides via the
+# ContourConnector widget. Keyed by each endpoint's own geographic
+# position (lon/lat), same convention as review_decisions.json and the
+# minor-band review queue -- NOT by fragment array index, which shifts
+# across re-runs (see the module's own "Known limitations").
+
+GAP_SUGGEST_MAX_DIST_PX = 140.0  # looser than MAX_LABEL_GAP_PX (45) -- deliberately greedier
+GAP_SUGGEST_MAX_TURN_DEG = 35.0  # how much the line is allowed to "kink" at the suggested splice
+GAP_SUGGEST_MAX_ELEV_DIFF_M = 0.5  # if both ends already have an elevation, how close they must agree
+
+# The Restored plan's cleared/bordered/platformed waterway interrupted
+# contour lines more severely than a typical gap -- its own linework
+# alone doesn't always show where they continue. Looser than the
+# generic auto-gap pass on both distance and turn angle; what makes this
+# still trustworthy rather than a wild guess is requiring the gap to
+# actually sit ON the Actual plan's own surveyed stream path (see
+# suggest_stream_guided_connections), which the generic pass never
+# checks at all.
+STREAM_GUIDE_MAX_DIST_PX = 260.0
+STREAM_GUIDE_MAX_TURN_DEG = 55.0
+STREAM_GUIDE_PROXIMITY_PX = 40.0  # how close the gap's own midpoint must sit to the stream path
+
+
+@dataclass
+class ConnectionSuggestion:
+    a_frag_idx: int
+    a_is_start: bool
+    b_frag_idx: int
+    b_is_start: bool
+    distance_px: float
+    source: str  # "auto-gap" | "stream-guided"
+
+
+def _endpoint_outward_direction(path: list[tuple[int, int]], at_start: bool) -> tuple[float, float]:
+    """Unit (dy, dx) direction a straight extension of the fragment
+    would continue in, right at its start or end tip -- estimated from a
+    few points back from the tip (robust to single-pixel skeleton jitter
+    exactly at the endpoint) rather than just the last two points."""
+    n = min(6, len(path) - 1)
+    if n <= 0:
+        return (0.0, 0.0)
+    if at_start:
+        tip, back = path[0], path[n]
+    else:
+        tip, back = path[-1], path[-1 - n]
+    dy, dx = tip[0] - back[0], tip[1] - back[1]
+    length = math.hypot(dy, dx)
+    return (dy / length, dx / length) if length > 0 else (0.0, 0.0)
+
+
+def _candidate_endpoint_pairs(fragments: list[Fragment], max_dist_px: float) -> list[tuple[int, bool, int, bool, float]]:
+    """Every pair of DIFFERENT fragments' endpoints within max_dist_px of
+    each other, as (frag_idx_a, is_start_a, frag_idx_b, is_start_b,
+    distance_px). Uses a KD-tree over all endpoints (2 per fragment) --
+    cheap at the scale this runs at (a couple thousand endpoints)."""
+    endpoints: list[tuple[int, bool, int, int]] = []  # (frag_idx, is_start, row, col)
+    for idx, f in enumerate(fragments):
+        endpoints.append((idx, True, f.path[0][0], f.path[0][1]))
+        endpoints.append((idx, False, f.path[-1][0], f.path[-1][1]))
+    if len(endpoints) < 2:
+        return []
+    coords = np.array([(e[2], e[3]) for e in endpoints], dtype=float)
+    tree = cKDTree(coords)
+    out = []
+    for i, j in tree.query_pairs(max_dist_px):
+        fi, starti = endpoints[i][0], endpoints[i][1]
+        fj, startj = endpoints[j][0], endpoints[j][1]
+        if fi == fj:
+            continue
+        dist = float(math.dist(coords[i], coords[j]))
+        out.append((fi, starti, fj, startj, dist))
+    return out
+
+
+def suggest_auto_gap_connections(fragments: list[Fragment]) -> list[ConnectionSuggestion]:
+    """The generic, plan-agnostic "be greedier about gaps" pass -- see
+    this section's own header comment. Keeps at most one suggestion per
+    (fragment, fragment) pair (the shortest-distance qualifying endpoint
+    combination), so two fragments with endpoints near each other on
+    both sides don't produce redundant duplicate suggestions."""
+    best: dict[frozenset[int], tuple[float, tuple[int, bool, int, bool]]] = {}
+    for fi, starti, fj, startj, dist in _candidate_endpoint_pairs(fragments, GAP_SUGGEST_MAX_DIST_PX):
+        ei, ej = fragments[fi].elevation_m, fragments[fj].elevation_m
+        if ei is not None and ej is not None and abs(ei - ej) > GAP_SUGGEST_MAX_ELEV_DIFF_M:
+            continue
+        pi = fragments[fi].path[0] if starti else fragments[fi].path[-1]
+        pj = fragments[fj].path[0] if startj else fragments[fj].path[-1]
+        gap_y, gap_x = pj[0] - pi[0], pj[1] - pi[1]
+        gap_len = math.hypot(gap_y, gap_x)
+        if gap_len == 0:
+            continue
+        gap_dir = (gap_y / gap_len, gap_x / gap_len)
+        out_i = _endpoint_outward_direction(fragments[fi].path, starti)
+        out_j = _endpoint_outward_direction(fragments[fj].path, startj)
+        # fragment i's own outward extension should point roughly TOWARD
+        # j (cos ~ 1 against gap_dir); fragment j's outward extension
+        # should point roughly BACK toward i (cos ~ 1 against -gap_dir)
+        # -- together this means the two fragments plausibly continue
+        # straight through each other across the gap, not merely sit
+        # near each other pointing unrelated directions.
+        cos_i = out_i[0] * gap_dir[0] + out_i[1] * gap_dir[1]
+        cos_j = -(out_j[0] * gap_dir[0] + out_j[1] * gap_dir[1])
+        angle_i = math.degrees(math.acos(max(-1.0, min(1.0, cos_i))))
+        angle_j = math.degrees(math.acos(max(-1.0, min(1.0, cos_j))))
+        if angle_i > GAP_SUGGEST_MAX_TURN_DEG or angle_j > GAP_SUGGEST_MAX_TURN_DEG:
+            continue
+        key = frozenset((fi, fj))
+        prev = best.get(key)
+        if prev is None or dist < prev[0]:
+            best[key] = (dist, (fi, starti, fj, startj))
+    return [
+        ConnectionSuggestion(fi, starti, fj, startj, dist, "auto-gap")
+        for dist, (fi, starti, fj, startj) in best.values()
+    ]
+
+
+def suggest_stream_guided_connections(
+    restored_fragments: list[Fragment],
+    actual_stream_fragments: list[Fragment],
+    actual_mosaic: Mosaic,
+    restored_mosaic: Mosaic,
+) -> list[ConnectionSuggestion]:
+    """Restored-plan-only: the Actual plan's own surveyed stream path as
+    a guide for where the Restored plan's cleared/bordered/platformed
+    waterway most likely interrupted a real contour (see this section's
+    own header comment). The two plans don't share a pixel grid (each
+    mosaic has its own tile-stitching origin), so every Actual-plan
+    stream point is round-tripped through lon/lat into the Restored
+    plan's own pixel space before comparison -- the same reprojection
+    math every other cross-plan comparison in this project already
+    uses."""
+    if not actual_stream_fragments:
+        return []
+    stream_pts_restored_px: list[tuple[float, float]] = []
+    for frag in actual_stream_fragments:
+        for row, col in frag.path:
+            lon, lat = pixel_to_lonlat(actual_mosaic, col, row)
+            x, y = lonlat_to_pixel(restored_mosaic, lon, lat)
+            stream_pts_restored_px.append((y, x))  # (row, col) to match Fragment.path's own convention
+    stream_tree = cKDTree(np.array(stream_pts_restored_px))
+
+    best: dict[frozenset[int], tuple[float, tuple[int, bool, int, bool]]] = {}
+    for fi, starti, fj, startj, dist in _candidate_endpoint_pairs(restored_fragments, STREAM_GUIDE_MAX_DIST_PX):
+        if dist <= GAP_SUGGEST_MAX_DIST_PX:
+            continue  # already covered (more conservatively) by the generic auto-gap pass
+        ei, ej = restored_fragments[fi].elevation_m, restored_fragments[fj].elevation_m
+        if ei is not None and ej is not None and abs(ei - ej) > GAP_SUGGEST_MAX_ELEV_DIFF_M:
+            continue
+        pi = restored_fragments[fi].path[0] if starti else restored_fragments[fi].path[-1]
+        pj = restored_fragments[fj].path[0] if startj else restored_fragments[fj].path[-1]
+        midpoint = ((pi[0] + pj[0]) / 2, (pi[1] + pj[1]) / 2)
+        d_to_stream, _ = stream_tree.query(midpoint, k=1)
+        if d_to_stream > STREAM_GUIDE_PROXIMITY_PX:
+            continue  # this gap doesn't sit on the stream's own path -- not guided by it
+        gap_y, gap_x = pj[0] - pi[0], pj[1] - pi[1]
+        gap_len = math.hypot(gap_y, gap_x)
+        if gap_len == 0:
+            continue
+        gap_dir = (gap_y / gap_len, gap_x / gap_len)
+        out_i = _endpoint_outward_direction(restored_fragments[fi].path, starti)
+        out_j = _endpoint_outward_direction(restored_fragments[fj].path, startj)
+        cos_i = out_i[0] * gap_dir[0] + out_i[1] * gap_dir[1]
+        cos_j = -(out_j[0] * gap_dir[0] + out_j[1] * gap_dir[1])
+        angle_i = math.degrees(math.acos(max(-1.0, min(1.0, cos_i))))
+        angle_j = math.degrees(math.acos(max(-1.0, min(1.0, cos_j))))
+        if angle_i > STREAM_GUIDE_MAX_TURN_DEG or angle_j > STREAM_GUIDE_MAX_TURN_DEG:
+            continue
+        key = frozenset((fi, fj))
+        prev = best.get(key)
+        if prev is None or dist < prev[0]:
+            best[key] = (dist, (fi, starti, fj, startj))
+    return [
+        ConnectionSuggestion(fi, starti, fj, startj, dist, "stream-guided")
+        for dist, (fi, starti, fj, startj) in best.values()
+    ]
+
+
+def write_connection_suggestions(
+    plan: str, suggestions: list[ConnectionSuggestion], fragments: list[Fragment], mosaic: Mosaic
+) -> Path | None:
+    plan_label = "ActualStatePlan" if plan == "actual" else "RestoredStatePlan"
+    out_path = FEATURES_DIR / f"SamoWeb_{plan_label}_Contours.connections.suggested.json"
+    if not suggestions:
+        out_path.unlink(missing_ok=True)  # see write_review_queue's own comment on why this matters
+        return None
+    items = []
+    for i, s in enumerate(suggestions):
+        pa = fragments[s.a_frag_idx].path[0] if s.a_is_start else fragments[s.a_frag_idx].path[-1]
+        pb = fragments[s.b_frag_idx].path[0] if s.b_is_start else fragments[s.b_frag_idx].path[-1]
+        a_lon, a_lat = pixel_to_lonlat(mosaic, pa[1], pa[0])
+        b_lon, b_lat = pixel_to_lonlat(mosaic, pb[1], pb[0])
+        ea, eb = fragments[s.a_frag_idx].elevation_m, fragments[s.b_frag_idx].elevation_m
+        items.append(
+            {
+                "connectionId": f"{plan}-{s.source}-{i}",
+                "source": s.source,
+                "aLon": a_lon,
+                "aLat": a_lat,
+                "bLon": b_lon,
+                "bLat": b_lat,
+                "distancePx": round(s.distance_px, 1),
+                "elevationM": ea if ea is not None else eb,
+            }
+        )
+    payload = {
+        "plan": plan,
+        "generatedAt": datetime.now(timezone.utc).isoformat(),
+        "connections": items,
+    }
+    out_path.write_text(json.dumps(payload, indent=2))
+    return out_path
+
+
 # ── Per-plan extraction ──
 
 
-def extract_contours(plan: str, mosaic: Mosaic) -> tuple[dict, list[ReviewItem]]:
+def extract_contours(plan: str, mosaic: Mosaic) -> tuple[dict, list[ReviewItem], list[Fragment]]:
+    # Clear out any PNGs left behind by a PRIOR run's stage names/numbers
+    # before writing this run's -- a stage reorganization (adding,
+    # removing, or renumbering a stage, as just happened adding border
+    # exclusion as stage 3) otherwise leaves stale files with old names
+    # sitting right alongside the fresh ones (confirmed: this happened
+    # for real the first time this stage was added -- e.g. a leftover
+    # "03_after-chain-exclusion.png" from before border exclusion existed,
+    # alongside the new run's own "03_after-border-exclusion.png" /
+    # "04_after-chain-exclusion.png"), confusing about which file is
+    # current for anything that just globs the directory, including a
+    # human looking at it directly.
+    stage_dir = STAGE_DIR / plan
+    if stage_dir.is_dir():
+        for old_file in stage_dir.glob("*.png"):
+            old_file.unlink()
+
     blue_mask, ink_mask_raw = color_masks(mosaic.rgba)
     save_stage_mask(plan, 0, "raw-ink", ink_mask_raw)
 
@@ -1192,10 +1622,17 @@ def extract_contours(plan: str, mosaic: Mosaic) -> tuple[dict, list[ReviewItem]]
     save_stage_fragments(plan, 2, "candidate-fragments", ink_mask.shape, fragments)
     print(f"  [{plan}] {len(fragments)} contour-candidate fragments after thin/thick split + length filter")
 
+    border_excluded = find_border_frame_fragments(fragments, ink_mask)
+    border_excluded_frags = [fragments[i] for i in sorted(border_excluded)]
+    fragments = [f for i, f in enumerate(fragments) if i not in border_excluded]
+    save_stage_fragments(plan, 3, "after-border-exclusion", ink_mask.shape, fragments, excluded=border_excluded_frags)
+    if border_excluded:
+        print(f"  [{plan}] excluded {len(border_excluded)} fragment(s) as border/survey-frame linework")
+
     chain_excluded = find_circular_chain_fragments(fragments)
     excluded_frags = [fragments[i] for i in sorted(chain_excluded)]
     fragments = [f for i, f in enumerate(fragments) if i not in chain_excluded]
-    save_stage_fragments(plan, 3, "after-chain-exclusion", ink_mask.shape, fragments, excluded=excluded_frags)
+    save_stage_fragments(plan, 4, "after-chain-exclusion", ink_mask.shape, fragments, excluded=excluded_frags)
     if chain_excluded:
         print(f"  [{plan}] excluded {len(chain_excluded)} fragment(s) as decorative circle-chain clusters")
 
@@ -1205,7 +1642,7 @@ def extract_contours(plan: str, mosaic: Mosaic) -> tuple[dict, list[ReviewItem]]
     fragments, merged, review_items = merge_labeled_fragments(fragments, ink_mask, thick_px_dilated, mosaic, review_decisions)
     labeled = sum(1 for f in fragments if f.elevation_source in ("ocr", "review-confirmed"))
     print(f"  [{plan}] merged {merged} label gaps -> {labeled}/{len(fragments)} fragments have an elevation")
-    save_stage_fragments(plan, 4, "labeled-contours", ink_mask.shape, fragments)
+    save_stage_fragments(plan, 5, "labeled-contours", ink_mask.shape, fragments)
     if review_items:
         print(
             f"  [{plan}] {len(review_items)} OCR reading(s) need human review "
@@ -1221,18 +1658,18 @@ def extract_contours(plan: str, mosaic: Mosaic) -> tuple[dict, list[ReviewItem]]
         f"{len(confident_groups)} confident (+{newly_labeled} fragments now interpolated), "
         f"{len(pending_groups)} need review"
     )
-    save_stage_fragments(plan, 5, "with-minor-bands", ink_mask.shape, fragments)
+    save_stage_fragments(plan, 6, "with-minor-bands", ink_mask.shape, fragments)
     minor_queue_path = write_minor_review_queue(plan, minor_groups, fragments, mosaic)
     if minor_queue_path:
         print(f"  [{plan}] wrote {minor_queue_path}")
 
-    return fragments_to_geojson(mosaic, fragments, plan, "contours"), review_items
+    return fragments_to_geojson(mosaic, fragments, plan, "contours"), review_items, fragments
 
 
-def extract_streams(plan: str, mosaic: Mosaic) -> dict | None:
+def extract_streams(plan: str, mosaic: Mosaic) -> tuple[dict | None, list[Fragment]]:
     blue_mask, _ink_mask = color_masks(mosaic.rgba)
     if blue_mask.sum() < 50:
-        return None
+        return None, []
     # Bridge dash gaps, then skeletonize+trace the same way as contours
     # (minus the elevation-label step -- streams aren't labeled).
     bridged = ndimage.binary_dilation(blue_mask, iterations=4)
@@ -1251,7 +1688,7 @@ def extract_streams(plan: str, mosaic: Mosaic) -> dict | None:
         path = trace_pixel_path(local_coords)
         fragments.append(Fragment(frag_id=i, path=path, elevation_source="n/a"))
     print(f"  [{plan}] {len(fragments)} stream-line fragments")
-    return fragments_to_geojson(mosaic, fragments, plan, "streams")
+    return fragments_to_geojson(mosaic, fragments, plan, "streams"), fragments
 
 
 # ── Review queue writing ──
@@ -1306,13 +1743,20 @@ def write_review_queue(plan: str, review_items: list[ReviewItem]) -> Path | None
 
 def main() -> None:
     FEATURES_DIR.mkdir(parents=True, exist_ok=True)
+
+    mosaics: dict[str, Mosaic] = {}
+    plan_fragments: dict[str, list[Fragment]] = {}
+    stream_fragments: dict[str, list[Fragment]] = {}
+
     for plan in ("actual", "restored"):
         print(f"Loading {plan} mosaic (zoom {ZOOM})...")
         mosaic = load_plan_mosaic(plan)
+        mosaics[plan] = mosaic
         print(f"  mosaic size: {mosaic.rgba.shape[1]}x{mosaic.rgba.shape[0]}px")
 
         print(f"Extracting contours ({plan})...")
-        contours_geojson, review_items = extract_contours(plan, mosaic)
+        contours_geojson, review_items, fragments = extract_contours(plan, mosaic)
+        plan_fragments[plan] = fragments
         plan_label = "ActualStatePlan" if plan == "actual" else "RestoredStatePlan"
         out_path = FEATURES_DIR / f"SamoWeb_{plan_label}_Contours.geojson"
         out_path.write_text(json.dumps(contours_geojson, indent=2))
@@ -1322,13 +1766,33 @@ def main() -> None:
             print(f"  wrote {review_path} ({len(review_items)} item(s) need review)")
 
         print(f"Extracting streams ({plan})...")
-        streams_geojson = extract_streams(plan, mosaic)
+        streams_geojson, s_fragments = extract_streams(plan, mosaic)
+        stream_fragments[plan] = s_fragments
         if streams_geojson and streams_geojson["features"]:
             out_path = FEATURES_DIR / f"SamoWeb_{plan_label}_Streams.geojson"
             out_path.write_text(json.dumps(streams_geojson, indent=2))
             print(f"  wrote {out_path} ({len(streams_geojson['features'])} features)")
         else:
             print(f"  no stream lines detected in {plan} -- skipped")
+
+    # Gap-connection suggestions -- run after BOTH plans are fully
+    # extracted (the Restored plan's stream-guided pass needs the
+    # Actual plan's own finished stream fragments). See the "Gap
+    # -connection suggestions" section's own header comment.
+    for plan in ("actual", "restored"):
+        print(f"Suggesting gap connections ({plan})...")
+        suggestions = suggest_auto_gap_connections(plan_fragments[plan])
+        if plan == "restored":
+            stream_suggestions = suggest_stream_guided_connections(
+                plan_fragments["restored"], stream_fragments["actual"], mosaics["actual"], mosaics["restored"]
+            )
+            suggestions += stream_suggestions
+            if stream_suggestions:
+                print(f"  [{plan}] {len(stream_suggestions)} stream-guided suggestion(s)")
+        print(f"  [{plan}] {len(suggestions)} total gap-connection suggestion(s)")
+        conn_path = write_connection_suggestions(plan, suggestions, plan_fragments[plan], mosaics[plan])
+        if conn_path:
+            print(f"  wrote {conn_path}")
 
 
 if __name__ == "__main__":
