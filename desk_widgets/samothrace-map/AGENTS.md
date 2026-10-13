@@ -1,0 +1,214 @@
+# Samothrace Map — agent's guide
+
+Written for a future Claude instance (or any agent) picking this widget
+back up. This is the project's hub widget — per
+`plans/samothrace-map-consolidation.md`, it absorbed what used to be five
+separate widgets (TopoCompare, Minor Contour Review, Contour Label
+Review, Pipeline Stage Viewer, Contour Connector) into one, on purpose.
+Read that plan doc first for the *why* and the phase-by-phase history;
+this doc is the *how* — what's actually in this directory, how to build
+it, and the conventions/gotchas worth knowing before you touch it.
+
+## This is a promoted widget — do not run `build_widget.py` on it
+
+`desk_widgets/samothrace-map/` is **promoted** (its definition lives in
+the project's own `.desk` file, not in a `.desk_temp/` `DefineWidget`
+tempui file). Running `.desk_temp/build_widget.py` against this
+directory produces a dead `DefineWidget` tempui file nobody should
+click — promoted widgets aren't sourced from tempui files at all. (This
+cost real time once already; see
+`../../inadvisable-adventures/FEEDBACK/FEEDBACK-DESK-define-widget-placement-is-a-silent-second-step-*.md`
+for the fuller story, though that report is about a different, related
+gotcha — the two-step DefineWidget dance.)
+
+**To check your edits compile**, just run `tsc` directly:
+
+```
+tsc -p desk_widgets/samothrace-map
+```
+
+**To actually see your changes live**, just save the files — Desk
+watches `desk_widgets/<name>/` directly and marks the already-placed
+instance `[STALE]` on its own; a human clicks that badge to trigger the
+real rebuild and reload. You cannot trigger that reload yourself; you
+can only confirm the source compiles.
+
+## File manifest
+
+Six `.ts` files, compiled together as **one program** (`tsconfig.json`'s
+`"files"` array, in this exact order — order matters for the
+*compiled JS*, since these are global scripts with no `import`/`export`
+and get concatenated in that order; it does **not** matter for *type
+-checking*, which sees the whole program regardless of listed order):
+
+1. **`samothrace-map-recording.ts`** — `RecordingController`. Wraps the
+   `recording`/`stopped_recording` `desk.events` (Claude (Desk)'s record
+   button) and the `desk.log` Bridge capability (a named, in-memory,
+   agent-queryable log — see `tempui-widget-logs.md`). **Declares
+   `Window.desk`'s entire Bridge-API shape in one place** — see the
+   comment at the top of this file for why a second, partial
+   `interface Window { desk?: ... }` in any other file doesn't work
+   (TS requires every redeclaration of the same interface member to
+   match exactly; it won't structurally merge two different inline
+   object shapes for the same property). If a later phase needs a new
+   Bridge capability, add it here, not in the file that uses it.
+
+   **Why this exists at all**: recording is this widget's way of
+   capturing *pointing* and other spatial-interaction data from the
+   user, not just a generic activity log. While a recording is active,
+   Desk is also writing a timecoded transcript of what the user says
+   to `.desk_temp/timecoded-transcripts/<recording_id>.txt`. Every
+   `this.recording.log(source, type, payload)` call this widget makes
+   — hover, click, layer toggle, Q&A answer, connector drag, all of
+   it — lands in `desk.log` with its own timestamp, in the same time
+   base as that transcript. That pairing is the actual point: it lets
+   a *future agent* reconstruct "the user said this, while pointing at
+   that" after the fact, by lining up what the user was saying against
+   where their cursor/clicks were on the map at the same moment —
+   something neither the transcript nor the click log can convey
+   alone. Concretely, this is what lets a user say something like "no,
+   that one, the one near the stream bend" while moving the mouse, and
+   have an agent reviewing the session afterward figure out which
+   fragment "that one" actually meant. Keep this in mind when deciding
+   whether a new interaction deserves a `recording.log(...)` call:
+   the bar is "would knowing *where on the map* this happened, at
+   *this moment*, help an agent reconstruct what the user meant,"
+   not just "is this an event worth recording for its own sake."
+2. **`samothrace-map-stage-layers.ts`** — `StageLayersController`. The
+   pipeline-stage debug layers (14 of them: 7 stages × 2 plans), loaded
+   lazily via `desk.documents` from `.desk_temp/pipeline-stages/<plan>/`.
+3. **`samothrace-map-contours-layer.ts`** — `ContoursLayerController`.
+   The real extracted contour fragments
+   (`Data/mapFeatures/SamoWeb_<Plan>_Contours.geojson`), hover/click,
+   the major/minor/unlabeled color palette, and the "Show me"
+   highlight mechanism (`highlightFragments`/`strokeCandyCane`).
+   `fragmentsFor(plan)` is the public entry point other controllers use
+   to read the same already-loaded fragments without a second fetch.
+4. **`samothrace-map-qa-panel.ts`** — `LabelReviewTabController` and
+   `MinorBandsTabController`, the first two Q&A tabs.
+5. **`samothrace-map-connector-tab.ts`** — `ContourConnectorTabController`,
+   the third Q&A tab (drag-to-connect).
+6. **`samothrace-map.ts`** — the custom element itself
+   (`SamothraceMapElement`). Owns the canvas, the layer panel, the
+   monument overlay (the original functionality, predating all of the
+   above), and wires every controller above together.
+
+`widget.html` holds the template markup + all CSS (one `<style>` block
+inside the `<template>`); `widget.json` the manifest (keyword,
+capabilities, state schema).
+
+## Data this widget reads and writes
+
+| Path | Read/write | Notes |
+|---|---|---|
+| `Data/mapFeatures/SamoWeb_<Plan>_Overlay.geojson` | read | Monument polygons (pre-existing, not part of the consolidation work) |
+| `Data/mapFeatures/SamoWeb_<Plan>_Contours.geojson` | read | Real extracted contours — `ContoursLayerController` |
+| `.desk_temp/pipeline-stages/<plan>/NN_<stage>.png` + `bounds.json` | read | Pipeline debug snapshots — `StageLayersController`. `bounds.json` is written by `scripts/extract_vector_layers.py`'s `write_stage_bounds` (added alongside this widget; didn't exist before) |
+| `Data/mapFeatures/SamoWeb_<Plan>_Contours.review_queue.json` | read | Label-review tab's question queue |
+| `.desk_temp/contour-label-review-log.json` | read + write | Label-review tab's durable answers (shared with the old standalone widget — same shape, same file) |
+| `Data/mapFeatures/SamoWeb_<Plan>_Contours.minor_review_queue.json` | read | Minor-bands tab's question queue |
+| `.desk_temp/minor-contour-review-log.json` | read + write | Minor-bands tab's durable answers |
+| `Data/mapFeatures/SamoWeb_<Plan>_Contours.connections.suggested.json` | read | Connector tab's suggestion source |
+| `Data/mapFeatures/SamoWeb_<Plan>_Contours.connections.confirmed.json` | read | Connector tab's already-applied confirmations |
+| `Data/mapFeatures/SamoWeb_ActualStatePlan_Streams.geojson` | read | Connector tab's stream-guide overlay (Actual plan's own streams, shown as a reference while working on the Restored plan) |
+| `.desk_temp/contour-connector-log.json` | read + write | Connector tab's durable confirmations/rejections |
+| `desk.hmsvc.samothrace-tiles` (shared state, not a file) | read | Tile service URL discovery — **never hardcode the port**, it changes every launch |
+
+## Key conventions — follow these, don't reinvent them
+
+- **Geometry lives in lon/lat, projected to screen space at draw/hit
+  -test time, never stored pre-projected.** `this.toScreen` (an
+  arrow-field on `SamothraceMapElement`, so it can be passed directly as
+  a callback without losing its `this` binding) is the one projection
+  function; every controller's `draw()`/`hitTest()` takes it as a
+  parameter rather than reimplementing projection math.
+- **`visibleLayers: Set<string>`** is shared across every layer kind
+  (hmsvc tile layers, pipeline-stage layers, the contours layer) — the
+  only thing keeping them from colliding is an id *prefix* convention
+  (`stage:<plan>:<NN>`, `contours:<plan>`, vs. a bare hmsvc id like
+  `"aerial"`). `onLayerToggle` is fully generic over all of them; don't
+  special-case a layer kind there unless it genuinely needs different
+  persistence/logging behavior.
+- **Position-keyed persistence, not array-index-keyed.** Every durable
+  answer file stores lon/lat (or a `reviewId`/`groupId`/`connectionId`
+  string), never a bare array index into some `*.geojson` — array
+  indices shift across pipeline re-runs. This bit the project hard
+  before this widget existed; don't regress it.
+- **Three-shade contour palette**, kept in sync across this widget,
+  the (now-retired but still-present) standalone widgets, and
+  `scripts/extract_vector_layers.py`'s own stage-PNG rendering:
+  `#c026d3` major (index, `elevation_source` is `"ocr"` or
+  `"review-confirmed"`), `#f59e0b` minor (`"interpolated"`), `#94a3b8`
+  unlabeled. If you add a fourth category, update all three places.
+- **Candy-cane (alternating two-color, no-gap) strokes** for anything
+  that needs to read clearly over an unpredictable base layer — a solid
+  color (tried first, both for "Show me" and for hover) didn't always
+  show up well. `strokeCandyCane` in `samothrace-map-contours-layer.ts`
+  is the shared implementation (same path drawn twice, second pass's
+  dash offset shifted by one segment). Red/white for the "Show me"
+  highlight, blue/white for plain hover.
+- **A Q&A tab controller's shape**: `init(): Promise<void>`,
+  `summary(): string`, `render(): string` (returns HTML, doesn't touch
+  the DOM itself), `attachHandlers(container: HTMLElement): void`
+  (re-run after every `render()`, since `innerHTML` replacement
+  discards old listeners along with old elements). `renderQaPanel()` on
+  the main element dispatches to whichever controller `activeQaTab`
+  names. Follow this shape for a fourth tab rather than inventing a new
+  one.
+- **Recording-vs-durable-file answer split**: every tab's "submit an
+  answer" path calls `this.recording.log(source, type, payload)`
+  first; its return value (`true` if a recording was active and it
+  actually logged, `false` otherwise) decides whether to *also* write
+  the durable per-tab file. An answer given while recording does **not**
+  get written to the durable file at the same time — see
+  `plans/samothrace-map-consolidation.md` §5.2 and §8 for why that's a
+  real, still-open gap (the recording log is memory-only; nothing folds
+  it back into the durable files yet).
+- **The Contour Connector tab is a real mode switch**, not just a
+  different sidebar. `activeQaTab === 'contour-connector'` changes what
+  `onPointerDown`/`onPointerMove`/`onPointerUp`/`onContextMenu` on the
+  main canvas actually do (drag-to-connect instead of plain contour
+  hover/click) — see those methods' own comments in `samothrace-map.ts`.
+  If you add interaction to a future tab that also wants the canvas,
+  follow this same explicit-mode-check pattern rather than letting two
+  interaction models implicitly fight over the same pointer events.
+
+## This project's pinned `tsc` is old (3.8.3) — known gaps to route around
+
+- **`crypto.randomUUID()` and `ResizeObserver`** aren't in this `tsc`'s
+  bundled DOM lib, even though real browsers have long supported both.
+  Declaration-merge the missing member in rather than widening the
+  whole type — see `samothrace-map-recording.ts`'s `interface Crypto`
+  and `samothrace-map.ts`'s `declare class ResizeObserver` for the
+  pattern.
+- **`Promise.all([...])` with heterogeneous element types, destructured
+  directly**, loses per-position typing — every destructured element
+  comes back typed as the union of *all* the array's element types, not
+  its own real type. Fix: assign each inner promise to its own `const`,
+  await them separately, don't destructure from one combined
+  `Promise.all`. Hit (and fixed the same way) in at least three places
+  in this project now — `topo-compare.ts`, `contour-label-review.ts`,
+  and `samothrace-map-connector-tab.ts`'s own `init()`.
+- **A class field's type doesn't narrow through optional chaining** the
+  way a local `const` does. `this.hoverTarget?.kind === 'fragment'` in
+  an `if`/`else if` does **not** let you then access
+  `this.hoverTarget.plan` in that branch — capture it into a local
+  const first (`const hover = this.hoverTarget; if (hover &&
+  hover.kind === 'fragment') { ... hover.plan ... }`).
+- Every `ctx.save()` needs exactly one matching `ctx.restore()` — this
+  project has already shipped (and caught, in review) one real bug from
+  a leftover unmatched `ctx.restore()` left over after refactoring a
+  draw call into a shared helper that did its own `save`/`restore`
+  internally. If you refactor a draw path, grep for `save()`/`restore()`
+  counts before and after.
+
+## Further context
+
+- `plans/samothrace-map-consolidation.md` — the design doc this whole
+  build followed, including the still-open items in its own §8.
+- `plans/incremental-pipeline-runs.md` — a related, deliberately
+  deferred idea (targeted/incremental re-runs of the extraction
+  pipeline) that isn't built yet.
+- `scripts/extract_vector_layers.py`'s own module docstring — the
+  pipeline that produces everything this widget reads from
+  `Data/mapFeatures/`.
