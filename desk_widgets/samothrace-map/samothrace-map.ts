@@ -11,22 +11,9 @@
 // Desk's shared, project-scoped state so the separate "Samothrace
 // Monument Description" widget can display it -- unchanged from before.
 
-interface Window {
-  desk?: {
-    self: {
-      getLocalStorage(): Promise<{ data: Record<string, unknown> }>;
-      setLocalStorage(data: Record<string, unknown>): Promise<{ ok: boolean }>;
-      setSubtitle(text: string | null): Promise<{ ok: boolean }>;
-    };
-    fs: {
-      readFile(path: string): Promise<{ contents: string }>;
-    };
-    state: {
-      get(key: string): Promise<{ value: unknown; edit: unknown }>;
-      set(key: string, value: unknown, edit?: unknown): Promise<{ ok: boolean }>;
-    };
-  };
-}
+// Window.desk's full Bridge-API shape is declared once, in
+// samothrace-map-recording.ts (concatenated before this file -- see
+// that file's own header comment for why only one of the two needs it).
 
 // This project's bundled `tsc` (3.8.3) predates the DOM lib's
 // ResizeObserver typings, even though real browsers have long supported it.
@@ -201,7 +188,51 @@ class SamothraceMapElement extends HTMLElement {
   private layersPanelEl: HTMLElement | null = null;
   private zoomLabelEl: HTMLElement | null = null;
   private debugHitTraceToggleEl: HTMLInputElement | null = null;
+  private recordingIndicatorEl: HTMLElement | null = null;
+  private qaTabButtonsEl: HTMLElement | null = null;
+  private qaSummaryEl: HTMLElement | null = null;
+  private qaTabContentEl: HTMLElement | null = null;
   private resizeObserver: ResizeObserver | null = null;
+
+  // Phase 1 of plans/samothrace-map-consolidation.md -- see
+  // samothrace-map-recording.ts for the whole story.
+  private readonly recording = new RecordingController();
+  // Phase 2 of plans/samothrace-map-consolidation.md -- see
+  // samothrace-map-stage-layers.ts. Passed as an arrow-function closure,
+  // not a bare `this.scheduleRedraw` reference, so the method keeps its
+  // `this` binding to this element when the controller calls it later
+  // (an unbound class method reference loses that binding in plain
+  // JS/TS unless the method itself was declared as an arrow property).
+  private readonly stageLayers = new StageLayersController(() => this.scheduleRedraw());
+  // Phase 3 -- see samothrace-map-contours-layer.ts. Declared after
+  // `recording` (field initializers run top-to-bottom; this one reads
+  // `this.recording` in its own constructor call, which must already be
+  // assigned by then).
+  private readonly contoursLayer = new ContoursLayerController(this.recording, () => this.scheduleRedraw());
+  // Phase 4 -- see samothrace-map-qa-panel.ts. Declared after `recording`
+  // (same field-initializer-order reasoning as `contoursLayer` above).
+  private readonly labelReviewTab = new LabelReviewTabController(
+    this.recording,
+    () => this.renderQaPanel(),
+    (plan, fragmentIds) => void this.showMeContourFragments(plan, fragmentIds),
+  );
+  // Phase 5 -- see samothrace-map-qa-panel.ts.
+  private readonly minorBandsTab = new MinorBandsTabController(
+    this.recording,
+    () => this.renderQaPanel(),
+    (plan, fragmentIds) => void this.showMeContourFragments(plan, fragmentIds),
+  );
+  // Phase 6 -- see samothrace-map-connector-tab.ts. Declared after
+  // `contoursLayer` (reuses its already-loaded fragments) and
+  // `recording` (both referenced in its own constructor call).
+  private readonly connectorTab = new ContourConnectorTabController(
+    this.recording,
+    () => this.renderQaPanel(),
+    () => this.scheduleRedraw(),
+    this.contoursLayer,
+    (bounds) => this.fitToBounds(padBounds(bounds, 0.6), 0),
+  );
+  private activeQaTab: 'label-review' | 'minor-bands' | 'contour-connector' = 'label-review';
 
   private debugHitTraceVisible = false;
   private debugHitTrace: Array<{ x: number; y: number; hit: boolean; click: boolean; webCode: string | null }> = [];
@@ -219,6 +250,20 @@ class SamothraceMapElement extends HTMLElement {
   private viewportHeight = 1;
 
   private view = { lon: 25.526, lat: 40.495, zoom: 19 }; // overwritten once overlay data loads
+  // Projects a world lon/lat to the current view's own screen (CSS-pixel)
+  // space -- reads `this.view`/`this.tileSize`/viewport size live on
+  // every call, so it's always correct for "right now," never a stale
+  // closure captured at some earlier zoom/pan. An arrow-function field
+  // (not a regular method) specifically so it can be handed directly to
+  // a controller's own draw()/hitTest() as a plain callback (drawOverlays,
+  // stageLayers.drawVisible, contoursLayer.draw/hitTest, ...) without a
+  // wrapper losing its `this` binding -- same reasoning as the
+  // `recording`/`stageLayers` constructor callbacks above.
+  private readonly toScreen = (lon: number, lat: number): { x: number; y: number } => {
+    const centerWorld = projectWorld(this.view.lon, this.view.lat, this.view.zoom, this.tileSize);
+    const w = projectWorld(lon, lat, this.view.zoom, this.tileSize);
+    return { x: w.x - centerWorld.x + this.viewportWidth / 2, y: w.y - centerWorld.y + this.viewportHeight / 2 };
+  };
   private actualFeatures: Feature[] = [];
   private restoredFeatures: Feature[] = [];
   private combinedBounds: LonLatBounds | null = null;
@@ -246,7 +291,32 @@ class SamothraceMapElement extends HTMLElement {
     this.layersPanelEl = shadow.querySelector('.layers-list');
     this.zoomLabelEl = shadow.querySelector('.zoom-label');
     this.debugHitTraceToggleEl = shadow.querySelector('.debug-hit-trace-toggle');
+    this.recordingIndicatorEl = shadow.querySelector('.recording-indicator');
+    this.qaTabButtonsEl = shadow.querySelector('.qa-tabs');
+    this.qaSummaryEl = shadow.querySelector('.qa-summary');
+    this.qaTabContentEl = shadow.querySelector('.qa-tab-content');
+    this.qaTabButtonsEl?.querySelectorAll<HTMLButtonElement>('.qa-tab-button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        if (tab === 'label-review' || tab === 'minor-bands' || tab === 'contour-connector') this.setActiveQaTab(tab);
+      });
+    });
     this.ctx = this.canvas?.getContext('2d') ?? null;
+
+    this.recording.onChange((recordingId) => {
+      if (this.recordingIndicatorEl) {
+        this.recordingIndicatorEl.style.display = recordingId !== null ? 'flex' : 'none';
+      }
+      // A recording's own narration can't be assumed to mention which
+      // layers happen to be visible -- dump the full current set once,
+      // right as recording starts, so that's known even if nothing gets
+      // toggled during the recording at all. Individual toggles during
+      // the recording (onLayerToggle, below) still log their own entries
+      // on top of this starting snapshot.
+      if (recordingId !== null) {
+        this.recording.log('layers', 'layers-snapshot', { visibleLayers: Array.from(this.visibleLayers) });
+      }
+    });
 
     this.debugHitTraceToggleEl?.addEventListener('change', () => {
       this.debugHitTraceVisible = this.debugHitTraceToggleEl?.checked ?? false;
@@ -270,12 +340,17 @@ class SamothraceMapElement extends HTMLElement {
       this.canvas.addEventListener('pointermove', (e) => this.onPointerMove(e));
       this.canvas.addEventListener('pointerup', (e) => this.onPointerUp(e));
       this.canvas.addEventListener('pointerleave', () => {
+        let redrawNeeded = false;
         if (this.hoverKey) {
           this.hoverKey = null;
-          this.scheduleRedraw();
+          redrawNeeded = true;
         }
+        if (this.contoursLayer.clearHover()) redrawNeeded = true;
+        if (this.connectorTab.clearHover()) redrawNeeded = true;
+        if (redrawNeeded) this.scheduleRedraw();
       });
       this.canvas.addEventListener('wheel', (e) => this.onWheel(e), { passive: false });
+      this.canvas.addEventListener('contextmenu', (e) => this.onContextMenu(e));
     }
 
     this.resizeObserver = new ResizeObserver(() => this.resizeCanvas());
@@ -305,6 +380,25 @@ class SamothraceMapElement extends HTMLElement {
     const desk = window.desk;
     try {
       if (!desk) throw new Error('Desk bridge unavailable');
+
+      // Recording plumbing is a nice-to-have alongside the map, never a
+      // reason to fail loading it -- its own errors (missing capability,
+      // a Bridge call failing) are swallowed here rather than propagating
+      // into this function's own try/catch below.
+      this.recording.init().catch((err) => {
+        console.warn('recording plumbing failed to start:', err);
+      });
+      // Same "never block the map on this" treatment -- the Q&A panel
+      // loads its own queue files independently of everything else here.
+      this.labelReviewTab.init().catch((err) => {
+        console.warn('label review tab failed to load:', err);
+      });
+      this.minorBandsTab.init().catch((err) => {
+        console.warn('minor bands tab failed to load:', err);
+      });
+      this.connectorTab.init().catch((err) => {
+        console.warn('contour connector tab failed to load:', err);
+      });
 
       const tileService = await desk.state.get(TILE_SERVICE_STATE_KEY);
       const tileServiceValue = tileService.value as { status: string; url: string | null } | null;
@@ -376,16 +470,57 @@ class SamothraceMapElement extends HTMLElement {
     if (!this.layersPanelEl) return;
     const groupLabels: Record<string, string> = { imagery: 'Imagery', shared: 'Shared', actual: 'Actual State', restored: 'Restored State' };
     const groups = Array.from(new Set(this.layerMetas.map((l) => l.group)));
+    // Every group header is a native <details>/<summary> -- collapsible
+    // for free (no custom JS toggle logic needed), the same mechanism
+    // the Debug section already used before this. `open` by default on
+    // every one, so today's "everything's always visible" behavior is
+    // unchanged until a human actually collapses one -- collapse state
+    // itself isn't persisted (resets open on reload), not asked for.
     const html: string[] = [];
+    const openGroup = (label: string): void => {
+      html.push(`<details class="layer-group" open><summary class="layer-group-title">${escapeHtml(label)}</summary>`);
+    };
+    const closeGroup = (): void => {
+      html.push(`</details>`);
+    };
+    const pushRow = (id: string, label: string): void => {
+      const checked = this.visibleLayers.has(id) ? 'checked' : '';
+      html.push(`<label class="layer-row"><input type="checkbox" data-layer-id="${escapeHtml(id)}" ${checked} /> ${escapeHtml(label)}</label>`);
+    };
+
     for (const group of groups) {
-      html.push(`<div class="layer-group-title">${escapeHtml(groupLabels[group] ?? group)}</div>`);
+      openGroup(groupLabels[group] ?? group);
       for (const layer of this.layerMetas.filter((l) => l.group === group).sort((a, b) => a.order - b.order)) {
-        const checked = this.visibleLayers.has(layer.id) ? 'checked' : '';
-        html.push(
-          `<label class="layer-row"><input type="checkbox" data-layer-id="${escapeHtml(layer.id)}" ${checked} /> ${escapeHtml(layer.label)}</label>`,
-        );
+        pushRow(layer.id, layer.label);
       }
+      // Final-contours layer (phase 3) -- real map content, so it joins
+      // THIS plan's own existing group rather than getting a separate
+      // section the way the pipeline-stage debug layers do below.
+      if (group === 'actual' || group === 'restored') {
+        const row = this.contoursLayer.rowFor(group);
+        pushRow(row.id, row.label);
+      }
+      closeGroup();
     }
+
+    // Pipeline stage layers (phase 2 of plans/samothrace-map
+    // -consolidation.md) -- a separate section below the real
+    // cartographic layers above, since these are diagnostic snapshots
+    // of the extraction pipeline, not map content. Off by default (not
+    // in defaultVisible anywhere), same visibleLayers set and
+    // onLayerToggle as everything above -- see samothrace-map-stage
+    // -layers.ts's own header comment for the id scheme that lets one
+    // generic toggle handler cover both without a special case.
+    const stageRows = this.stageLayers.allLayerRows();
+    const stageGroups = Array.from(new Set(stageRows.map((r) => r.group))) as Array<'actual' | 'restored'>;
+    for (const group of stageGroups) {
+      openGroup(this.stageLayers.groupLabel(group));
+      for (const row of stageRows.filter((r) => r.group === group)) {
+        pushRow(row.id, row.label);
+      }
+      closeGroup();
+    }
+
     this.layersPanelEl.innerHTML = html.join('\n');
     this.layersPanelEl.querySelectorAll('input[type="checkbox"]').forEach((el) => {
       el.addEventListener('change', (e) => {
@@ -409,7 +544,55 @@ class SamothraceMapElement extends HTMLElement {
     if (visible) this.visibleLayers.add(id);
     else this.visibleLayers.delete(id);
     void window.desk?.self.setLocalStorage({ visibleLayers: Array.from(this.visibleLayers) });
+    this.recording.log('layers', 'layer-toggle', { id, visible });
     this.scheduleRedraw();
+  }
+
+  // ── Q&A panel (phase 4) ──
+
+  // Only one tab exists so far (label review); this just (re)renders its
+  // content -- becomes a real tab-switcher once Minor Contour Bands and
+  // Contour Connector land in later phases.
+  private renderQaPanel(): void {
+    const tab = this.activeQaTab === 'minor-bands' ? this.minorBandsTab : this.activeQaTab === 'contour-connector' ? this.connectorTab : this.labelReviewTab;
+    if (this.qaSummaryEl) this.qaSummaryEl.textContent = tab.summary();
+    if (this.qaTabContentEl) {
+      this.qaTabContentEl.innerHTML = tab.render();
+      tab.attachHandlers(this.qaTabContentEl);
+    }
+  }
+
+  private setActiveQaTab(tab: 'label-review' | 'minor-bands' | 'contour-connector'): void {
+    if (tab === this.activeQaTab) return;
+    // Leaving/entering the connector tab is a real mode switch for the
+    // main canvas's own pointer handling (see onPointerDown/Move/Up) --
+    // clear whatever hover/drag state either side was in so nothing
+    // stale survives the switch (e.g. a connector drag-target highlight
+    // that would otherwise stay drawn after switching away mid-drag).
+    this.contoursLayer.clearHover();
+    this.connectorTab.clearHover();
+    if (this.activeQaTab === 'contour-connector' && this.connectorTab.isDragging()) this.connectorTab.cancelDrag();
+    this.activeQaTab = tab;
+    this.qaTabButtonsEl?.querySelectorAll<HTMLButtonElement>('.qa-tab-button').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+    this.renderQaPanel();
+    this.scheduleRedraw();
+  }
+
+  // "Show me" (plans/samothrace-map-consolidation.md §5.1): force that
+  // plan's contours layer visible, pan/zoom to the given fragments' own
+  // bounding box, and briefly highlight them -- called from any Q&A tab
+  // via the onShowMe callback each controller is constructed with.
+  private async showMeContourFragments(plan: 'actual' | 'restored', fragmentIds: number[]): Promise<void> {
+    const layerId = this.contoursLayer.rowFor(plan).id;
+    if (!this.visibleLayers.has(layerId)) {
+      this.onLayerToggle(layerId, true);
+      this.syncLayerCheckboxes();
+    }
+    const bounds = await this.contoursLayer.showMeBounds(plan, fragmentIds);
+    if (bounds) this.fitToBounds(padBounds(bounds, 0.6), 0);
+    this.contoursLayer.highlightFragments(plan, fragmentIds, 3000);
   }
 
   // ── Dropdown ──
@@ -523,10 +706,35 @@ class SamothraceMapElement extends HTMLElement {
 
   private onPointerDown(e: PointerEvent): void {
     this.canvas?.setPointerCapture(e.pointerId);
+    // Phase 6: drag-to-connect only engages while the Contour Connector
+    // tab is active (plans/samothrace-map-consolidation.md's own "kept
+    // self-contained... so it doesn't clash with plain hover/click
+    // elsewhere" decision) -- starting a connect-drag preempts the
+    // normal pan-drag below only when it actually lands on a fragment;
+    // missing one falls through to panning as usual.
+    if (this.activeQaTab === 'contour-connector') {
+      const rect = this.canvas?.getBoundingClientRect();
+      if (rect) {
+        const screenPoint = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        if (this.connectorTab.tryStartDrag(screenPoint, this.visibleLayers, this.toScreen)) {
+          this.scheduleRedraw();
+          return;
+        }
+      }
+    }
     this.dragState = { startClientX: e.clientX, startClientY: e.clientY, startLon: this.view.lon, startLat: this.view.lat, moved: false };
   }
 
   private onPointerMove(e: PointerEvent): void {
+    if (this.activeQaTab === 'contour-connector' && this.connectorTab.isDragging()) {
+      const rect = this.canvas?.getBoundingClientRect();
+      if (rect) {
+        this.connectorTab.updateDrag({ x: e.clientX - rect.left, y: e.clientY - rect.top }, this.visibleLayers, this.toScreen);
+        this.scheduleRedraw();
+      }
+      return;
+    }
+
     if (this.dragState) {
       const dx = e.clientX - this.dragState.startClientX;
       const dy = e.clientY - this.dragState.startClientY;
@@ -544,24 +752,67 @@ class SamothraceMapElement extends HTMLElement {
 
     const rect = this.canvas?.getBoundingClientRect();
     if (!rect) return;
-    const hit = this.hitTest(e.clientX - rect.left, e.clientY - rect.top, false);
+    const screenX = e.clientX - rect.left;
+    const screenY = e.clientY - rect.top;
+    const hit = this.hitTest(screenX, screenY, false);
     const key = hit ? `${hit.plan}:${hit.feature.properties.WebCode}` : null;
+    let redrawNeeded = false;
     if (key !== this.hoverKey) {
       this.hoverKey = key;
-      this.scheduleRedraw();
+      redrawNeeded = true;
     }
+    // Monument hover wins if present (existing behavior, unchanged) --
+    // whichever contour-hover system is live gets the fallback: the
+    // connector tab's own (fragment/suggested/confirmed) while it's
+    // active, the plain one (phase 3) otherwise. A thin contour line
+    // passing under/near a monument polygon should never steal the
+    // hover away from it, same reasoning as before phase 6.
+    if (this.activeQaTab === 'contour-connector') {
+      const p = hit ? null : { x: screenX, y: screenY };
+      if (this.connectorTab.updateHover(p, this.visibleLayers, this.toScreen)) redrawNeeded = true;
+    } else {
+      const contourHit = hit ? null : this.contoursLayer.hitTest({ x: screenX, y: screenY }, this.visibleLayers, this.toScreen);
+      if (this.contoursLayer.updateHover(contourHit)) redrawNeeded = true;
+    }
+    if (redrawNeeded) this.scheduleRedraw();
   }
 
   private onPointerUp(e: PointerEvent): void {
+    if (this.activeQaTab === 'contour-connector' && this.connectorTab.isDragging()) {
+      this.canvas?.releasePointerCapture(e.pointerId);
+      void this.connectorTab.endDrag();
+      this.scheduleRedraw();
+      return;
+    }
+
     const drag = this.dragState;
     this.dragState = null;
     this.canvas?.releasePointerCapture(e.pointerId);
     if (drag && !drag.moved) {
       const rect = this.canvas?.getBoundingClientRect();
       if (!rect) return;
-      const hit = this.hitTest(e.clientX - rect.left, e.clientY - rect.top, true);
-      if (hit) this.selectFeature(hit.feature.properties.WebCode);
+      const screenX = e.clientX - rect.left;
+      const screenY = e.clientY - rect.top;
+      const hit = this.hitTest(screenX, screenY, true);
+      if (hit) {
+        this.selectFeature(hit.feature.properties.WebCode);
+        return;
+      }
+      if (this.activeQaTab === 'contour-connector') {
+        this.connectorTab.handleClick({ x: screenX, y: screenY }, this.visibleLayers, this.toScreen);
+      } else {
+        const contourHit = this.contoursLayer.hitTest({ x: screenX, y: screenY }, this.visibleLayers, this.toScreen);
+        if (contourHit) this.contoursLayer.registerClick(contourHit);
+      }
     }
+  }
+
+  private onContextMenu(e: MouseEvent): void {
+    if (this.activeQaTab !== 'contour-connector') return; // let the browser's own context menu show otherwise -- nothing else here uses right-click
+    e.preventDefault();
+    const rect = this.canvas?.getBoundingClientRect();
+    if (!rect) return;
+    this.connectorTab.handleRightClick({ x: e.clientX - rect.left, y: e.clientY - rect.top }, this.visibleLayers, this.toScreen);
   }
 
   private hitTest(screenX: number, screenY: number, isClick: boolean): { plan: 'Actual' | 'Restored'; feature: Feature } | null {
@@ -697,10 +948,7 @@ class SamothraceMapElement extends HTMLElement {
 
     const zoom = this.view.zoom;
     const centerWorld = projectWorld(this.view.lon, this.view.lat, zoom, this.tileSize);
-    const toScreen = (lon: number, lat: number): { x: number; y: number } => {
-      const w = projectWorld(lon, lat, zoom, this.tileSize);
-      return { x: w.x - centerWorld.x + this.viewportWidth / 2, y: w.y - centerWorld.y + this.viewportHeight / 2 };
-    };
+    const toScreen = this.toScreen;
 
     const sortedLayers = [...this.layerMetas].sort((a, b) => a.order - b.order);
     for (const layer of sortedLayers) {
@@ -708,7 +956,23 @@ class SamothraceMapElement extends HTMLElement {
       this.drawLayer(ctx, layer.id, zoom, centerWorld);
     }
 
+    // Between the base raster layers and the monument overlays, not
+    // above or below both -- see this controller's own drawVisible
+    // comment for why its bounds lookup must stay synchronous here
+    // rather than resolving a promise mid-draw.
+    this.stageLayers.drawVisible(ctx, this.visibleLayers, toScreen);
+
     this.drawOverlays(ctx, toScreen);
+    // Drawn last/on top -- a monument's own selection highlight is only
+    // ~25-35% opaque (see SELECTED_STYLE/HOVER_STYLE), so contour detail
+    // stays legible even inside a highlighted region, and this is the
+    // layer phase 3 is actually built around.
+    this.contoursLayer.draw(ctx, this.visibleLayers, toScreen);
+    // Phase 6: suggested/confirmed connections, the live drag line, and
+    // the anchor/drag-target/hover overdraw -- only while that tab is
+    // active (see this file's own "kept self-contained" comments at the
+    // pointer handlers above).
+    if (this.activeQaTab === 'contour-connector') this.connectorTab.draw(ctx, toScreen);
     if (this.debugHitTraceVisible) this.drawDebugHitTrace(ctx, toScreen);
   }
 

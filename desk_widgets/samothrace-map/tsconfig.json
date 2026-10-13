@@ -10,5 +10,12 @@
     "outDir": ".build",
     "noEmitOnError": true
   },
-  "files": ["samothrace-map.ts"]
+  "files": [
+    "samothrace-map-recording.ts",
+    "samothrace-map-stage-layers.ts",
+    "samothrace-map-contours-layer.ts",
+    "samothrace-map-qa-panel.ts",
+    "samothrace-map-connector-tab.ts",
+    "samothrace-map.ts"
+  ]
 }

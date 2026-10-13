@@ -3,8 +3,8 @@
     {
       "widget_id": "project_files",
       "instance_id": "28db15c5",
-      "x": -1024.2743455773873,
-      "y": 973.3447244270533,
+      "x": -946.2725044050675,
+      "y": 1044.5700795926925,
       "width": 449.0,
       "height": 640.0,
       "state": {},
@@ -36,17 +36,17 @@
     {
       "widget_id": "SamothraceMap",
       "instance_id": "10fa8b04-4a35-4071-8e15-d833516b42b0",
-      "x": -156.88609672013885,
-      "y": 112.36707324471631,
-      "width": 920.0,
-      "height": 700.0,
+      "x": -422.5028674566631,
+      "y": -89.10961559125002,
+      "width": 1143.1798399744423,
+      "height": 1033.629850865474,
       "state": {
         "visibleLayers": [
-          "aerial"
+          "contours:actual"
         ]
       },
       "locked": false,
-      "placed_content_hash": "05b0df31728f"
+      "placed_content_hash": "ccf04fa9bbdd"
     },
     {
       "widget_id": "SamothraceDescription",
@@ -62,39 +62,14 @@
     {
       "widget_id": "claude_desk",
       "instance_id": "a800da51-f40e-4234-a5a0-f7040193270a",
-      "x": -1125.2093137002928,
-      "y": 1709.0157374903472,
+      "x": -1868.789070902895,
+      "y": 980.0932366190672,
       "width": 656.0,
       "height": 883.0,
       "state": {
         "model": "claude-sonnet-5",
         "permission_mode": "auto"
       },
-      "locked": false,
-      "placed_content_hash": null
-    },
-    {
-      "widget_id": "claude_desk",
-      "instance_id": "1a2b4fa6-697c-4815-9090-35dc1946736b",
-      "x": -831.3680691330119,
-      "y": 23.655547347273636,
-      "width": 647.0,
-      "height": 688.0,
-      "state": {
-        "model": "claude-sonnet-5",
-        "permission_mode": "auto"
-      },
-      "locked": false,
-      "placed_content_hash": null
-    },
-    {
-      "widget_id": "scratch",
-      "instance_id": "321a58d6",
-      "x": -1598.8020833333346,
-      "y": 2082.5376157407422,
-      "width": 360.0,
-      "height": 320.0,
-      "state": {},
       "locked": false,
       "placed_content_hash": null
     },
@@ -108,11 +83,36 @@
       "state": {},
       "locked": false,
       "placed_content_hash": null
+    },
+    {
+      "widget_id": "git_status",
+      "instance_id": "4fa22c9a",
+      "x": -1184.2869263435928,
+      "y": 1705.1717784791879,
+      "width": 420.0,
+      "height": 484.0301877613856,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "claude_desk",
+      "instance_id": "bf796696-acdb-4e7c-b39c-0db8ba006bb7",
+      "x": -1167.7875029042732,
+      "y": -38.44724892541819,
+      "width": 674.2961590961899,
+      "height": 962.8052792460492,
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "locked": false,
+      "placed_content_hash": null
     }
   ],
-  "pan_x": -596.271189591078,
-  "pan_y": 2002.5061338289963,
-  "scale": 0.8704093188804402,
+  "pan_x": -241.835157007919,
+  "pan_y": 1330.0933635435547,
+  "scale": 1.5878584600808299,
   "custom_widgets": [
     {
       "keyword": "SamothraceMap",
@@ -124,7 +124,10 @@
       },
       "capabilities": [
         "fs",
-        "state"
+        "state",
+        "events",
+        "log",
+        "documents"
       ],
       "source_path": "desk_widgets/samothrace-map"
     },
@@ -218,10 +221,10 @@
   "state": {
     "samothrace.selectedMonument": {
       "value": {
-        "webCode": "(8-10)NicheCultRooms",
-        "label": "8-10",
-        "name": "Faux Mycenaean Niche and Rooms",
-        "plan": "Actual"
+        "webCode": "(0)Introduction",
+        "label": "",
+        "name": "Overview",
+        "plan": "Overview"
       },
       "edit": null,
       "history": [
@@ -431,12 +434,78 @@
             "plan": "Actual"
           },
           "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(23)Anaktoron",
+            "label": "23",
+            "name": "Anaktoron",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(0)Introduction",
+            "label": "",
+            "name": "Overview",
+            "plan": "Overview"
+          },
+          "edit": null
         }
       ]
     }
   },
   "installed_jobs": [],
   "recently_removed": [
+    {
+      "widget_id": "claude_desk",
+      "kind": "python",
+      "label": "Claude (Desk) (1a2b4fa6)",
+      "instance_id": "1a2b4fa6-697c-4815-9090-35dc1946736b",
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "width": 647.0,
+      "height": 688.0,
+      "removed_at": 1791837563.140128
+    },
+    {
+      "widget_id": "git_diff",
+      "kind": "python",
+      "label": "Git Diff (8bebe8c2)",
+      "instance_id": "8bebe8c2",
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/samothrace.desk"
+      },
+      "width": 640.0,
+      "height": 480.0,
+      "removed_at": 1791836407.7602692
+    },
+    {
+      "widget_id": "scratch",
+      "kind": "python",
+      "label": "Scratch (321a58d6)",
+      "instance_id": "321a58d6",
+      "state": {
+        "label": "untitled",
+        "text": "to recap where things stand: the pipeline reorganization, color work, and ContourConnector are all built and running; `plans/samothrace-map-consolidation.md` and `plans/incremental-pipeline-runs.md` capture where we're headed next and what's intentionally parked; and that FEEDBACK file is filed for whoever picks up the MCP idea. Just say the word when you want me to start on phase 1 of the consolidation (recording plumbing) or anything else."
+      },
+      "width": 360.0,
+      "height": 320.0,
+      "removed_at": 1791836393.140546
+    },
+    {
+      "widget_id": "console",
+      "kind": "python",
+      "label": "Console (c965f457)",
+      "instance_id": "c965f457",
+      "state": {},
+      "width": 720.0,
+      "height": 653.1248736640338,
+      "removed_at": 1791777826.2253911
+    },
     {
       "widget_id": "ContourConnector",
       "kind": "html",
@@ -724,54 +793,6 @@
       "width": 360.0,
       "height": 320.0,
       "removed_at": 1791656465.64796
-    },
-    {
-      "widget_id": "claude_desk",
-      "kind": "python",
-      "label": "Claude (Desk) (de8d46e9)",
-      "instance_id": "de8d46e9-2a95-4dd6-ba1a-d8d22602c098",
-      "state": {
-        "model": "claude-sonnet-5",
-        "permission_mode": "auto"
-      },
-      "width": 701.0,
-      "height": 680.0,
-      "removed_at": 1791618955.385472
-    },
-    {
-      "widget_id": "git_status",
-      "kind": "python",
-      "label": "Git Status (d6e6c7b3)",
-      "instance_id": "d6e6c7b3",
-      "state": {},
-      "width": 498.0889921757873,
-      "height": 360.0,
-      "removed_at": 1791609569.30607
-    },
-    {
-      "widget_id": "editor",
-      "kind": "python",
-      "label": "Editor (59641afb)",
-      "instance_id": "59641afb",
-      "state": {
-        "path": "/Users/mphair/desk_imports/ae_samothrace/.desk_temp/desk_procs/2f4f6d7e-a620-4487-aa95-fc73190dcf5b/desk_proc_source.py"
-      },
-      "width": 720.0,
-      "height": 520.0,
-      "removed_at": 1791591117.712497
-    },
-    {
-      "widget_id": "claude_desk",
-      "kind": "python",
-      "label": "Claude (Desk) (1cfdfc0d)",
-      "instance_id": "1cfdfc0d-0090-450a-8b6c-8eb5fbc5a8f9",
-      "state": {
-        "model": "claude-sonnet-5",
-        "permission_mode": "auto"
-      },
-      "width": 480.0,
-      "height": 560.0,
-      "removed_at": 1791583593.9762292
     }
   ]
 }

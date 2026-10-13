@@ -242,20 +242,92 @@ Every question/entry in every tab gets a **Show me** button. On press, a
 Each phase should leave SamothraceMap in a working, demoable state —
 no big-bang integration at the end.
 
-1. **Recording plumbing**: event subscription, indicator UI, recording-log
+1. ✅ **Recording plumbing**: event subscription, indicator UI, recording-log
    writer (§2, §3) — foundational, lowest risk, nothing else depends on
-   guessing its shape correctly later.
-2. **Pipeline stage layers** (§4.1) — mechanical, reuses existing PNGs,
-   no new interaction model.
-3. **Final contours layer** (§4.2) — hover/click + recording-log
-   integration, reuses Contour Connector's hit-testing code.
-4. **Q&A panel shell** + **Label review tab** (§5, §5.1 item 1) — simplest
+   guessing its shape correctly later. Built 2026-10-12 in
+   `samothrace-map-recording.ts`; confirmed working against a real
+   recording (indicator showed up). Also logs layer-visibility changes
+   and a full visible-layers snapshot the moment a recording starts
+   (not originally spec'd in §3, added per request so an answer about
+   "what was visible" doesn't depend on the narration mentioning it).
+2. ✅ **Pipeline stage layers** (§4.1) — mechanical, reuses existing PNGs,
+   no new interaction model. Built 2026-10-12 in
+   `samothrace-map-stage-layers.ts`. Required one addition not foreseen
+   when this plan was written: `extract_vector_layers.py` didn't persist
+   the stitched mosaic's own geographic bounds anywhere, so there was no
+   way to position a stage PNG on the map at all -- added
+   `write_stage_bounds()`, writing one `bounds.json` per plan alongside
+   the 7 stage PNGs (lon/lat box, not pixel/tile coordinates, so it's
+   zoom-independent at render time the same way the monument overlay
+   polygons already are).
+3. ✅ **Final contours layer** (§4.2) — hover/click + recording-log
+   integration, reuses Contour Connector's hit-testing code. Built
+   2026-10-12 in `samothrace-map-contours-layer.ts`. Joins each plan's
+   existing layer-panel group (real map content) rather than getting a
+   separate section the way the stage debug layers do. Monument
+   hover/click still takes precedence when both are hit (large, easy
+   -to-hit polygon vs. a thin line) — contour hit-testing is the
+   fallback when no monument is hit, for both hover and click.
+   Refactored `redraw()`'s local `toScreen` closure into a shared
+   `private readonly toScreen` arrow-field during this phase, since the
+   pointer handlers (hover/click hit-testing) now need the same
+   projection outside of a redraw pass too.
+4. ✅ **Q&A panel shell** + **Label review tab** (§5, §5.1 item 1) — simplest
    of the three tabs (flat list, 3-way answer), proves out the tab
    framework, show-me, and the recording-vs-durable-file answer split
-   (§5.2) end to end before the more complex tabs.
-5. **Minor contour bands tab** (§5.1 item 2).
-6. **Contour connector tab** (§5.1 item 3) — the largest single port (full
-   drag-to-connect canvas interaction inside a tab).
+   (§5.2) end to end before the more complex tabs. Built 2026-10-12 in
+   `samothrace-map-qa-panel.ts`. Answers are loaded from
+   `.desk_temp/contour-label-review-log.json` itself (not this widget's
+   own localStorage) as the source of truth on init, so anything already
+   answered via the old standalone Contour Label Review widget is
+   already accounted for, never re-asked. "Show me" highlight is a
+   plain sustained highlight (bright yellow, thicker line), not an
+   animated pulse -- §5.1 step 3 left the exact animation unspecified,
+   and a non-animated highlight is simpler and still reads as clearly
+   distinct from normal hover/selected styling. The recording indicator
+   moved from the toolbar (its phase-1 placement, before the panel
+   existed) into the new panel's own header, matching §2's original
+   "above the Q&A tab panel" placement now that there's a panel to be
+   above. Per a follow-up request, also made every layers-panel group
+   header collapsible (native `<details>`/`<summary>`, same mechanism
+   the Debug section already used) -- not originally part of this plan,
+   but a small, low-risk UI improvement bundled in alongside this phase.
+5. ✅ **Minor contour bands tab** (§5.1 item 2). Built 2026-10-12 in
+   `samothrace-map-qa-panel.ts`. Unlike label review's flat card list,
+   this one keeps the standalone widget's group-navigator shape
+   (prev/next/dropdown/skip-to-unanswered) rather than rendering every
+   group as its own card -- 100+ pending groups per plan is too many to
+   usefully scroll through flat. Navigating to a group auto-triggers
+   "Show me" (pans/zooms/highlights the real map as you browse), plus an
+   explicit button of its own for re-centering after panning away.
+   **One real simplification from the standalone widget**: that widget
+   drew each fragment in its own distinct numbered color on the map, so
+   a human could tell which highlighted line matched which elevation
+   -input row; this port highlights the whole group as one solid block
+   (the same red/white highlight every "Show me" uses) -- the sidebar's
+   numbered color swatches are kept, but aren't matched on the map
+   itself. Flagged as a possible regression to revisit if it turns out
+   to matter in practice, not fixed speculatively up front.
+6. ✅ **Contour connector tab** (§5.1 item 3) — the largest single port (full
+   drag-to-connect canvas interaction inside a tab). Built 2026-10-12 in
+   `samothrace-map-connector-tab.ts`. Drag-to-connect only engages while
+   this tab is the active one -- the main canvas's pointer handlers
+   switch modes based on `activeQaTab`, so it structurally can't clash
+   with plain monument/contour hover-click on the other two tabs (the
+   plan's own "kept self-contained" call). Reuses
+   `ContoursLayerController`'s already-loaded fragments (added a public
+   `fragmentsFor()`) rather than fetching a second copy of the same
+   *.geojson. **Interpretation call on "gets list-style entries too...
+   so it has the same 'show me' affordance"**: a flat list of every
+   *suggested* connection isn't practical (thousands per plan -- the
+   whole reason the drag/click/right-click canvas interaction exists
+   instead of a list in the first place); the list this tab actually
+   shows is of *confirmed* connections instead, each with its own "Show
+   me" and a remove button -- naturally small since it starts empty and
+   only grows as you actually connect things.
+   All six phases of this plan are now built. See §8 for what's still
+   genuinely open (mostly: `scripts/apply_minor_review.py` doesn't exist
+   yet, and recording-log answers still need a real "fold back" step).
 
 ## 7. Implementation notes
 

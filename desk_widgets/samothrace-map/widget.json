@@ -3,7 +3,7 @@
   "label": "Samothrace Map",
   "width": 920,
   "height": 700,
-  "capabilities": ["fs", "state"],
+  "capabilities": ["fs", "state", "events", "log", "documents"],
   "state_schema": {
     "samothrace.selectedMonument": "{ webCode: string; label: string; name: string; plan: string }"
   }

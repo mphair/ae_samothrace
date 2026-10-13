@@ -1158,6 +1158,38 @@ PIPELINE_STAGES = [
 ]
 
 
+def write_stage_bounds(plan: str, mosaic: Mosaic) -> None:
+    """Writes `.desk_temp/pipeline-stages/<plan>/bounds.json` -- the
+    lon/lat box every stage PNG for this plan covers (all 7 stages share
+    one mosaic, hence one bounds file per plan, not per stage). Nothing
+    in this script itself ever reads it back; it exists purely for the
+    SamothraceMap widget's pipeline-stage layers (see
+    plans/samothrace-map-consolidation.md §4.1) to position a stage PNG
+    as a plain image overlay without having to duplicate this project's
+    zoom-20 tile-stitching math client-side just to re-derive where a
+    snapshot's own pixel (0, 0) sits in the real world. Web Mercator is
+    north-up with no rotation, so a simple (west, south, east, north) box
+    from the image's two opposite corners is exact, not an approximation
+    -- unlike the CAD drawing's own border frame (see
+    find_border_frame_fragments's header comment), the mosaic's PIXEL
+    GRID itself is never rotated relative to lon/lat."""
+    out_dir = STAGE_DIR / plan
+    out_dir.mkdir(parents=True, exist_ok=True)
+    height, width = mosaic.rgba.shape[:2]
+    west, north = pixel_to_lonlat(mosaic, 0, 0)
+    east, south = pixel_to_lonlat(mosaic, width, height)
+    payload = {
+        "plan": plan,
+        "widthPx": width,
+        "heightPx": height,
+        "west": west,
+        "south": south,
+        "east": east,
+        "north": north,
+    }
+    (out_dir / "bounds.json").write_text(json.dumps(payload, indent=2))
+
+
 def save_stage_mask(plan: str, stage_num: int, stage_name: str, mask: np.ndarray) -> None:
     out_dir = STAGE_DIR / plan
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -1587,6 +1619,7 @@ def extract_contours(plan: str, mosaic: Mosaic) -> tuple[dict, list[ReviewItem],
     if stage_dir.is_dir():
         for old_file in stage_dir.glob("*.png"):
             old_file.unlink()
+    write_stage_bounds(plan, mosaic)
 
     blue_mask, ink_mask_raw = color_masks(mosaic.rgba)
     save_stage_mask(plan, 0, "raw-ink", ink_mask_raw)
