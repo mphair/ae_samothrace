@@ -3,6 +3,37 @@
 See `AGENTS.md` for the full picture of this widget; this file just
 tracks specific open items worth picking up later.
 
+- **Investigate: a confirmed minor-band session-local override may not
+  always be live.** Fragment 103 was confirmed (band-35-40-2, 36m,
+  2026-10-14) but hovered as "unlabeled" in a later recording
+  (2026-10-16) -- geometry confirmed unchanged (not index drift from the
+  pipeline re-run), log entry confirmed still present, no obvious
+  clearing path found in source. Unconfirmed whether this is a stale
+  -running-widget-instance artifact (most likely) or a real bug. See
+  `investigations/session-local-override-not-live.md` for what's been
+  ruled out and the cheap direct test to run first.
+
+- **Investigate: a channel for the agent to apply corrections live,
+  without per-item user confirmation.** Requested directly 2026-10-16,
+  after the agent resolved the 134/89/45 minor-band fragmentation by
+  hand-writing JSON into the two durable log files and telling the user
+  to reload -- "you should have been able to have those changes show up
+  in the UI immediately, as if I had confirmed it in an item in the Q/A
+  tab." Likely shape: a new polled file parallel to the Agent Q&A pair,
+  but applied immediately on write rather than waiting for a user
+  Confirm/Reject click. See
+  `investigations/agent-autonomous-corrections-channel.md` for the
+  sketch and open questions (visibility/trust, provenance tagging,
+  reversibility) -- no code written yet.
+
+- **Investigate: proactive, unprompted efficiency suggestions.**
+  Requested directly 2026-10-16: ways the agent could notice and flag
+  pipeline/widget/MCP efficiency improvements on its own, the way the
+  ~12s->~5.3s Actual-plan pipeline reduction only happened because the
+  user happened to ask about it. See
+  `investigations/proactive-efficiency-suggestions.md` for candidate
+  mechanisms and open questions -- exploratory only, no design decided.
+
 - **2026-10-15: added a "Pipeline (Topographic)" staged-reveal debug
   group** (`00 Restored raw` → `01 Structure footprints (ground truth)`
   → `02 Exclusion mask (buffered)` → the real "Topographic" imagery
