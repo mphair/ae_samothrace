@@ -25,8 +25,8 @@
     {
       "widget_id": "hmsvc_manager",
       "instance_id": "8c61c442-3d5a-4752-96d4-b36444b496a6",
-      "x": 556.8915445920625,
-      "y": 1019.3783702994083,
+      "x": -245.20375302418128,
+      "y": 555.7214807152077,
       "width": 720.0,
       "height": 480.0,
       "state": {},
@@ -34,25 +34,10 @@
       "placed_content_hash": null
     },
     {
-      "widget_id": "SamothraceMap",
-      "instance_id": "10fa8b04-4a35-4071-8e15-d833516b42b0",
-      "x": -422.5028674566631,
-      "y": -89.10961559125002,
-      "width": 1143.1798399744423,
-      "height": 1033.629850865474,
-      "state": {
-        "visibleLayers": [
-          "contours:actual"
-        ]
-      },
-      "locked": false,
-      "placed_content_hash": "ccf04fa9bbdd"
-    },
-    {
       "widget_id": "SamothraceDescription",
       "instance_id": "cb314ecb-7253-4017-a7e1-cef53c12e96b",
-      "x": 887.2922756014669,
-      "y": 288.67639034132804,
+      "x": 340.28285565059645,
+      "y": -251.51076356626263,
       "width": 460.0,
       "height": 700.0,
       "state": {},
@@ -60,36 +45,11 @@
       "placed_content_hash": "2a136b77f3fe"
     },
     {
-      "widget_id": "claude_desk",
-      "instance_id": "a800da51-f40e-4234-a5a0-f7040193270a",
-      "x": -1868.789070902895,
-      "y": 980.0932366190672,
-      "width": 656.0,
-      "height": 883.0,
-      "state": {
-        "model": "claude-sonnet-5",
-        "permission_mode": "auto"
-      },
-      "locked": false,
-      "placed_content_hash": null
-    },
-    {
-      "widget_id": "project_files",
-      "instance_id": "b893d3c8",
-      "x": -284.6364236017654,
-      "y": 1884.5223532633381,
-      "width": 360.0,
-      "height": 640.0,
-      "state": {},
-      "locked": false,
-      "placed_content_hash": null
-    },
-    {
       "widget_id": "git_status",
       "instance_id": "4fa22c9a",
       "x": -1184.2869263435928,
       "y": 1705.1717784791879,
-      "width": 420.0,
+      "width": 622.47637215101,
       "height": 484.0301877613856,
       "state": {},
       "locked": false,
@@ -98,8 +58,8 @@
     {
       "widget_id": "claude_desk",
       "instance_id": "bf796696-acdb-4e7c-b39c-0db8ba006bb7",
-      "x": -1167.7875029042732,
-      "y": -38.44724892541819,
+      "x": -1615.9297663346254,
+      "y": -174.76430133772155,
       "width": 674.2961590961899,
       "height": 962.8052792460492,
       "state": {
@@ -108,11 +68,48 @@
       },
       "locked": false,
       "placed_content_hash": null
+    },
+    {
+      "widget_id": "markdown",
+      "instance_id": "7ccdbdc8-e537-4c52-8766-aad4326b5dd5",
+      "x": -3009.333904631032,
+      "y": -372.11114228297373,
+      "width": 1281.3816832605842,
+      "height": 1215.4439762576935,
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/ARCHITECTURE.md"
+      },
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "SamothraceMap",
+      "instance_id": "3a684219",
+      "x": -881.7871365353735,
+      "y": -231.45002240144422,
+      "width": 1176.591107109665,
+      "height": 803.3166821561339,
+      "state": {
+        "visibleLayers": [
+          "topographic",
+          "restored-plan-raw",
+          "restored-monuments"
+        ],
+        "recordingLogId": "4000a971",
+        "view": {
+          "lon": 25.529599219186196,
+          "lat": 40.50073972013015,
+          "zoom": 19
+        },
+        "selectedWebCode": null
+      },
+      "locked": false,
+      "placed_content_hash": "17d9d84cedec"
     }
   ],
-  "pan_x": -241.835157007919,
-  "pan_y": 1330.0933635435547,
-  "scale": 1.5878584600808299,
+  "pan_x": -742.1761004087031,
+  "pan_y": 1425.8293541901965,
+  "scale": 0.7518431268437766,
   "custom_widgets": [
     {
       "keyword": "SamothraceMap",
@@ -459,6 +456,57 @@
   "installed_jobs": [],
   "recently_removed": [
     {
+      "widget_id": "project_files",
+      "kind": "python",
+      "label": "Project Files (b893d3c8)",
+      "instance_id": "b893d3c8",
+      "state": {},
+      "width": 360.0,
+      "height": 640.0,
+      "removed_at": 1792123426.559967
+    },
+    {
+      "widget_id": "claude_desk",
+      "kind": "python",
+      "label": "Claude (Desk) (a800da51)",
+      "instance_id": "a800da51-f40e-4234-a5a0-f7040193270a",
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "width": 656.0,
+      "height": 883.0,
+      "removed_at": 1792123317.090713
+    },
+    {
+      "widget_id": "scratch",
+      "kind": "python",
+      "label": "Scratch (b272504d)",
+      "instance_id": "b272504d",
+      "state": {
+        "label": "untitled",
+        "text": "current: messing with base images\nnext: redo the pipelines so that we only do the steps to the actual pipeline that we need. also: be sure to update the layers view in the widget -- we don't need the \"actual state\" category any longer. we should also rename the pipeline (actual) category to \"pipeline (waterways)\" and only include the steps that we're actually doing."
+      },
+      "width": 360.0,
+      "height": 320.0,
+      "removed_at": 1792123287.249036
+    },
+    {
+      "widget_id": "SamothraceMap",
+      "kind": "html",
+      "label": "Samothrace Map (10fa8b04)",
+      "instance_id": "10fa8b04-4a35-4071-8e15-d833516b42b0",
+      "state": {
+        "visibleLayers": [
+          "topographic",
+          "aerial"
+        ]
+      },
+      "width": 1143.1798399744423,
+      "height": 1033.629850865474,
+      "removed_at": 1792112271.170743
+    },
+    {
       "widget_id": "claude_desk",
       "kind": "python",
       "label": "Claude (Desk) (1a2b4fa6)",
@@ -747,52 +795,6 @@
       "width": 820.0,
       "height": 760.0,
       "removed_at": 1791776523.6659
-    },
-    {
-      "widget_id": "project_files",
-      "kind": "python",
-      "label": "Project Files (6fd86003)",
-      "instance_id": "6fd86003",
-      "state": {},
-      "width": 360.0,
-      "height": 640.0,
-      "removed_at": 1791774349.889698
-    },
-    {
-      "widget_id": "scratch",
-      "kind": "python",
-      "label": "Scratch (2ed42b85)",
-      "instance_id": "2ed42b85-5105-4e6d-86ac-286a66cb8ef1",
-      "state": {
-        "label": "Contour extraction status + next: 1m minor contours",
-        "text": "Where we're at (topographic contour/stream extraction)\n\nBuilt scripts/extract_vector_layers.py: extracts contour lines + stream\npaths directly from each plan's own raster (Data/mapTiles), independent\nof the old raster-diff \"topographic\" layer in samothrace-tiles (which\nturned out unreliable -- see the TopoCompare widget this all grew out\nof). Outputs real vector GeoJSON (2D LineString + elevation_m property,\nmatching gdal_contour's own convention) to Data/mapFeatures/.\n\nWhat's working:\n- Index (5m-interval) contours extract and label well. Classification\n  pipeline: local stroke-width threshold -> skeletonize -> cut at\n  branch points -> length filter separates real contour arcs from\n  digit/symbol strokes. Elevation labels read via OCR (ocrmac, macOS\n  Vision, no external binary needed), gated by \"must be a multiple of\n  5m\" -- calibrated against every real hit on the site, much more\n  reliable than OCR confidence or text-cleanliness alone.\n- Blue dashed stream lines extract cleanly (Actual State Plan only --\n  Restored has none marked).\n- A human-review loop now closes end-to-end: extraction queues genuine\n  ambiguity (not auto-accepted, not silently discarded) ->\n  ContourLabelReview widget shows the human the exact cropped image ->\n  apply_label_review.py persists the decision by geographic position\n  (survives fragment-id churn across re-runs) -> extraction respects it\n  forever after. First real answer (the \"09\"/9m misread -- actually a\n  contour loop/switchback, not a label) applied and verified.\n- TopoCompare widget: 4 panels (side-by-side sources, red/cyan overlay,\n  combined raster-diff result, extracted vectors), collapsible\n  sections, TOC sidebar, zoom/comment modes, and an edit mode for\n  manually deleting false positives / merging fragments that should be\n  one line -- corrections stored separately from the extractor's own\n  output (*.corrections.json) so re-running the extractor never\n  clobbers human review work.\n- Actual State Plan has several rounds of human corrections applied via\n  the widget (digit-label false positives deleted, broken fragments\n  reconnected). Restored State Plan has none yet.\n\nKnown limitations (see extract_vector_layers.py's own docstring for the\nfull list): contours get cut at every crossing rather than reconstructed\ncontinuous; the survey-boundary line can leak in as a false contour;\ncorrections key off array index, which can shift on a re-run (now at\nleast partially mitigated for label review via position-keyed\ndecisions, but *.corrections.json deletes/merges still don't have that\nprotection).\n\nNext thing to try: the 1m minor contours\n\nConfirmed visually (topo-compare-log.json entry #4) that the ~4 unlabeled\nlines between each pair of index contours are a genuinely distinct,\nvisibly thinner stroke weight in the source raster -- real 1m contours,\nnot extraction noise. We don't currently do anything with that\ndistinction: minor contours just come out unlabeled, like any other\nunlabeled fragment, with no elevation at all.\n\nA first attempt at measuring stroke width per-fragment (local\ndistance-transform average) didn't cleanly separate index vs. minor --\nin dense hillside areas the measurement gets confounded by *neighboring*\nlines, not just a fragment's own pen width, so ~93% of fragments bottom\nout at the same minimum value regardless of true drawn weight. Dropped\nrather than shipped on shaky statistical ground.\n\nWant to take another pass at this -- possibly a smarter width-measurement\napproach (perpendicular-to-tangent sampling instead of raw distance\n-transform?), or leaning on the fact that minor contours are regularly\nspaced between two known index contours (could interpolate if contour\nordering/adjacency were tracked topologically). This feels like exactly\nthe kind of fuzzy, \"does this look bold or thin to you\" judgment call\nthat a small human-review UI (same shape as the contour-label-review\nloop: a handful of targeted questions, not a wall of them) could help\ncalibrate or directly resolve, rather than trying to nail a fully\nautomatic classifier up front."
-      },
-      "width": 360.0,
-      "height": 730.0,
-      "removed_at": 1791684095.59479
-    },
-    {
-      "widget_id": "MinorContourReview",
-      "kind": "html",
-      "label": "Minor Contour Review (98bdd557)",
-      "instance_id": "98bdd557-38e6-4cfd-906b-0f4991133f53",
-      "state": {},
-      "width": 1040.0,
-      "height": 820.0,
-      "removed_at": 1791677199.168365
-    },
-    {
-      "widget_id": "scratch",
-      "kind": "python",
-      "label": "Scratch (71e07a4d)",
-      "instance_id": "71e07a4d",
-      "state": {
-        "label": "untitled",
-        "text": ""
-      },
-      "width": 360.0,
-      "height": 320.0,
-      "removed_at": 1791656465.64796
     }
   ]
 }

@@ -16,6 +16,7 @@
     "samothrace-map-contours-layer.ts",
     "samothrace-map-qa-panel.ts",
     "samothrace-map-connector-tab.ts",
+    "samothrace-map-agent-qa-tab.ts",
     "samothrace-map.ts"
   ]
 }

@@ -26,11 +26,16 @@
 
 type StagePlan = 'actual' | 'restored';
 
-// Mirrors extract_vector_layers.py's own PIPELINE_STAGES list -- kept in
+// Mirrors extract_vector_layers.py's own per-plan stage lists -- kept in
 // sync by hand, same as Pipeline Stage Viewer's own copy of this same
-// list (small, stable; see that constant's own comment in the Python
-// source).
-const STAGE_DEFS: Array<{ num: number; name: string; label: string }> = [
+// list (small, stable; see each constant's own comment in the Python
+// source). Restored still runs the full 7-stage contour pipeline;
+// Actual, as of 2026-10-15, only runs the lightweight waterway (stream)
+// extraction (see extract_vector_layers.py's main() and extract_streams'
+// own header comments for why) -- genuinely different stages, not just a
+// renamed copy of the contour ones, hence two separate lists rather than
+// one shared STAGE_DEFS the way this file used to have.
+const CONTOUR_STAGE_DEFS: Array<{ num: number; name: string; label: string }> = [
   { num: 0, name: 'raw-ink', label: 'Raw ink mask (ink/blue split)' },
   { num: 1, name: 'after-structure-exclusion', label: 'After structure (building) exclusion' },
   { num: 2, name: 'candidate-fragments', label: 'Candidate fragments (thin/thick split + length filter)' },
@@ -40,15 +45,26 @@ const STAGE_DEFS: Array<{ num: number; name: string; label: string }> = [
   { num: 6, name: 'with-minor-bands', label: 'After minor-contour banding (1m interpolation)' },
 ];
 
-const STAGE_PLAN_LABELS: Record<StagePlan, string> = { actual: 'Pipeline (Actual)', restored: 'Pipeline (Restored)' };
+const WATERWAY_STAGE_DEFS: Array<{ num: number; name: string; label: string }> = [
+  { num: 0, name: 'blue-mask', label: 'Blue-channel mask (stream ink)' },
+  { num: 1, name: 'bridged', label: 'After dash-gap bridging' },
+  { num: 2, name: 'stream-fragments', label: 'Traced stream fragments' },
+];
+
+const STAGE_DEFS_BY_PLAN: Record<StagePlan, Array<{ num: number; name: string; label: string }>> = {
+  actual: WATERWAY_STAGE_DEFS,
+  restored: CONTOUR_STAGE_DEFS,
+};
+
+const STAGE_PLAN_LABELS: Record<StagePlan, string> = { actual: 'Pipeline (Waterways)', restored: 'Pipeline (Restored)' };
 
 // Every stage layer's id starts with this prefix -- purely namespacing,
 // so it can never collide with an hmsvc tile layer's own plain id
 // ("aerial", "actual-structures", ...) in the same shared visibleLayers
 // set. Nothing actually parses the prefix back out: drawVisible/
 // buildLayersPanel both already know, from context, which ids are which
-// (one iterates STAGE_DEFS directly, the other builds the stage rows'
-// own ids from this same function) -- it exists only so the two id
+// (one iterates STAGE_DEFS_BY_PLAN directly, the other builds the stage
+// rows' own ids from this same function) -- it exists only so the two id
 // spaces can never collide, not to be machine-distinguishable later.
 const STAGE_LAYER_PREFIX = 'stage:';
 
@@ -158,7 +174,7 @@ class StageLayersController {
   allLayerRows(): Array<{ id: string; label: string; group: StagePlan }> {
     const rows: Array<{ id: string; label: string; group: StagePlan }> = [];
     for (const plan of ['actual', 'restored'] as StagePlan[]) {
-      for (const stage of STAGE_DEFS) {
+      for (const stage of STAGE_DEFS_BY_PLAN[plan]) {
         rows.push({ id: stageLayerId(plan, stage.num), label: `${String(stage.num).padStart(2, '0')} — ${stage.label}`, group: plan });
       }
     }
@@ -207,7 +223,7 @@ class StageLayersController {
     for (const plan of ['actual', 'restored'] as StagePlan[]) {
       const bounds = this.bounds.get(plan);
       if (!bounds) continue; // not preloaded yet (or this plan's pipeline hasn't been run) -- preloadBounds's own scheduleRedraw will retry
-      for (const stage of STAGE_DEFS) {
+      for (const stage of STAGE_DEFS_BY_PLAN[plan]) {
         const id = stageLayerId(plan, stage.num);
         if (!visibleLayers.has(id)) continue;
         const entry = this.getImage(plan, stage);

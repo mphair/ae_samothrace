@@ -321,6 +321,14 @@ class MinorBandsTabController {
     private readonly recording: RecordingController,
     private readonly onChanged: () => void,
     private readonly onShowMe: (plan: QaPlan, fragmentIds: number[]) => void,
+    // Called once per already-confirmed fragment (non-null elevationM
+    // only) -- both here in init(), for every answer already sitting in
+    // MINOR_BAND_LOG_PATH when the widget loads, AND again from submit()
+    // for a brand-new confirmation made live. See
+    // ContoursLayerController.setFragmentElevationOverrides's own
+    // comment for why this needs to exist at all (no apply script yet
+    // to fold a confirmed elevation back into the real *.geojson).
+    private readonly onBandConfirmed: (plan: QaPlan, overrides: Array<{ fragmentId: number; elevationM: number }>) => void,
   ) {}
 
   async init(): Promise<void> {
@@ -332,12 +340,25 @@ class MinorBandsTabController {
     try {
       const { contents } = await desk.fs.readFile(MINOR_BAND_LOG_PATH);
       const parsed = JSON.parse(contents) as { answers: MinorBandGroupAnswer[] };
-      for (const a of parsed.answers ?? []) this.answers.set(`${a.plan}:${a.groupId}`, a);
+      for (const a of parsed.answers ?? []) {
+        this.answers.set(`${a.plan}:${a.groupId}`, a);
+        if (a.decision === 'confirmed') this.applyOverridesFor(a);
+      }
     } catch {
       // no log file yet -- fine, nothing answered so far
     }
     this.loaded = true;
     this.onChanged();
+  }
+
+  // Shared by init() (every already-confirmed answer on disk) and
+  // submit() (a brand-new one) -- fragments marked "not a contour"
+  // (elevationM null) are filtered out, nothing to recolor for those.
+  private applyOverridesFor(answer: MinorBandGroupAnswer): void {
+    const overrides = answer.fragments
+      .filter((f): f is { fragmentId: number; elevationM: number } => f.elevationM !== null)
+      .map((f) => ({ fragmentId: f.fragmentId, elevationM: f.elevationM }));
+    if (overrides.length > 0) this.onBandConfirmed(answer.plan, overrides);
   }
 
   private async loadQueue(plan: QaPlan): Promise<MinorBandQueueFile | null> {
@@ -494,6 +515,7 @@ class MinorBandsTabController {
       answeredAt: new Date().toISOString(),
     };
     this.answers.set(`${plan}:${group.groupId}`, answer);
+    if (decision === 'confirmed') this.applyOverridesFor(answer);
     this.onChanged();
     // §5.2, same split as label review: recording log while recording,
     // the durable file otherwise.

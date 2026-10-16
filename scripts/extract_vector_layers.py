@@ -229,6 +229,7 @@ import base64
 import io
 import json
 import math
+import os
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -1397,6 +1398,27 @@ GAP_SUGGEST_MAX_DIST_PX = 140.0  # looser than MAX_LABEL_GAP_PX (45) -- delibera
 GAP_SUGGEST_MAX_TURN_DEG = 35.0  # how much the line is allowed to "kink" at the suggested splice
 GAP_SUGGEST_MAX_ELEV_DIFF_M = 0.5  # if both ends already have an elevation, how close they must agree
 
+# Diagnostic instrumentation for suggest_auto_gap_connections, added after
+# a real case (2026-10-13, a user recording pointing at
+# SamoWeb_RestoredStatePlan_Contours band-35-40-3's 4 unlabeled fragments)
+# where several endpoint gaps well inside GAP_SUGGEST_MAX_DIST_PX (down to
+# ~10px) were confirmed, from the *.connections.suggested.json output
+# alone, to have produced NO suggestion -- impossible to tell from that
+# output alone whether the distance check, the turn-angle check, or
+# something else was the actual reason, since only passing pairs get
+# written there. When GAP_DEBUG=1 is set in the environment,
+# suggest_auto_gap_connections additionally writes EVERY candidate pair
+# it inspected (not just the ones that passed) to
+# Data/mapFeatures/SamoWeb_<Plan>_Contours.gap_debug.json, each with its
+# computed distance/angles and which check (if any) rejected it -- so a
+# question like "why wasn't X suggested" can be answered by reading a
+# file instead of re-deriving the algorithm's own math from the
+# simplified GeoJSON export after the fact, which is lossy (see that
+# file's own note on why -- the exported coordinates are too sparse near
+# a fragment's tip to reliably reproduce the outward-direction estimate
+# this module computes from the much denser raw pixel skeleton).
+GAP_DEBUG = os.environ.get("GAP_DEBUG") == "1"
+
 # The Restored plan's cleared/bordered/platformed waterway interrupted
 # contour lines more severely than a typical gap -- its own linework
 # alone doesn't always show where they continue. Looser than the
@@ -1461,37 +1483,85 @@ def _candidate_endpoint_pairs(fragments: list[Fragment], max_dist_px: float) -> 
     return out
 
 
-def suggest_auto_gap_connections(fragments: list[Fragment]) -> list[ConnectionSuggestion]:
+def suggest_auto_gap_connections(
+    fragments: list[Fragment], debug_pairs: list[dict] | None = None
+) -> list[ConnectionSuggestion]:
     """The generic, plan-agnostic "be greedier about gaps" pass -- see
     this section's own header comment. Keeps at most one suggestion per
     (fragment, fragment) pair (the shortest-distance qualifying endpoint
     combination), so two fragments with endpoints near each other on
-    both sides don't produce redundant duplicate suggestions."""
+    both sides don't produce redundant duplicate suggestions.
+
+    When `debug_pairs` is given (GAP_DEBUG=1, see that flag's own
+    comment), every candidate pair `_candidate_endpoint_pairs` finds gets
+    appended to it as a diagnostic dict -- not just the ones that end up
+    as a suggestion -- with its computed distance/angles and which check
+    (if any) rejected it. Reorganized from the original early-`continue`
+    chain into explicit elev_ok/gap_ok booleans so this capture doesn't
+    change which pairs end up in `best`: the final accept/reject decision
+    below is identical to before, just computed without short-circuiting
+    away the diagnostic values a rejected pair would otherwise never
+    compute."""
     best: dict[frozenset[int], tuple[float, tuple[int, bool, int, bool]]] = {}
     for fi, starti, fj, startj, dist in _candidate_endpoint_pairs(fragments, GAP_SUGGEST_MAX_DIST_PX):
         ei, ej = fragments[fi].elevation_m, fragments[fj].elevation_m
-        if ei is not None and ej is not None and abs(ei - ej) > GAP_SUGGEST_MAX_ELEV_DIFF_M:
-            continue
-        pi = fragments[fi].path[0] if starti else fragments[fi].path[-1]
-        pj = fragments[fj].path[0] if startj else fragments[fj].path[-1]
-        gap_y, gap_x = pj[0] - pi[0], pj[1] - pi[1]
-        gap_len = math.hypot(gap_y, gap_x)
-        if gap_len == 0:
-            continue
-        gap_dir = (gap_y / gap_len, gap_x / gap_len)
-        out_i = _endpoint_outward_direction(fragments[fi].path, starti)
-        out_j = _endpoint_outward_direction(fragments[fj].path, startj)
-        # fragment i's own outward extension should point roughly TOWARD
-        # j (cos ~ 1 against gap_dir); fragment j's outward extension
-        # should point roughly BACK toward i (cos ~ 1 against -gap_dir)
-        # -- together this means the two fragments plausibly continue
-        # straight through each other across the gap, not merely sit
-        # near each other pointing unrelated directions.
-        cos_i = out_i[0] * gap_dir[0] + out_i[1] * gap_dir[1]
-        cos_j = -(out_j[0] * gap_dir[0] + out_j[1] * gap_dir[1])
-        angle_i = math.degrees(math.acos(max(-1.0, min(1.0, cos_i))))
-        angle_j = math.degrees(math.acos(max(-1.0, min(1.0, cos_j))))
-        if angle_i > GAP_SUGGEST_MAX_TURN_DEG or angle_j > GAP_SUGGEST_MAX_TURN_DEG:
+        elev_diff = abs(ei - ej) if ei is not None and ej is not None else None
+        elev_ok = elev_diff is None or elev_diff <= GAP_SUGGEST_MAX_ELEV_DIFF_M
+
+        angle_i: float | None = None
+        angle_j: float | None = None
+        gap_ok = False
+        if elev_ok:
+            pi = fragments[fi].path[0] if starti else fragments[fi].path[-1]
+            pj = fragments[fj].path[0] if startj else fragments[fj].path[-1]
+            gap_y, gap_x = pj[0] - pi[0], pj[1] - pi[1]
+            gap_len = math.hypot(gap_y, gap_x)
+            if gap_len != 0:
+                gap_dir = (gap_y / gap_len, gap_x / gap_len)
+                out_i = _endpoint_outward_direction(fragments[fi].path, starti)
+                out_j = _endpoint_outward_direction(fragments[fj].path, startj)
+                # fragment i's own outward extension should point roughly
+                # TOWARD j (cos ~ 1 against gap_dir); fragment j's outward
+                # extension should point roughly BACK toward i (cos ~ 1
+                # against -gap_dir) -- together this means the two
+                # fragments plausibly continue straight through each
+                # other across the gap, not merely sit near each other
+                # pointing unrelated directions.
+                cos_i = out_i[0] * gap_dir[0] + out_i[1] * gap_dir[1]
+                cos_j = -(out_j[0] * gap_dir[0] + out_j[1] * gap_dir[1])
+                angle_i = math.degrees(math.acos(max(-1.0, min(1.0, cos_i))))
+                angle_j = math.degrees(math.acos(max(-1.0, min(1.0, cos_j))))
+                gap_ok = angle_i <= GAP_SUGGEST_MAX_TURN_DEG and angle_j <= GAP_SUGGEST_MAX_TURN_DEG
+
+        passed = elev_ok and gap_ok
+        if debug_pairs is not None:
+            if passed:
+                reject_reason = None
+            elif not elev_ok:
+                reject_reason = "elev-diff"
+            elif angle_i is None:
+                reject_reason = "zero-length-gap"
+            else:
+                reject_reason = "turn-angle"
+            debug_pairs.append(
+                {
+                    "aFragIdx": fi,
+                    "aIsStart": starti,
+                    "bFragIdx": fj,
+                    "bIsStart": startj,
+                    "distPx": round(dist, 2),
+                    "elevA": ei,
+                    "elevB": ej,
+                    "elevDiffM": round(elev_diff, 3) if elev_diff is not None else None,
+                    "angleIDeg": round(angle_i, 1) if angle_i is not None else None,
+                    "angleJDeg": round(angle_j, 1) if angle_j is not None else None,
+                    "maxDistPx": GAP_SUGGEST_MAX_DIST_PX,
+                    "maxTurnDeg": GAP_SUGGEST_MAX_TURN_DEG,
+                    "passed": passed,
+                    "rejectReason": reject_reason,
+                }
+            )
+        if not passed:
             continue
         key = frozenset((fi, fj))
         prev = best.get(key)
@@ -1699,14 +1769,41 @@ def extract_contours(plan: str, mosaic: Mosaic) -> tuple[dict, list[ReviewItem],
     return fragments_to_geojson(mosaic, fragments, plan, "contours"), review_items, fragments
 
 
+def save_stage_stream_fragments(plan: str, stage_num: int, stage_name: str, shape: tuple[int, int], fragments: list[Fragment]) -> None:
+    """Same shape as save_stage_fragments, but one fixed color -- the same
+    sky-blue (#0ea5e9) CONNECTOR_STREAM_GUIDE_COLOR already uses elsewhere
+    in this project for stream paths, rather than reusing contour
+    save_stage_fragments's major/minor/unlabeled palette, which has no
+    category that actually means "stream" (every Fragment here carries
+    elevation_source="n/a", which would otherwise fall into that
+    function's own "unlabeled" near-black bucket -- misleading for a
+    waterway, not a contour)."""
+    from PIL import ImageDraw
+
+    out_dir = STAGE_DIR / plan
+    out_dir.mkdir(parents=True, exist_ok=True)
+    img = Image.new("RGB", (shape[1], shape[0]), (255, 255, 255))
+    draw = ImageDraw.Draw(img)
+    for frag in fragments:
+        if len(frag.path) >= 2:
+            draw.line([(c, r) for r, c in frag.path], fill=(14, 165, 233), width=2)
+    img.save(out_dir / f"{stage_num:02d}_{stage_name}.png")
+
+
 def extract_streams(plan: str, mosaic: Mosaic) -> tuple[dict | None, list[Fragment]]:
     blue_mask, _ink_mask = color_masks(mosaic.rgba)
+    # Stage 0 saved unconditionally (even an empty/near-empty mask is a
+    # real, useful answer -- "confirmed no waterway ink here") -- stages 1
+    # and 2 only make sense once there's actually something to bridge/
+    # trace.
+    save_stage_mask(plan, 0, "blue-mask", blue_mask)
     if blue_mask.sum() < 50:
         return None, []
     # Bridge dash gaps, then skeletonize+trace the same way as contours
     # (minus the elevation-label step -- streams aren't labeled).
     bridged = ndimage.binary_dilation(blue_mask, iterations=4)
     bridged = ndimage.binary_erosion(bridged, iterations=3)  # shrink back near original width
+    save_stage_mask(plan, 1, "bridged", bridged)
     frag_labels, n_frags, kept = skeleton_fragments(bridged, min_len=8)
     objs = ndimage.find_objects(frag_labels)
     fragments: list[Fragment] = []
@@ -1721,6 +1818,7 @@ def extract_streams(plan: str, mosaic: Mosaic) -> tuple[dict | None, list[Fragme
         path = trace_pixel_path(local_coords)
         fragments.append(Fragment(frag_id=i, path=path, elevation_source="n/a"))
     print(f"  [{plan}] {len(fragments)} stream-line fragments")
+    save_stage_stream_fragments(plan, 2, "stream-fragments", mosaic.rgba.shape[:2], fragments)
     return fragments_to_geojson(mosaic, fragments, plan, "streams"), fragments
 
 
@@ -1781,51 +1879,89 @@ def main() -> None:
     plan_fragments: dict[str, list[Fragment]] = {}
     stream_fragments: dict[str, list[Fragment]] = {}
 
-    for plan in ("actual", "restored"):
-        print(f"Loading {plan} mosaic (zoom {ZOOM})...")
-        mosaic = load_plan_mosaic(plan)
-        mosaics[plan] = mosaic
-        print(f"  mosaic size: {mosaic.rgba.shape[1]}x{mosaic.rgba.shape[0]}px")
+    # Actual plan: ONLY the waterway (stream) extraction, not the full
+    # contour pipeline. 2026-10-15: Restored is the only plan still under
+    # active review; the one thing it genuinely still needs FROM Actual
+    # is the dashed stream path suggest_stream_guided_connections uses to
+    # guide gap-connection suggestions across Restored's own cleared
+    # waterway. Measured directly: the full extract_contours("actual",
+    # ...) pass (structure/border/circle-chain exclusion, OCR, minor
+    # -banding) cost ~7.8s of this script's ~12s total runtime for output
+    # nothing downstream read any more -- the mosaic+streams subset alone
+    # is ~0.5s. Actual's own *.geojson/review_queue/minor_review_queue/
+    # connections.suggested files are no longer written at all; existing
+    # ones on disk from a prior run are now stale leftovers, not kept in
+    # sync by this script going forward.
+    print(f"Loading actual mosaic (zoom {ZOOM})...")
+    actual_mosaic = load_plan_mosaic("actual")
+    mosaics["actual"] = actual_mosaic
+    print(f"  mosaic size: {actual_mosaic.rgba.shape[1]}x{actual_mosaic.rgba.shape[0]}px")
+    write_stage_bounds("actual", actual_mosaic)
+    print("Extracting streams (actual)...")
+    streams_geojson, s_fragments = extract_streams("actual", actual_mosaic)
+    stream_fragments["actual"] = s_fragments
+    if streams_geojson and streams_geojson["features"]:
+        out_path = FEATURES_DIR / "SamoWeb_ActualStatePlan_Streams.geojson"
+        out_path.write_text(json.dumps(streams_geojson, indent=2))
+        print(f"  wrote {out_path} ({len(streams_geojson['features'])} features)")
+    else:
+        print("  no stream lines detected in actual -- skipped")
 
-        print(f"Extracting contours ({plan})...")
-        contours_geojson, review_items, fragments = extract_contours(plan, mosaic)
-        plan_fragments[plan] = fragments
-        plan_label = "ActualStatePlan" if plan == "actual" else "RestoredStatePlan"
-        out_path = FEATURES_DIR / f"SamoWeb_{plan_label}_Contours.geojson"
-        out_path.write_text(json.dumps(contours_geojson, indent=2))
-        print(f"  wrote {out_path} ({len(contours_geojson['features'])} features)")
-        review_path = write_review_queue(plan, review_items)
-        if review_path:
-            print(f"  wrote {review_path} ({len(review_items)} item(s) need review)")
+    # Restored plan: the full pipeline, unchanged.
+    print(f"Loading restored mosaic (zoom {ZOOM})...")
+    mosaic = load_plan_mosaic("restored")
+    mosaics["restored"] = mosaic
+    print(f"  mosaic size: {mosaic.rgba.shape[1]}x{mosaic.rgba.shape[0]}px")
 
-        print(f"Extracting streams ({plan})...")
-        streams_geojson, s_fragments = extract_streams(plan, mosaic)
-        stream_fragments[plan] = s_fragments
-        if streams_geojson and streams_geojson["features"]:
-            out_path = FEATURES_DIR / f"SamoWeb_{plan_label}_Streams.geojson"
-            out_path.write_text(json.dumps(streams_geojson, indent=2))
-            print(f"  wrote {out_path} ({len(streams_geojson['features'])} features)")
-        else:
-            print(f"  no stream lines detected in {plan} -- skipped")
+    print("Extracting contours (restored)...")
+    contours_geojson, review_items, fragments = extract_contours("restored", mosaic)
+    plan_fragments["restored"] = fragments
+    out_path = FEATURES_DIR / "SamoWeb_RestoredStatePlan_Contours.geojson"
+    out_path.write_text(json.dumps(contours_geojson, indent=2))
+    print(f"  wrote {out_path} ({len(contours_geojson['features'])} features)")
+    review_path = write_review_queue("restored", review_items)
+    if review_path:
+        print(f"  wrote {review_path} ({len(review_items)} item(s) need review)")
 
-    # Gap-connection suggestions -- run after BOTH plans are fully
-    # extracted (the Restored plan's stream-guided pass needs the
-    # Actual plan's own finished stream fragments). See the "Gap
-    # -connection suggestions" section's own header comment.
-    for plan in ("actual", "restored"):
-        print(f"Suggesting gap connections ({plan})...")
-        suggestions = suggest_auto_gap_connections(plan_fragments[plan])
-        if plan == "restored":
-            stream_suggestions = suggest_stream_guided_connections(
-                plan_fragments["restored"], stream_fragments["actual"], mosaics["actual"], mosaics["restored"]
+    print("Extracting streams (restored)...")
+    streams_geojson, s_fragments = extract_streams("restored", mosaic)
+    stream_fragments["restored"] = s_fragments
+    if streams_geojson and streams_geojson["features"]:
+        out_path = FEATURES_DIR / "SamoWeb_RestoredStatePlan_Streams.geojson"
+        out_path.write_text(json.dumps(streams_geojson, indent=2))
+        print(f"  wrote {out_path} ({len(streams_geojson['features'])} features)")
+    else:
+        print("  no stream lines detected in restored -- skipped")
+
+    # Gap-connection suggestions -- Restored only now (Actual's own
+    # contours no longer exist to suggest connections for -- see above).
+    print("Suggesting gap connections (restored)...")
+    debug_pairs: list[dict] | None = [] if GAP_DEBUG else None
+    suggestions = suggest_auto_gap_connections(plan_fragments["restored"], debug_pairs=debug_pairs)
+    stream_suggestions = suggest_stream_guided_connections(
+        plan_fragments["restored"], stream_fragments["actual"], mosaics["actual"], mosaics["restored"]
+    )
+    suggestions += stream_suggestions
+    if stream_suggestions:
+        print(f"  [restored] {len(stream_suggestions)} stream-guided suggestion(s)")
+    print(f"  [restored] {len(suggestions)} total gap-connection suggestion(s)")
+    conn_path = write_connection_suggestions("restored", suggestions, plan_fragments["restored"], mosaics["restored"])
+    if conn_path:
+        print(f"  wrote {conn_path}")
+    if debug_pairs is not None:
+        debug_path = FEATURES_DIR / "SamoWeb_RestoredStatePlan_Contours.gap_debug.json"
+        debug_path.write_text(
+            json.dumps(
+                {
+                    "plan": "restored",
+                    "generatedAt": datetime.now(timezone.utc).isoformat(),
+                    "candidatePairs": debug_pairs,
+                },
+                indent=2,
             )
-            suggestions += stream_suggestions
-            if stream_suggestions:
-                print(f"  [{plan}] {len(stream_suggestions)} stream-guided suggestion(s)")
-        print(f"  [{plan}] {len(suggestions)} total gap-connection suggestion(s)")
-        conn_path = write_connection_suggestions(plan, suggestions, plan_fragments[plan], mosaics[plan])
-        if conn_path:
-            print(f"  wrote {conn_path}")
+        )
+        rejected = sum(1 for p in debug_pairs if not p["passed"])
+        print(f"  [restored] GAP_DEBUG: wrote {debug_path} ({len(debug_pairs)} candidate pair(s), {rejected} rejected)")
 
 
 if __name__ == "__main__":

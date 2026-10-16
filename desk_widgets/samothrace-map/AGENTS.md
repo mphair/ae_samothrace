@@ -35,7 +35,7 @@ can only confirm the source compiles.
 
 ## File manifest
 
-Six `.ts` files, compiled together as **one program** (`tsconfig.json`'s
+Seven `.ts` files, compiled together as **one program** (`tsconfig.json`'s
 `"files"` array, in this exact order — order matters for the
 *compiled JS*, since these are global scripts with no `import`/`export`
 and get concatenated in that order; it does **not** matter for *type
@@ -88,7 +88,24 @@ and get concatenated in that order; it does **not** matter for *type
    `MinorBandsTabController`, the first two Q&A tabs.
 5. **`samothrace-map-connector-tab.ts`** — `ContourConnectorTabController`,
    the third Q&A tab (drag-to-connect).
-6. **`samothrace-map.ts`** — the custom element itself
+6. **`samothrace-map-agent-qa-tab.ts`** — `AgentQaTabController`, the
+   fourth Q&A tab and the leftmost/default one. Unlike the other three
+   (each driven by a pipeline-written queue file, loaded once at init),
+   this one's questions are agent-authored at any time — appended with a
+   uuid to `.desk_temp/samothrace-map-agent-questions.json`, polled
+   (`AGENT_QA_POLL_INTERVAL_MS`, no Bridge file-watch capability exists
+   yet — see the matching FEEDBACK report), answered into
+   `.desk_temp/samothrace-map-agent-answers.json` keyed by that same
+   uuid. Currently one question type, `'confirm-connection'` — confirm
+   or reject a suggested (or already-applied) Contour Connector
+   connection without opening that tab; a confirm/reject here writes the
+   exact same `LogConnection`/`LogRejection` shape into that tab's own
+   `CONNECTOR_LOG_PATH`, so the two tabs can never disagree about a
+   connection's status. See that file's own header comment for the full
+   story, including why its answer writes are deliberately NOT gated by
+   the recording-vs-durable-file split every other tab uses (this
+   widget's own `TODO.md` has the details).
+7. **`samothrace-map.ts`** — the custom element itself
    (`SamothraceMapElement`). Owns the canvas, the layer panel, the
    monument overlay (the original functionality, predating all of the
    above), and wires every controller above together.
@@ -98,6 +115,17 @@ inside the `<template>`); `widget.json` the manifest (keyword,
 capabilities, state schema).
 
 ## Data this widget reads and writes
+
+**2026-10-15: every `<Plan>`-templated row below is Restored-only in
+practice now**, not literally both plans — `scripts/extract_vector_layers.py`
+no longer runs the contour pipeline for Actual at all (only its mosaic +
+stream/waterway extraction; see that script's own `main()` comment).
+Actual's own `*.Contours.geojson`/`review_queue`/`minor_review_queue`/
+`connections.suggested` files were deleted outright (no longer kept in
+sync by anything) rather than left to go stale on disk. The path
+TEMPLATES below are kept generic since nothing in the widget's own code
+hardcodes "restored" for these reads -- Label/Minor/Connector will just
+find nothing for `actual` and show Restored-only data.
 
 | Path | Read/write | Notes |
 |---|---|---|
@@ -111,7 +139,9 @@ capabilities, state schema).
 | `Data/mapFeatures/SamoWeb_<Plan>_Contours.connections.suggested.json` | read | Connector tab's suggestion source |
 | `Data/mapFeatures/SamoWeb_<Plan>_Contours.connections.confirmed.json` | read | Connector tab's already-applied confirmations |
 | `Data/mapFeatures/SamoWeb_ActualStatePlan_Streams.geojson` | read | Connector tab's stream-guide overlay (Actual plan's own streams, shown as a reference while working on the Restored plan) |
-| `.desk_temp/contour-connector-log.json` | read + write | Connector tab's durable confirmations/rejections |
+| `.desk_temp/contour-connector-log.json` | read + write | Connector tab's durable confirmations/rejections — **also written by** `AgentQaTabController` on a `'confirm-connection'` answer, same shape |
+| `.desk_temp/samothrace-map-agent-questions.json` | read | Agent Q&A tab's question queue — agent-authored, polled, not pipeline-written |
+| `.desk_temp/samothrace-map-agent-answers.json` | read + write | Agent Q&A tab's durable answers, keyed by question uuid |
 | `desk.hmsvc.samothrace-tiles` (shared state, not a file) | read | Tile service URL discovery — **never hardcode the port**, it changes every launch |
 
 ## Key conventions — follow these, don't reinvent them

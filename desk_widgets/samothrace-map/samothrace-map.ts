@@ -221,6 +221,7 @@ class SamothraceMapElement extends HTMLElement {
     this.recording,
     () => this.renderQaPanel(),
     (plan, fragmentIds) => void this.showMeContourFragments(plan, fragmentIds),
+    (plan, overrides) => this.contoursLayer.setFragmentElevationOverrides(plan, overrides),
   );
   // Phase 6 -- see samothrace-map-connector-tab.ts. Declared after
   // `contoursLayer` (reuses its already-loaded fragments) and
@@ -232,7 +233,21 @@ class SamothraceMapElement extends HTMLElement {
     this.contoursLayer,
     (bounds) => this.fitToBounds(padBounds(bounds, 0.6), 0),
   );
-  private activeQaTab: 'label-review' | 'minor-bands' | 'contour-connector' = 'label-review';
+  // Leftmost, default tab -- see samothrace-map-agent-qa-tab.ts's own
+  // header comment. Declared after `recording` (same field-initializer
+  // -order reasoning as the other tabs above); doesn't depend on
+  // `contoursLayer` the way connectorTab does.
+  private readonly agentQaTab = new AgentQaTabController(
+    this.recording,
+    () => this.renderQaPanel(),
+    (plan, bounds, fragmentIds) => void this.showMeConnection(plan, bounds, fragmentIds),
+    () => this.scheduleRedraw(),
+    // Keeps connectorTab's own in-memory suggested/confirmed/rejectedIds
+    // in sync the moment an agent-qa confirm/reject lands -- see that
+    // controller's own applyExternalDecision for the full reasoning.
+    (data, decision) => this.connectorTab.applyExternalDecision(data, decision),
+  );
+  private activeQaTab: 'agent-qa' | 'label-review' | 'minor-bands' | 'contour-connector' = 'agent-qa';
 
   private debugHitTraceVisible = false;
   private debugHitTrace: Array<{ x: number; y: number; hit: boolean; click: boolean; webCode: string | null }> = [];
@@ -241,6 +256,11 @@ class SamothraceMapElement extends HTMLElement {
   private layerMetas: LayerMeta[] = [];
   private visibleLayers = new Set<string>();
   private tileCache = new Map<string, TileEntry>();
+  // Debounced UI-state (view/layers/selection) save -- see
+  // scheduleSaveUiState's own comment for why this is debounced and
+  // saveUiState's own for why it's a read-modify-write, not a blind
+  // overwrite.
+  private saveUiStateTimer: number | null = null;
 
   private minZoom = 17;
   private maxZoom = 22;
@@ -298,7 +318,7 @@ class SamothraceMapElement extends HTMLElement {
     this.qaTabButtonsEl?.querySelectorAll<HTMLButtonElement>('.qa-tab-button').forEach((btn) => {
       btn.addEventListener('click', () => {
         const tab = btn.dataset.tab;
-        if (tab === 'label-review' || tab === 'minor-bands' || tab === 'contour-connector') this.setActiveQaTab(tab);
+        if (tab === 'agent-qa' || tab === 'label-review' || tab === 'minor-bands' || tab === 'contour-connector') this.setActiveQaTab(tab);
       });
     });
     this.ctx = this.canvas?.getContext('2d') ?? null;
@@ -362,6 +382,7 @@ class SamothraceMapElement extends HTMLElement {
 
   disconnectedCallback(): void {
     this.resizeObserver?.disconnect();
+    this.agentQaTab.dispose();
   }
 
   private setStatus(text: string | null): void {
@@ -399,6 +420,17 @@ class SamothraceMapElement extends HTMLElement {
       this.connectorTab.init().catch((err) => {
         console.warn('contour connector tab failed to load:', err);
       });
+      this.agentQaTab.init().catch((err) => {
+        console.warn('agent Q&A tab failed to load:', err);
+      });
+      // Same "never block/fail the map on this" treatment -- if this
+      // fails to even subscribe, the widget just won't notice a future
+      // hmsvc restart (falls back to today's "stays on the old, now-dead
+      // URL until a human reloads the widget" behavior), not a reason to
+      // fail loading the map that's working right now.
+      this.watchTileServiceState().catch((err) => {
+        console.warn('watching tile service state failed to start:', err);
+      });
 
       const tileService = await desk.state.get(TILE_SERVICE_STATE_KEY);
       const tileServiceValue = tileService.value as { status: string; url: string | null } | null;
@@ -418,19 +450,72 @@ class SamothraceMapElement extends HTMLElement {
       this.buildDropdown();
       this.combinedBounds = unionBounds([...this.actualFeatures, ...this.restoredFeatures].map(featureBounds));
 
-      const { data: localData } = await desk.self.getLocalStorage();
-      const savedLayers = Array.isArray(localData.visibleLayers) ? (localData.visibleLayers as string[]) : null;
-      if (savedLayers) {
-        this.visibleLayers = new Set(savedLayers.filter((id) => this.layerMetas.some((m) => m.id === id)));
-        this.syncLayerCheckboxes();
+      // Restoring saved UI state (view/layers/selection) is entirely
+      // best-effort: a saved layer id that no longer exists, a webCode
+      // for a monument that's gone, or a malformed/partial `view` left
+      // over from an older version of this code must never block
+      // startup -- caught broadly, falling through to today's existing
+      // defaults (shared-state selection, then full overview) on any
+      // failure.
+      let restoredSelection = false;
+      let restoredView = false;
+      try {
+        const { data: localData } = await desk.self.getLocalStorage();
+
+        const savedLayers = Array.isArray(localData.visibleLayers) ? (localData.visibleLayers as string[]) : null;
+        if (savedLayers) {
+          // isKnownLayerId, not just `this.layerMetas.some(...)` -- the
+          // latter only ever matches hmsvc-provided layers (aerial/
+          // topographic/structures/monuments), silently dropping any
+          // saved contours-layer or pipeline-stage-layer id every single
+          // time, since neither comes from layerMetas at all.
+          this.visibleLayers = new Set(savedLayers.filter((id) => this.isKnownLayerId(id)));
+          this.syncLayerCheckboxes();
+        }
+
+        const savedWebCode = typeof localData.selectedWebCode === 'string' ? localData.selectedWebCode : null;
+        if (savedWebCode && savedWebCode !== INTRO_WEBCODE && this.findAllMatching(savedWebCode).length > 0) {
+          this.selectFeature(savedWebCode, false);
+          restoredSelection = true;
+        }
+
+        // Applied AFTER selectFeature above (which already moved the
+        // camera to that selection's own bounds) so a saved pan/zoom
+        // that's drifted away from the selected monument wins for the
+        // camera, while the selection itself (dropdown, shared state for
+        // the Description widget) still restores correctly either way.
+        const rawView = localData.view;
+        if (rawView && typeof rawView === 'object') {
+          const v = rawView as { lon?: unknown; lat?: unknown; zoom?: unknown };
+          if (
+            typeof v.lon === 'number' && Number.isFinite(v.lon) &&
+            typeof v.lat === 'number' && Number.isFinite(v.lat) &&
+            typeof v.zoom === 'number' && Number.isFinite(v.zoom)
+          ) {
+            this.view = { lon: v.lon, lat: v.lat, zoom: Math.min(Math.max(v.zoom, this.minZoom), this.maxZoom) };
+            restoredView = true;
+          }
+        }
+      } catch (err) {
+        console.warn('restoring saved UI state failed (best-effort, using defaults):', err);
       }
 
-      const existing = await desk.state.get(STATE_KEY);
-      const value = existing.value as SelectedMonument | null;
-      if (value && value.webCode && value.webCode !== INTRO_WEBCODE && this.findAllMatching(value.webCode).length > 0) {
-        this.selectFeature(value.webCode, false);
-      } else if (this.combinedBounds) {
-        this.fitToBounds(this.combinedBounds, 0.08);
+      if (!restoredSelection && !restoredView) {
+        // Nothing locally saved for THIS widget instance yet -- fall
+        // back to the project-wide shared "last selected monument"
+        // (existing behavior, unchanged), or the full overview.
+        try {
+          const existing = await desk.state.get(STATE_KEY);
+          const value = existing.value as SelectedMonument | null;
+          if (value && value.webCode && value.webCode !== INTRO_WEBCODE && this.findAllMatching(value.webCode).length > 0) {
+            this.selectFeature(value.webCode, false);
+          } else if (this.combinedBounds) {
+            this.fitToBounds(this.combinedBounds, 0.08);
+          }
+        } catch (err) {
+          console.warn('restoring shared last-selected-monument state failed (best-effort, using defaults):', err);
+          if (this.combinedBounds) this.fitToBounds(this.combinedBounds, 0.08);
+        }
       }
 
       this.setStatus(null);
@@ -453,6 +538,88 @@ class SamothraceMapElement extends HTMLElement {
     this.visibleLayers = new Set(this.layerMetas.filter((l) => l.defaultVisible).map((l) => l.id));
   }
 
+  // Whether `id` names a layer that actually exists right now, across
+  // every source the layer panel draws from -- not just the hmsvc
+  // -provided ones (`this.layerMetas`), but also the widget's own
+  // synthetic contours-layer and pipeline-stage-layer rows, neither of
+  // which the hmsvc service knows about at all. Used wherever a
+  // previously-saved layer id needs validating against the CURRENT set
+  // before trusting it (see TILE_SERVICE_STATE_KEY's own restart
+  // handling below, and the saved-UI-state restore in init()).
+  private isKnownLayerId(id: string): boolean {
+    if (this.layerMetas.some((m) => m.id === id)) return true;
+    if (id === this.contoursLayer.rowFor('actual').id || id === this.contoursLayer.rowFor('restored').id) return true;
+    if (this.stageLayers.allLayerRows().some((r) => r.id === id)) return true;
+    return false;
+  }
+
+  // Detects a samothrace-tiles hmsvc restart -- a genuinely NEW url
+  // published to desk.hmsvc.samothrace-tiles (hmsvc gets a fresh random
+  // port every launch) -- and refreshes in place instead of silently
+  // continuing to point at a now-dead port until a human manually
+  // reloads the whole widget. `desk.state.changed` is delivered through
+  // the same `events` subscribe/onMessage channel RecordingController
+  // already uses for recording start/stop -- additive (confirmed against
+  // Desk's own server-side `mediator.subscribe` being a per-instance SET
+  // mutation, not a replace), and onMessage itself supports multiple
+  // independent listeners (each `onMessage` call pushes onto its own
+  // listener list), so this doesn't disturb that subscription at all.
+  private async watchTileServiceState(): Promise<void> {
+    const desk = window.desk;
+    if (!desk) return;
+    await desk.events.subscribe(['desk.state.changed']);
+    desk.events.onMessage((name, payload) => {
+      if (name !== 'desk.state.changed') return;
+      void this.handleTileServiceStateChanged(payload);
+    });
+  }
+
+  private async handleTileServiceStateChanged(payload: unknown): Promise<void> {
+    // Best-effort throughout -- a malformed event payload, a /layers
+    // fetch that fails right after the service restarts (briefly still
+    // coming up), or anything else going wrong here should leave the map
+    // exactly as it was (pointed at the old URL, as today) rather than
+    // throw -- worst case a human still has to reload manually, same as
+    // before this existed.
+    try {
+      const p = payload as { key?: unknown; value?: unknown } | null;
+      if (!p || p.key !== TILE_SERVICE_STATE_KEY) return;
+      const value = p.value as { status?: unknown; url?: unknown } | null;
+      const newUrl = typeof value?.url === 'string' ? value.url.replace(/\/+$/, '') : null;
+      if (!newUrl || newUrl === this.serviceUrl) return; // not a real restart (e.g. a status-only update, or the same url republished) -- nothing to do
+      console.warn(`${TILE_SERVICE_NAME} restarted (new url) -- refreshing`);
+      this.serviceUrl = newUrl;
+      // The browser's own Image cache (getTile/tileCache) is keyed by
+      // the full tile URL, so nothing needs explicit invalidation here --
+      // a new serviceUrl just means new cache keys; stale entries under
+      // the old URL are simply never looked up again.
+      await this.refreshLayerMeta();
+      this.buildLayersPanel();
+      this.scheduleRedraw();
+    } catch (err) {
+      console.warn('handling tile service restart failed (best-effort, map may need a manual reload):', err);
+    }
+  }
+
+  // Like loadLayerMeta, but for a LIVE refresh after a restart rather
+  // than first-time startup: preserves whatever the user currently has
+  // toggled instead of resetting to hmsvc's own defaultVisible set,
+  // dropping only ids that genuinely no longer exist in the refreshed
+  // layer list (e.g. a layer id removed in whatever new code the
+  // service restarted into).
+  private async refreshLayerMeta(): Promise<void> {
+    if (!this.serviceUrl) return;
+    const res = await fetch(`${this.serviceUrl}/layers`);
+    if (!res.ok) throw new Error(`/layers request failed: ${res.status}`);
+    const data = (await res.json()) as { layers: LayerMeta[]; minZoom: number; maxZoom: number; tileSize: number };
+    this.layerMetas = data.layers;
+    this.minZoom = data.minZoom;
+    this.maxZoom = data.maxZoom;
+    this.tileSize = data.tileSize;
+    this.view.zoom = Math.min(Math.max(this.view.zoom, this.minZoom), this.maxZoom);
+    this.visibleLayers = new Set(Array.from(this.visibleLayers).filter((id) => this.isKnownLayerId(id)));
+  }
+
   private async loadOverlays(): Promise<void> {
     const desk = window.desk;
     if (!desk) throw new Error('Desk bridge unavailable');
@@ -466,9 +633,19 @@ class SamothraceMapElement extends HTMLElement {
 
   // ── Layers panel (checkboxes) ──
 
+  // Groups whose own layers are mutually exclusive (radio-select, at
+  // most one visible at a time) rather than independently toggleable
+  // checkboxes -- just "imagery" today (Aerial vs. Topographic; see
+  // desk_hmsvc/samothrace-tiles/service.py's own 2026-10-15 header
+  // comment for why Topographic moved here from a now-removed "shared"
+  // group once it stopped being a cross-plan diff). Hardcoded rather
+  // than a generic per-group flag on LayerMeta since nothing else needs
+  // this yet.
+  private static readonly RADIO_GROUPS = new Set(['imagery']);
+
   private buildLayersPanel(): void {
     if (!this.layersPanelEl) return;
-    const groupLabels: Record<string, string> = { imagery: 'Imagery', shared: 'Shared', actual: 'Actual State', restored: 'Restored State' };
+    const groupLabels: Record<string, string> = { imagery: 'Imagery', restored: 'Restored State', 'pipeline-topographic': 'Pipeline (Topographic)' };
     const groups = Array.from(new Set(this.layerMetas.map((l) => l.group)));
     // Every group header is a native <details>/<summary> -- collapsible
     // for free (no custom JS toggle logic needed), the same mechanism
@@ -483,22 +660,35 @@ class SamothraceMapElement extends HTMLElement {
     const closeGroup = (): void => {
       html.push(`</details>`);
     };
-    const pushRow = (id: string, label: string): void => {
+    // `exclusive` renders a radio input (shared `name`, so the browser
+    // itself enforces "at most one checked" visually) instead of a
+    // checkbox -- see RADIO_GROUPS above. onLayerToggle still has to
+    // enforce the same exclusivity in `visibleLayers` itself, since a
+    // radio's own browser-driven uncheck of its sibling never fires a
+    // `change` event on that sibling.
+    const pushRow = (id: string, label: string, exclusive: boolean): void => {
       const checked = this.visibleLayers.has(id) ? 'checked' : '';
-      html.push(`<label class="layer-row"><input type="checkbox" data-layer-id="${escapeHtml(id)}" ${checked} /> ${escapeHtml(label)}</label>`);
+      const type = exclusive ? 'radio' : 'checkbox';
+      const name = exclusive ? ' name="imagery-layer"' : '';
+      html.push(`<label class="layer-row"><input type="${type}"${name} data-layer-id="${escapeHtml(id)}" ${checked} /> ${escapeHtml(label)}</label>`);
     };
 
     for (const group of groups) {
+      const exclusive = SamothraceMapElement.RADIO_GROUPS.has(group);
       openGroup(groupLabels[group] ?? group);
       for (const layer of this.layerMetas.filter((l) => l.group === group).sort((a, b) => a.order - b.order)) {
-        pushRow(layer.id, layer.label);
+        pushRow(layer.id, layer.label, exclusive);
       }
       // Final-contours layer (phase 3) -- real map content, so it joins
       // THIS plan's own existing group rather than getting a separate
       // section the way the pipeline-stage debug layers do below.
-      if (group === 'actual' || group === 'restored') {
+      // Restored only, since 2026-10-15 -- there's no "actual" hmsvc
+      // layer group left to join any more (see this widget's own
+      // AGENTS.md / TODO.md for why), so Actual's own extracted-contours
+      // toggle has no group to appear in and is simply not offered.
+      if (group === 'restored') {
         const row = this.contoursLayer.rowFor(group);
-        pushRow(row.id, row.label);
+        pushRow(row.id, row.label, false);
       }
       closeGroup();
     }
@@ -516,13 +706,16 @@ class SamothraceMapElement extends HTMLElement {
     for (const group of stageGroups) {
       openGroup(this.stageLayers.groupLabel(group));
       for (const row of stageRows.filter((r) => r.group === group)) {
-        pushRow(row.id, row.label);
+        pushRow(row.id, row.label, false);
       }
       closeGroup();
     }
 
     this.layersPanelEl.innerHTML = html.join('\n');
-    this.layersPanelEl.querySelectorAll('input[type="checkbox"]').forEach((el) => {
+    // `input[data-layer-id]`, not `input[type="checkbox"]` -- covers the
+    // radio inputs RADIO_GROUPS rows render too, same data attribute
+    // either way.
+    this.layersPanelEl.querySelectorAll('input[data-layer-id]').forEach((el) => {
       el.addEventListener('change', (e) => {
         const input = e.currentTarget as HTMLInputElement;
         const id = input.dataset.layerId;
@@ -533,7 +726,7 @@ class SamothraceMapElement extends HTMLElement {
   }
 
   private syncLayerCheckboxes(): void {
-    this.layersPanelEl?.querySelectorAll('input[type="checkbox"]').forEach((el) => {
+    this.layersPanelEl?.querySelectorAll('input[data-layer-id]').forEach((el) => {
       const input = el as HTMLInputElement;
       const id = input.dataset.layerId;
       if (id) input.checked = this.visibleLayers.has(id);
@@ -541,11 +734,75 @@ class SamothraceMapElement extends HTMLElement {
   }
 
   private onLayerToggle(id: string, visible: boolean): void {
-    if (visible) this.visibleLayers.add(id);
-    else this.visibleLayers.delete(id);
-    void window.desk?.self.setLocalStorage({ visibleLayers: Array.from(this.visibleLayers) });
+    if (visible) {
+      // Radio-group exclusivity (RADIO_GROUPS) lives here, not just in
+      // the DOM: a native radio's own browser-driven uncheck of its
+      // sibling never fires that sibling's own `change` event, so
+      // `visibleLayers` has to be reconciled explicitly or it'd end up
+      // with both the old and new selection still marked visible.
+      const layer = this.layerMetas.find((l) => l.id === id);
+      if (layer && SamothraceMapElement.RADIO_GROUPS.has(layer.group)) {
+        for (const sibling of this.layerMetas) {
+          if (sibling.group === layer.group && sibling.id !== id) this.visibleLayers.delete(sibling.id);
+        }
+      }
+      this.visibleLayers.add(id);
+    } else {
+      this.visibleLayers.delete(id);
+    }
+    this.scheduleSaveUiState();
     this.recording.log('layers', 'layer-toggle', { id, visible });
+    this.syncLayerCheckboxes();
     this.scheduleRedraw();
+  }
+
+  // ── UI-state persistence (view/layers/selection) ──
+  // "Best-effort" throughout, per direct request: a failed read, a
+  // failed write, or a saved blob that doesn't quite line up with
+  // CURRENT data (a layer id that no longer exists, a webCode from a
+  // monument that's been renamed/removed, a malformed/partial `view`
+  // left over from an older version of this code) must never throw or
+  // block startup -- worst case, that one piece of saved state is
+  // silently skipped and today's existing defaults apply instead.
+
+  // Debounced (400ms) rather than called synchronously from every
+  // view-changing call site -- a pan drag fires onPointerMove far too
+  // often to persist on every single one, and a rapid string of wheel
+  // -zoom steps shouldn't become that many separate writes either; this
+  // coalesces any burst of changes into one save shortly after things
+  // settle. Reuses one timer field, same pattern as this project's other
+  // debounce timers (e.g. ContoursLayerController's hover dwell log).
+  private scheduleSaveUiState(): void {
+    if (this.saveUiStateTimer !== null) clearTimeout(this.saveUiStateTimer);
+    this.saveUiStateTimer = (setTimeout(() => {
+      this.saveUiStateTimer = null;
+      void this.saveUiState();
+    }, 400) as unknown) as number;
+  }
+
+  // Read-modify-write, NOT a blind overwrite -- `desk.self.setLocalStorage`
+  // replaces the whole stored blob, and this widget's local storage
+  // already holds at least one OTHER key (RecordingController's own
+  // `recordingLogId`) that must survive a UI-state save untouched. (A
+  // real bug this replaces: the previous visibleLayers-only save called
+  // `setLocalStorage({ visibleLayers: [...] })` directly, with nothing
+  // spread in -- saving a layer toggle after a recording had already
+  // minted its own `recordingLogId` would have silently wiped that key,
+  // handing the recording log a fresh name on the next reload.)
+  private async saveUiState(): Promise<void> {
+    const desk = window.desk;
+    if (!desk) return;
+    try {
+      const { data } = await desk.self.getLocalStorage();
+      await desk.self.setLocalStorage({
+        ...data,
+        visibleLayers: Array.from(this.visibleLayers),
+        view: { lon: this.view.lon, lat: this.view.lat, zoom: this.view.zoom },
+        selectedWebCode: this.selectedWebCode,
+      });
+    } catch (err) {
+      console.warn('saving UI state failed (best-effort, ignoring):', err);
+    }
   }
 
   // ── Q&A panel (phase 4) ──
@@ -554,7 +811,14 @@ class SamothraceMapElement extends HTMLElement {
   // content -- becomes a real tab-switcher once Minor Contour Bands and
   // Contour Connector land in later phases.
   private renderQaPanel(): void {
-    const tab = this.activeQaTab === 'minor-bands' ? this.minorBandsTab : this.activeQaTab === 'contour-connector' ? this.connectorTab : this.labelReviewTab;
+    const tab =
+      this.activeQaTab === 'minor-bands'
+        ? this.minorBandsTab
+        : this.activeQaTab === 'contour-connector'
+          ? this.connectorTab
+          : this.activeQaTab === 'agent-qa'
+            ? this.agentQaTab
+            : this.labelReviewTab;
     if (this.qaSummaryEl) this.qaSummaryEl.textContent = tab.summary();
     if (this.qaTabContentEl) {
       this.qaTabContentEl.innerHTML = tab.render();
@@ -562,7 +826,7 @@ class SamothraceMapElement extends HTMLElement {
     }
   }
 
-  private setActiveQaTab(tab: 'label-review' | 'minor-bands' | 'contour-connector'): void {
+  private setActiveQaTab(tab: 'agent-qa' | 'label-review' | 'minor-bands' | 'contour-connector'): void {
     if (tab === this.activeQaTab) return;
     // Leaving/entering the connector tab is a real mode switch for the
     // main canvas's own pointer handling (see onPointerDown/Move/Up) --
@@ -593,6 +857,38 @@ class SamothraceMapElement extends HTMLElement {
     const bounds = await this.contoursLayer.showMeBounds(plan, fragmentIds);
     if (bounds) this.fitToBounds(padBounds(bounds, 0.6), 0);
     this.contoursLayer.highlightFragments(plan, fragmentIds, 3000);
+  }
+
+  // "Show me" for the Agent Q&A tab's 'confirm-connection' questions. A
+  // suggested connection's own endpoints are stored as raw lon/lat
+  // (position-keyed, same convention as *.connections.suggested.json
+  // itself -- see that file's own "never index-keyed" rationale), so
+  // AgentQaTabController draws the gap itself as its own small
+  // candy-cane highlight rather than going through
+  // ContoursLayerController.highlightFragments the way
+  // showMeContourFragments above does. But "closes the semantic loop"
+  // (2026-10-14 request) means also highlighting the two REAL fragments
+  // either side of that gap, when the question happened to resolve
+  // them (`fragmentIds` -- empty if not, e.g. a future question type
+  // or a connection authored without doing that lookup) -- fragment +
+  // gap + fragment reads as the one continuous corrected line this
+  // connection is proposing, not just an isolated stub in empty space.
+  // Async (unlike showMeContourFragments's own sync caller expectations
+  // don't apply here) because fitting to both fragments' own extent,
+  // not just the two endpoint points, needs their geometry loaded.
+  private async showMeConnection(plan: ContourPlan, gapBounds: LonLatBounds, fragmentIds: number[]): Promise<void> {
+    const layerId = this.contoursLayer.rowFor(plan).id;
+    if (!this.visibleLayers.has(layerId)) {
+      this.onLayerToggle(layerId, true);
+      this.syncLayerCheckboxes();
+    }
+    let bounds = gapBounds;
+    if (fragmentIds.length > 0) {
+      const fragmentBounds = await this.contoursLayer.showMeBounds(plan, fragmentIds);
+      if (fragmentBounds) bounds = unionBounds([gapBounds, fragmentBounds]);
+    }
+    this.fitToBounds(padBounds(bounds, 0.6), 0);
+    if (fragmentIds.length > 0) this.contoursLayer.highlightFragments(plan, fragmentIds, 3000);
   }
 
   // ── Dropdown ──
@@ -669,6 +965,7 @@ class SamothraceMapElement extends HTMLElement {
     }
     zoom = Math.min(Math.max(zoom, this.minZoom), this.maxZoom);
     this.view = { lon: (b.west + b.east) / 2, lat: (b.south + b.north) / 2, zoom };
+    this.scheduleSaveUiState();
     this.scheduleRedraw();
   }
 
@@ -690,6 +987,7 @@ class SamothraceMapElement extends HTMLElement {
     };
     const newCenter = unprojectWorld(centerWorldNew.x, centerWorldNew.y, newZoom, this.tileSize);
     this.view = { lon: newCenter.lon, lat: newCenter.lat, zoom: newZoom };
+    this.scheduleSaveUiState();
     this.scheduleRedraw();
   }
 
@@ -804,6 +1102,11 @@ class SamothraceMapElement extends HTMLElement {
         const contourHit = this.contoursLayer.hitTest({ x: screenX, y: screenY }, this.visibleLayers, this.toScreen);
         if (contourHit) this.contoursLayer.registerClick(contourHit);
       }
+    } else if (drag && drag.moved) {
+      // A real pan, not a click -- onPointerMove updates this.view.lon/
+      // lat directly (no fitToBounds/zoomBy call along the way), so this
+      // is the one place a completed drag needs its own explicit save.
+      this.scheduleSaveUiState();
     }
   }
 
@@ -968,9 +1271,21 @@ class SamothraceMapElement extends HTMLElement {
     // stays legible even inside a highlighted region, and this is the
     // layer phase 3 is actually built around.
     this.contoursLayer.draw(ctx, this.visibleLayers, toScreen);
-    // Phase 6: suggested/confirmed connections, the live drag line, and
-    // the anchor/drag-target/hover overdraw -- only while that tab is
-    // active (see this file's own "kept self-contained" comments at the
+    // Agent Q&A tab's own "Show me" highlight (a gap has no existing
+    // fragment geometry to overdraw, unlike Label Review/Minor Bands) --
+    // unconditional, same as contoursLayer.draw's own highlight above,
+    // not gated on activeQaTab (see AgentQaTabController.draw's own
+    // comment).
+    this.agentQaTab.draw(ctx, toScreen);
+    // Confirmed connections are a settled fact, not interactive state --
+    // drawn on every tab (2026-10-14 fix: previously only rendered while
+    // sitting on the Connector tab, so a connection confirmed via the
+    // Agent Q&A tab looked un-fixed everywhere else -- see
+    // ContourConnectorTabController.drawConfirmed's own comment).
+    this.connectorTab.drawConfirmed(ctx, toScreen);
+    // Phase 6: suggested connections, the live drag line, and the
+    // anchor/drag-target/hover overdraw -- only while that tab is active
+    // (see this file's own "kept self-contained" comments at the
     // pointer handlers above).
     if (this.activeQaTab === 'contour-connector') this.connectorTab.draw(ctx, toScreen);
     if (this.debugHitTraceVisible) this.drawDebugHitTrace(ctx, toScreen);

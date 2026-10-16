@@ -96,6 +96,17 @@ function distancePointToPolyline(p: ScreenPoint, points: ScreenPoint[]): number 
 // consistently regardless of which zoom level is currently showing.
 const HIT_TOLERANCE_PX = 7;
 
+// How long the pointer has to settle on the same fragment before a hover
+// gets logged to the active recording -- see TODO.md's "hover isn't
+// logged" entry. Unthrottled (logging on every hoverKey change) would
+// spam one entry per fragment the pointer merely swept across while
+// moving toward wherever the user was actually about to stop and talk
+// about; a short dwell means only "the user paused here" moments get
+// logged, which is what's actually useful for lining a hover position up
+// against a narration transcript. Not configurable -- 400ms reads as a
+// deliberate point, not a sweep, without feeling laggy.
+const HOVER_LOG_DWELL_MS = 400;
+
 interface ContourHit {
   plan: ContourPlan;
   fragment: ContourFragment;
@@ -172,7 +183,34 @@ class ContoursLayerController {
   private loaders = new Map<ContourPlan, Promise<ContourFragment[] | null>>();
   private resolved = new Map<ContourPlan, ContourFragment[] | null>();
   private hoverKey: string | null = null; // `${plan}:${fragment.id}`
+  private hoverLogTimer: number | null = null; // pending HOVER_LOG_DWELL_MS timer for the CURRENT hoverKey, if any
   private highlight: { plan: ContourPlan; fragmentIds: Set<number>; clearTimer: number } | null = null;
+  // Confirmed-connection-derived grouping, so hovering ANY fragment in a
+  // joined pair (or longer chain) highlights the whole thing as one
+  // contour, not just the specific fragment under the cursor -- added
+  // 2026-10-14 after feedback that a freshly-confirmed connection "is
+  // not acting like a single contour line" on hover. Raw connections are
+  // stored as-is (set by ContourConnectorTabController.
+  // syncConfirmedToContoursLayer, called whenever its own `confirmed`
+  // list changes); `groupIdByFragment` is derived from them via union
+  // -find over real fragment endpoints, rebuilt wholesale on every
+  // change rather than incrementally patched -- cheap at this project's
+  // scale (hundreds of fragments, a handful of confirmed connections).
+  private confirmedConnectionsByPlan = new Map<ContourPlan, Array<{ aLon: number; aLat: number; bLon: number; bLat: number }>>();
+  private groupIdByFragment = new Map<string, string>(); // `${plan}:${fragmentId}` -> `${plan}:${rootFragmentId}` -- only entries for fragments actually in a >1-member group; a fragment with no entry here is its own ungrouped singleton
+  // Session-local color override for a fragment confirmed via the Minor
+  // Bands tab -- `scripts/apply_minor_review.py` doesn't exist yet (see
+  // this widget's own TODO.md), so without this a confirmed answer
+  // would correctly get recorded to `.desk_temp/minor-contour-review
+  // -log.json` but never visually turn amber. Same "local data
+  // structures act like it has always been fixed" stopgap
+  // setConfirmedConnections already does for hover-grouping, applied to
+  // color/elevation instead. Keyed `${plan}:${fragmentId}` -> the
+  // confirmed elevation (only ever used to pick the minor/amber color at
+  // draw time, see effectiveColorFor -- this widget never writes a
+  // *different* source like "major" through this path, so there's no
+  // need to store more than the bare number).
+  private elevationOverrides = new Map<string, number>();
 
   constructor(
     private readonly recording: RecordingController,
@@ -214,6 +252,11 @@ class ContoursLayerController {
       this.loaders.set(plan, promise);
       void promise.then((fragments) => {
         this.resolved.set(plan, fragments);
+        // In case setConfirmedConnections was already called for this
+        // plan before fragments finished loading (rebuildGroups bails
+        // out with nothing to do until fragments actually exist) --
+        // retry now that they do.
+        this.rebuildGroups(plan);
         this.scheduleRedraw();
       });
     }
@@ -278,6 +321,126 @@ class ContoursLayerController {
     this.scheduleRedraw();
   }
 
+  // Called by ContourConnectorTabController (samothrace-map-connector
+  // -tab.ts) whenever its own `confirmed` list changes -- see that
+  // controller's own syncConfirmedToContoursLayer. Replaces this plan's
+  // entire confirmed-connections list wholesale (not an incremental
+  // patch) and rebuilds the hover grouping from scratch; cheap at this
+  // project's scale.
+  setConfirmedConnections(plan: ContourPlan, connections: Array<{ aLon: number; aLat: number; bLon: number; bLat: number }>): void {
+    this.confirmedConnectionsByPlan.set(plan, connections);
+    this.rebuildGroups(plan);
+    this.scheduleRedraw();
+  }
+
+  // Union-find over this plan's own fragments, joining two fragments
+  // whenever a confirmed connection's own endpoint matches one of each
+  // fragment's two real endpoints (exact-ish float match is expected --
+  // a connection's aLon/aLat/bLon/bLat are copied directly from the
+  // fragment endpoint coordinates that produced it, never independently
+  // re-measured). A plain O(fragments × connections) endpoint scan, not
+  // an index -- both sides of that product are small here (hundreds of
+  // fragments, a handful of confirmed connections), not worth a spatial
+  // index for.
+  private rebuildGroups(plan: ContourPlan): void {
+    const fragments = this.resolved.get(plan);
+    // Bail without touching this plan's existing groupIdByFragment
+    // entries if fragments haven't loaded yet -- ensureLoaded's own
+    // `.then` hook calls this again once they have, so this isn't lost,
+    // just deferred.
+    if (!fragments) return;
+    const connections = this.confirmedConnectionsByPlan.get(plan) ?? [];
+
+    const parent = new Map<number, number>();
+    for (const f of fragments) parent.set(f.id, f.id);
+    const find = (x: number): number => {
+      let root = x;
+      while (parent.get(root) !== root) root = parent.get(root)!;
+      let cur = x;
+      while (parent.get(cur) !== root) {
+        const next = parent.get(cur)!;
+        parent.set(cur, root);
+        cur = next;
+      }
+      return root;
+    };
+    const union = (a: number, b: number): void => {
+      const ra = find(a);
+      const rb = find(b);
+      if (ra !== rb) parent.set(ra, rb);
+    };
+    const EPS = 1e-7; // ~1cm at this site's latitude -- generous given the "copied directly" expectation above, tight enough never to falsely bridge two genuinely different fragments that just happen to pass close together
+    const fragmentIdAtEndpoint = (lon: number, lat: number): number | null => {
+      for (const f of fragments) {
+        if (f.points.length === 0) continue;
+        const start = f.points[0]!;
+        const end = f.points[f.points.length - 1]!;
+        if (Math.abs(start.lon - lon) < EPS && Math.abs(start.lat - lat) < EPS) return f.id;
+        if (Math.abs(end.lon - lon) < EPS && Math.abs(end.lat - lat) < EPS) return f.id;
+      }
+      return null;
+    };
+    for (const c of connections) {
+      const aId = fragmentIdAtEndpoint(c.aLon, c.aLat);
+      const bId = fragmentIdAtEndpoint(c.bLon, c.bLat);
+      if (aId !== null && bId !== null && aId !== bId) union(aId, bId);
+    }
+
+    for (const key of Array.from(this.groupIdByFragment.keys())) {
+      if (key.startsWith(`${plan}:`)) this.groupIdByFragment.delete(key);
+    }
+    const membersByRoot = new Map<number, number[]>();
+    for (const f of fragments) {
+      const root = find(f.id);
+      const members = membersByRoot.get(root) ?? [];
+      members.push(f.id);
+      membersByRoot.set(root, members);
+    }
+    for (const [root, members] of membersByRoot) {
+      if (members.length < 2) continue; // no entry needed for an ungrouped singleton
+      for (const id of members) this.groupIdByFragment.set(`${plan}:${id}`, `${plan}:${root}`);
+    }
+  }
+
+  // Whether `fragmentId` should render with hover styling given the
+  // CURRENTLY hovered fragment (this.hoverKey) -- true for the exact
+  // fragment under the cursor, AND for every other fragment in the same
+  // confirmed-connection group, so hovering either half of a newly
+  // -joined connection highlights the whole thing as one contour rather
+  // than just whichever half the cursor happens to sit over.
+  private isHoverGroupMember(plan: ContourPlan, fragmentId: number): boolean {
+    if (this.hoverKey === null) return false;
+    const key = `${plan}:${fragmentId}`;
+    if (this.hoverKey === key) return true;
+    const hoveredGroup = this.groupIdByFragment.get(this.hoverKey);
+    if (hoveredGroup === undefined) return false;
+    return this.groupIdByFragment.get(key) === hoveredGroup;
+  }
+
+  // Called by MinorBandsTabController (samothrace-map-qa-panel.ts)
+  // whenever it confirms a group -- both for a brand-new confirmation
+  // during this live session, and (via its own init()) for every
+  // already-confirmed answer loaded from disk, so a reload reflects
+  // prior confirmations too, not just ones made after the reload.
+  // Fragments marked "not a contour" (elevationM null) are never passed
+  // here -- there's nothing to recolor for those.
+  setFragmentElevationOverrides(plan: ContourPlan, overrides: Array<{ fragmentId: number; elevationM: number }>): void {
+    for (const o of overrides) this.elevationOverrides.set(`${plan}:${o.fragmentId}`, o.elevationM);
+    this.scheduleRedraw();
+  }
+
+  // contourColorFor plus the session-local override above -- a
+  // confirmed minor-band fragment always renders as CONTOUR_COLOR.minor
+  // regardless of what the static *.geojson on disk still says, since
+  // this widget never writes anything but a minor/interpolated
+  // confirmation through this path (see elevationOverrides's own
+  // comment on why only the color needs overriding, not a full
+  // ContourFragment).
+  private effectiveColorFor(plan: ContourPlan, f: ContourFragment): string {
+    if (this.elevationOverrides.has(`${plan}:${f.id}`)) return CONTOUR_COLOR.minor;
+    return contourColorFor(f);
+  }
+
   // Every plan whose own contours layer is currently visible -- hover
   // /click hit-testing only considers a plan's fragments while its own
   // layer is actually shown, same "can't select what you can't see"
@@ -311,11 +474,23 @@ class ContoursLayerController {
   // Updates hover state from the current pointer position; returns
   // whether it actually changed (so the caller only redraws when it
   // needs to, same pattern the main element's own monument hover
-  // already uses).
+  // already uses). Also (re)starts the dwell timer that logs a 'hover'
+  // entry to the active recording once the pointer has sat still on this
+  // fragment for HOVER_LOG_DWELL_MS -- see that constant's own comment.
   updateHover(hit: ContourHit | null): boolean {
     const key = hit ? `${hit.plan}:${hit.fragment.id}` : null;
     if (key === this.hoverKey) return false;
     this.hoverKey = key;
+    if (this.hoverLogTimer !== null) {
+      clearTimeout(this.hoverLogTimer);
+      this.hoverLogTimer = null;
+    }
+    if (hit && this.recording.isRecording) {
+      this.hoverLogTimer = (setTimeout(() => {
+        this.hoverLogTimer = null;
+        this.recording.log('contours-layer', 'hover', this.logPayloadFor(hit));
+      }, HOVER_LOG_DWELL_MS) as unknown) as number;
+    }
     return true;
   }
 
@@ -323,20 +498,28 @@ class ContoursLayerController {
     return this.updateHover(null);
   }
 
-  // "Registers" a click -- logs it to the active recording (a no-op,
-  // via RecordingController.log's own false return, outside one) --
-  // see this file's own header comment for why nothing else happens
-  // here yet.
-  registerClick(hit: ContourHit): void {
+  // Shared by the hover dwell timer and registerClick below -- same
+  // entry shape for both, only `type` in the caller's own recording.log
+  // call differs, so an agent reading the log back can tell a settled
+  // point from a deliberate click at the same spot.
+  private logPayloadFor(hit: ContourHit): Record<string, unknown> {
     const p = hit.fragment.points[Math.floor(hit.fragment.points.length / 2)];
-    this.recording.log('contours-layer', 'click', {
+    return {
       plan: hit.plan,
       fragmentId: hit.fragment.id,
       elevationM: hit.fragment.elevationM,
       elevationSource: hit.fragment.elevationSource,
       lon: p?.lon ?? null,
       lat: p?.lat ?? null,
-    });
+    };
+  }
+
+  // "Registers" a click -- logs it to the active recording (a no-op,
+  // via RecordingController.log's own false return, outside one) --
+  // see this file's own header comment for why nothing else happens
+  // here yet.
+  registerClick(hit: ContourHit): void {
+    this.recording.log('contours-layer', 'click', this.logPayloadFor(hit));
   }
 
   draw(ctx: CanvasRenderingContext2D, visibleLayers: Set<string>, toScreen: (lon: number, lat: number) => ScreenPoint): void {
@@ -363,14 +546,14 @@ class ContoursLayerController {
           strokeCandyCane(ctx, fragment.points, toScreen, 4, HIGHLIGHT_COLOR);
           continue;
         }
-        const isHover = this.hoverKey === `${plan}:${fragment.id}`;
+        const isHover = this.isHoverGroupMember(plan, fragment.id);
         if (isHover) {
           strokeCandyCane(ctx, fragment.points, toScreen, 3, HOVER_COLOR);
           continue;
         }
         const major = fragment.elevationSource === 'ocr' || fragment.elevationSource === 'review-confirmed';
         ctx.save();
-        ctx.strokeStyle = contourColorFor(fragment);
+        ctx.strokeStyle = this.effectiveColorFor(plan, fragment);
         ctx.lineWidth = major ? 1.8 : 1;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';

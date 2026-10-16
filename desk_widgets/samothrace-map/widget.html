@@ -250,19 +250,20 @@
         .qa-tabs {
           flex: 0 0 auto;
           display: flex;
-          gap: 4px;
+          gap: 3px;
           padding: 8px 10px 0;
           border-bottom: 1px solid #333c48;
         }
         .qa-tab-button {
           font-size: 11.5px;
-          padding: 6px 10px;
+          padding: 6px 8px;
           border-radius: 4px 4px 0 0;
           border: 1px solid #333c48;
           border-bottom: none;
           background: #20262f;
           color: #9aa5b5;
           cursor: pointer;
+          white-space: nowrap;
         }
         .qa-tab-button.active {
           background: #1b1f27;
@@ -602,7 +603,8 @@
               </div>
             </div>
             <div class="qa-tabs">
-              <button type="button" class="qa-tab-button active" data-tab="label-review">Label Review</button>
+              <button type="button" class="qa-tab-button active" data-tab="agent-qa">Q/A</button>
+              <button type="button" class="qa-tab-button" data-tab="label-review">Label</button>
               <button type="button" class="qa-tab-button" data-tab="minor-bands">Minor Bands</button>
               <button type="button" class="qa-tab-button" data-tab="contour-connector">Connector</button>
             </div>

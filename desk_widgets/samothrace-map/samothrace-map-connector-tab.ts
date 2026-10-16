@@ -202,8 +202,23 @@ class ContourConnectorTabController {
       : [];
 
     this.loaded = true;
+    this.syncConfirmedToContoursLayer();
     this.onChanged();
     this.scheduleRedraw();
+  }
+
+  // Pushes `this.confirmed` (split by plan) into
+  // ContoursLayerController.setConfirmedConnections -- see that method's
+  // own comment. Called after every mutation of `this.confirmed`
+  // (init/commitConnection/acceptSuggestion/removeConfirmed/
+  // applyExternalDecision) so hover-grouping across a joined connection
+  // stays correct within the same session no matter which of this tab's
+  // own actions (or the Agent Q&A tab's) produced the change.
+  private syncConfirmedToContoursLayer(): void {
+    for (const plan of ['actual', 'restored'] as ContourPlan[]) {
+      const list = this.confirmed.filter((c) => c.plan === plan).map((c) => ({ aLon: c.aLon, aLat: c.aLat, bLon: c.bLon, bLat: c.bLat }));
+      this.contoursLayer.setConfirmedConnections(plan, list);
+    }
   }
 
   private async loadJson<T>(path: string): Promise<T | null> {
@@ -493,6 +508,7 @@ class ContourConnectorTabController {
     };
     this.log.connections.push(entry);
     this.confirmed.push({ connectionId: entry.connectionId, source: 'manual', plan: drag.anchorPlan, aLon: entry.aLon, aLat: entry.aLat, bLon: entry.bLon, bLat: entry.bLat, elevationM });
+    this.syncConfirmedToContoursLayer();
     const loggedToRecording = this.recording.log('qa:contour-connector', 'connection', entry);
     if (!loggedToRecording) await this.writeLogFile();
     this.onChanged();
@@ -506,6 +522,7 @@ class ContourConnectorTabController {
     this.log.connections.push(entry);
     this.confirmed.push({ ...c });
     this.suggested = this.suggested.filter((s) => s.connectionId !== c.connectionId);
+    this.syncConfirmedToContoursLayer();
     const loggedToRecording = this.recording.log('qa:contour-connector', 'accept-suggestion', entry);
     if (!loggedToRecording) await this.writeLogFile();
     this.onChanged();
@@ -525,6 +542,42 @@ class ContourConnectorTabController {
     this.scheduleRedraw();
   }
 
+  // Called by AgentQaTabController immediately after IT durably writes a
+  // 'confirm-connection' answer into this controller's own
+  // CONNECTOR_LOG_PATH -- keeps this controller's already-loaded
+  // suggested/confirmed/rejectedIds (and its own in-memory `log` mirror,
+  // same one removeConfirmed/init read) in sync within the same session,
+  // without a reload. Deliberately does NOT write CONNECTOR_LOG_PATH
+  // itself (the caller already did) or call this.recording.log (the
+  // caller already logged one informational entry under its own
+  // 'qa:agent' source) -- this method's only job is the in-memory half,
+  // so switching to this tab afterward (or hovering/clicking the real
+  // fragments elsewhere) reflects the decision immediately rather than
+  // only after a reload. "Local data structures... act like it has
+  // always been fixed" (the user's own framing, 2026-10-14) for this
+  // tab specifically.
+  applyExternalDecision(
+    data: { connectionId: string; plan: ContourPlan; source: ConnectionSource; aLon: number; aLat: number; bLon: number; bLat: number; elevationM: number | null },
+    decision: 'confirm' | 'reject',
+  ): void {
+    this.suggested = this.suggested.filter((s) => s.connectionId !== data.connectionId);
+    if (decision === 'confirm') {
+      if (!this.confirmed.some((c) => c.connectionId === data.connectionId)) {
+        const entry: LogConnection = { ...data, confirmedAt: new Date().toISOString() };
+        this.log.connections.push(entry);
+        this.confirmed.push({ connectionId: data.connectionId, source: data.source, plan: data.plan, aLon: data.aLon, aLat: data.aLat, bLon: data.bLon, bLat: data.bLat, elevationM: data.elevationM });
+        this.syncConfirmedToContoursLayer();
+      }
+    } else {
+      this.rejectedIds.add(`${data.plan}:${data.connectionId}`);
+      if (!this.log.rejections.some((r) => r.connectionId === data.connectionId)) {
+        this.log.rejections.push({ connectionId: data.connectionId, plan: data.plan, rejectedAt: new Date().toISOString() });
+      }
+    }
+    this.onChanged();
+    this.scheduleRedraw();
+  }
+
   private async removeConfirmed(idx: number): Promise<void> {
     const c = this.confirmed[idx];
     if (!c) return;
@@ -532,6 +585,7 @@ class ContourConnectorTabController {
     this.log.connections = this.log.connections.filter((x) => x.connectionId !== c.connectionId);
     if (!this.log.removed.includes(c.connectionId)) this.log.removed.push(c.connectionId);
     if (this.selectedConfirmedIdx === idx) this.selectedConfirmedIdx = null;
+    this.syncConfirmedToContoursLayer();
     const loggedToRecording = this.recording.log('qa:contour-connector', 'remove-confirmed', { connectionId: c.connectionId, plan: c.plan });
     if (!loggedToRecording) await this.writeLogFile();
     this.onChanged();
@@ -544,15 +598,44 @@ class ContourConnectorTabController {
     await desk.fs.writeFile(CONNECTOR_LOG_PATH, JSON.stringify(this.log, null, 2));
   }
 
-  // ── Drawing (only called while this tab is active, after
-  // ContoursLayerController.draw -- see samothrace-map.ts's own redraw) ──
+  // ── Drawing ──
 
+  // Called UNCONDITIONALLY every redraw (see samothrace-map.ts's own
+  // render method), regardless of which Q&A tab is active -- unlike
+  // everything else this file draws (suggested connections, the live
+  // drag line, anchor/hover overdraw), a CONFIRMED connection is a
+  // settled fact, not part of this tab's own interactive workflow. Per
+  // 2026-10-14 feedback: after confirming `restored-auto-gap-100` via
+  // the Agent Q&A tab, the two fragments it joins still looked like two
+  // separate pieces rather than "one contour" while sitting on any tab
+  // OTHER than this one -- because this line used to only draw as part
+  // of draw() below, which is itself gated to `activeQaTab ===
+  // 'contour-connector'`. Naturally small (starts empty, only grows as
+  // connections actually get made), so no real "clutters every tab"
+  // cost the way always-showing the (thousands-per-plan) suggested list
+  // would have.
+  drawConfirmed(ctx: CanvasRenderingContext2D, toScreen: (lon: number, lat: number) => ScreenPoint): void {
+    if (!this.showConfirmed) return;
+    this.confirmed.forEach((c, idx) => {
+      const isHover = !this.connectDrag && this.hoverTarget?.kind === 'confirmed' && this.hoverTarget.idx === idx;
+      const isSelected = this.selectedConfirmedIdx === idx;
+      this.strokeDashed(ctx, [{ lon: c.aLon, lat: c.aLat }, { lon: c.bLon, lat: c.bLat }], toScreen, CONNECTOR_INFERRED_COLOR, isSelected ? 4 : isHover ? 3 : 2.2, [10, 6]);
+    });
+  }
+
+  // Only called while this tab is active (see samothrace-map.ts's own
+  // redraw) -- the rest of this tab's own interactive state: suggested
+  // connections, the live drag line, anchor/drag-target/hover overdraw,
+  // the stream guide. Confirmed connections are drawn separately, above,
+  // by drawConfirmed -- NOT also here, to avoid a double-draw on the one
+  // tab where both get called.
+  //
   // No visibleLayers param, unlike every other draw()/hitTest() method
   // in this file -- this one genuinely never needs it: it only ever
   // overdraws a fragment the caller already resolved by explicit
   // (plan, fragmentId) (anchor/drag-target/hover), plus this tab's own
-  // suggested/confirmed connection lines, neither of which is gated by
-  // which hmsvc/contours layers happen to be toggled on.
+  // suggested connection lines, neither of which is gated by which
+  // hmsvc/contours layers happen to be toggled on.
   draw(ctx: CanvasRenderingContext2D, toScreen: (lon: number, lat: number) => ScreenPoint): void {
     if (this.showStreamGuide) {
       ctx.save();
@@ -587,14 +670,6 @@ class ContourConnectorTabController {
         ctx.globalAlpha = isHover ? 0.95 : 0.55;
         this.strokeDashed(ctx, [{ lon: c.aLon, lat: c.aLat }, { lon: c.bLon, lat: c.bLat }], toScreen, connectorSuggestedColorFor(c.source), isHover ? 2.5 : 1.4, c.source === 'stream-guided' ? [2, 6] : [4, 4]);
         ctx.restore();
-      });
-    }
-
-    if (this.showConfirmed) {
-      this.confirmed.forEach((c, idx) => {
-        const isHover = !this.connectDrag && this.hoverTarget?.kind === 'confirmed' && this.hoverTarget.idx === idx;
-        const isSelected = this.selectedConfirmedIdx === idx;
-        this.strokeDashed(ctx, [{ lon: c.aLon, lat: c.aLat }, { lon: c.bLon, lat: c.bLat }], toScreen, CONNECTOR_INFERRED_COLOR, isSelected ? 4 : isHover ? 3 : 2.2, [10, 6]);
       });
     }
 
