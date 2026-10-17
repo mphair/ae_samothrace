@@ -265,6 +265,28 @@ tracks specific open items worth picking up later.
   existing shared-state last-selected-monument / full-overview behavior
   only if nothing was saved locally yet (a brand-new instance).
 
+  **~~Layer-category collapse/expand state didn't persist either~~ —
+  fixed 2026-10-17, directly requested.** Each `<details class="layer
+  -group">` section (Imagery, Restored State, Pipeline (Topographic),
+  the two pipeline-stage groups) now saves/restores open-vs-closed the
+  same way, via a new `collapsedGroups: Set<string>` field and the same
+  `saveUiState()`/restore-block plumbing everything else above already
+  uses. Keyed by a synthetic `hmsvc:<group>` / `stage:<group>` string
+  (`data-group-key` on the `<details>` element), NOT the raw hmsvc
+  `group` string alone — the hmsvc "restored" group (labelled "Restored
+  State") and the stage-layers "restored" group (labelled "Pipeline
+  (Restored)") share the same raw `group` value, and collapsing one
+  would otherwise also collapse the other. Listens for the native
+  `<details>` element's own `toggle` event (fires on both open and
+  close, no custom click-handling needed) rather than inventing a
+  separate interaction model. `syncGroupCollapse()` (new, mirrors the
+  existing `syncLayerCheckboxes()` pattern) reconciles the DOM's `open`
+  attribute against the restored set once `init()`'s localStorage read
+  completes — `buildLayersPanel()` itself still renders every group
+  `open` by default first (same "defaults, then reconcile" ordering
+  `visibleLayers` already follows), so there's no new ordering
+  dependency introduced into `init()`.
+
   Two real, pre-existing bugs turned up implementing this, both fixed
   alongside it:
   - Layer-visibility persistence already existed before this session but

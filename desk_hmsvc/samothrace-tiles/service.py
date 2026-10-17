@@ -109,6 +109,14 @@ COMPUTED_LAYERS = {"topographic", "actual-structures", "restored-structures"}
 LAYERS = [
     {"id": "aerial", "label": "Aerial Imagery", "group": "imagery", "order": 0, "defaultVisible": False},
     {"id": "topographic", "label": "Topographic", "group": "imagery", "order": 1, "defaultVisible": True},
+    # Plain white backdrop -- same opaque white the paper background on
+    # the other two "imagery" tiles already renders as (see _blank_png's
+    # own comment). Radio-selects against Aerial/Topographic the same way
+    # those two already do (the widget's own RADIO_GROUPS treats the
+    # whole "imagery" group as mutually exclusive, not special-cased per
+    # id) -- useful for looking at just the vector overlays with nothing
+    # underneath but a plain backdrop.
+    {"id": "blank", "label": "Blank", "group": "imagery", "order": 2, "defaultVisible": False},
     {"id": "restored-structures", "label": "Restored State — Structures", "group": "restored", "order": 21, "defaultVisible": False},
     {"id": "restored-monuments", "label": "Restored State — Monuments", "group": "restored", "order": 31, "defaultVisible": False},
     # 2026-10-15: a staged reveal of how "topographic" (above) gets
@@ -319,6 +327,19 @@ def _topographic_structures_buffered_png(z: int, x: int, y: int) -> bytes:
     return _mask_debug_png(_restored_structure_buffered_mask(z, x, y))
 
 
+@lru_cache(maxsize=1)
+def _blank_png() -> bytes:
+    """A plain, opaque white tile -- same (255, 255, 255, 255) the
+    Restored/Actual plan tiles' own paper background already renders as
+    (confirmed directly: the single most common pixel in every sampled
+    tile that has ANY margin around its ink). One tile, memoized once
+    (maxsize=1, no z/x/y in the cache key -- a blank tile looks the same
+    everywhere, nothing to vary by position/zoom), reused for every
+    request rather than redrawing an identical image per tile."""
+    img = Image.new("RGBA", (TILE_SIZE, TILE_SIZE), (255, 255, 255, 255))
+    return _encode_png(img)
+
+
 @lru_cache(maxsize=4096)
 def _topographic_png(z: int, x: int, y: int) -> bytes | None:
     """Restored State Plan's own raw tile with mapped structure
@@ -373,7 +394,9 @@ def tile(layer: str, z: int, x: int, y: int):
     if layer not in LAYER_IDS or not (MIN_ZOOM <= z <= MAX_ZOOM):
         return Response(status_code=404)
 
-    if layer == "topographic":
+    if layer == "blank":
+        data = _blank_png()
+    elif layer == "topographic":
         data = _topographic_png(z, x, y)
     elif layer == "actual-structures":
         data = _structures_png("actual", z, x, y)

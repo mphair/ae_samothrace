@@ -284,6 +284,18 @@ class SamothraceMapElement extends HTMLElement {
   private serviceUrl: string | null = null;
   private layerMetas: LayerMeta[] = [];
   private visibleLayers = new Set<string>();
+  // Which layer-panel `<details>` groups are currently COLLAPSED (closed)
+  // -- keyed by the same `hmsvc:<group>` / `stage:<group>` strings
+  // buildLayersPanel's own `data-group-key` attribute uses, not by the
+  // raw hmsvc `group` string alone or by label text. Both would collide:
+  // the hmsvc "restored" group (labelled "Restored State") and the
+  // stage-layers "restored" group (labelled "Pipeline (Restored)") share
+  // the same raw group key, and collapsing one would otherwise also
+  // collapse the other. Absent from this set = open (today's existing
+  // default, unchanged) -- only CLOSED groups get an entry, so a fresh
+  // instance with nothing saved yet needs no special-casing to start
+  // with everything open.
+  private collapsedGroups = new Set<string>();
   private tileCache = new Map<string, TileEntry>();
   // Debounced UI-state (view/layers/selection) save -- see
   // scheduleSaveUiState's own comment for why this is debounced and
@@ -502,6 +514,22 @@ class SamothraceMapElement extends HTMLElement {
           this.syncLayerCheckboxes();
         }
 
+        // No per-id validity check needed here the way savedLayers'
+        // isKnownLayerId filter has -- a stale group key from a
+        // now-removed/renamed group just means that key is never
+        // referenced by any rendered <details data-group-key>, so
+        // syncGroupCollapse's own per-element lookup simply finds
+        // nothing to apply it to. Harmless either way, same "best-effort,
+        // a saved value that doesn't quite line up with current data is
+        // silently skipped" standard as everything else in this block.
+        const savedCollapsed = Array.isArray(localData.collapsedGroups)
+          ? (localData.collapsedGroups as unknown[]).filter((x): x is string => typeof x === 'string')
+          : null;
+        if (savedCollapsed) {
+          this.collapsedGroups = new Set(savedCollapsed);
+          this.syncGroupCollapse();
+        }
+
         const savedWebCode = typeof localData.selectedWebCode === 'string' ? localData.selectedWebCode : null;
         if (savedWebCode && savedWebCode !== INTRO_WEBCODE && this.findAllMatching(savedWebCode).length > 0) {
           this.selectFeature(savedWebCode, false);
@@ -677,14 +705,19 @@ class SamothraceMapElement extends HTMLElement {
     const groupLabels: Record<string, string> = { imagery: 'Imagery', restored: 'Restored State', 'pipeline-topographic': 'Pipeline (Topographic)' };
     const groups = Array.from(new Set(this.layerMetas.map((l) => l.group)));
     // Every group header is a native <details>/<summary> -- collapsible
-    // for free (no custom JS toggle logic needed), the same mechanism
-    // the Debug section already used before this. `open` by default on
-    // every one, so today's "everything's always visible" behavior is
-    // unchanged until a human actually collapses one -- collapse state
-    // itself isn't persisted (resets open on reload), not asked for.
+    // for free (no custom JS toggle logic needed beyond listening for its
+    // own `toggle` event, see below), the same mechanism the Debug
+    // section already used before this. `open` by default unless this
+    // group's own key is in `collapsedGroups` (restored from saved UI
+    // state, see init()'s own restore block) -- today's "everything's
+    // always visible by default" behavior is unchanged for a fresh
+    // instance with nothing saved yet.
     const html: string[] = [];
-    const openGroup = (label: string): void => {
-      html.push(`<details class="layer-group" open><summary class="layer-group-title">${escapeHtml(label)}</summary>`);
+    const openGroup = (key: string, label: string): void => {
+      const isOpen = !this.collapsedGroups.has(key);
+      html.push(
+        `<details class="layer-group" data-group-key="${escapeHtml(key)}"${isOpen ? ' open' : ''}><summary class="layer-group-title">${escapeHtml(label)}</summary>`,
+      );
     };
     const closeGroup = (): void => {
       html.push(`</details>`);
@@ -704,7 +737,7 @@ class SamothraceMapElement extends HTMLElement {
 
     for (const group of groups) {
       const exclusive = SamothraceMapElement.RADIO_GROUPS.has(group);
-      openGroup(groupLabels[group] ?? group);
+      openGroup(`hmsvc:${group}`, groupLabels[group] ?? group);
       for (const layer of this.layerMetas.filter((l) => l.group === group).sort((a, b) => a.order - b.order)) {
         pushRow(layer.id, layer.label, exclusive);
       }
@@ -733,7 +766,7 @@ class SamothraceMapElement extends HTMLElement {
     const stageRows = this.stageLayers.allLayerRows();
     const stageGroups = Array.from(new Set(stageRows.map((r) => r.group))) as Array<'actual' | 'restored'>;
     for (const group of stageGroups) {
-      openGroup(this.stageLayers.groupLabel(group));
+      openGroup(`stage:${group}`, this.stageLayers.groupLabel(group));
       for (const row of stageRows.filter((r) => r.group === group)) {
         pushRow(row.id, row.label, false);
       }
@@ -752,6 +785,19 @@ class SamothraceMapElement extends HTMLElement {
         this.onLayerToggle(id, input.checked);
       });
     });
+    // Native <details> fires its own `toggle` event on open AND close --
+    // no need to distinguish the click target (summary vs. elsewhere) or
+    // debounce double-fires, the browser already guarantees exactly one
+    // event per actual state change.
+    this.layersPanelEl.querySelectorAll<HTMLDetailsElement>('details.layer-group').forEach((details) => {
+      details.addEventListener('toggle', () => {
+        const key = details.dataset.groupKey;
+        if (!key) return;
+        if (details.open) this.collapsedGroups.delete(key);
+        else this.collapsedGroups.add(key);
+        this.scheduleSaveUiState();
+      });
+    });
   }
 
   private syncLayerCheckboxes(): void {
@@ -759,6 +805,19 @@ class SamothraceMapElement extends HTMLElement {
       const input = el as HTMLInputElement;
       const id = input.dataset.layerId;
       if (id) input.checked = this.visibleLayers.has(id);
+    });
+  }
+
+  // Reconciles each <details> group's own `open` attribute against
+  // `collapsedGroups` -- called once, right after a saved
+  // `collapsedGroups` is restored in init() (buildLayersPanel itself
+  // already rendered every group `open` by default, before that restore
+  // had a chance to run yet; same "build with defaults, then reconcile"
+  // pattern syncLayerCheckboxes already uses for visibleLayers).
+  private syncGroupCollapse(): void {
+    this.layersPanelEl?.querySelectorAll<HTMLDetailsElement>('details.layer-group').forEach((details) => {
+      const key = details.dataset.groupKey;
+      if (key) details.open = !this.collapsedGroups.has(key);
     });
   }
 
@@ -828,6 +887,7 @@ class SamothraceMapElement extends HTMLElement {
         visibleLayers: Array.from(this.visibleLayers),
         view: { lon: this.view.lon, lat: this.view.lat, zoom: this.view.zoom },
         selectedWebCode: this.selectedWebCode,
+        collapsedGroups: Array.from(this.collapsedGroups),
       });
     } catch (err) {
       console.warn('saving UI state failed (best-effort, ignoring):', err);
