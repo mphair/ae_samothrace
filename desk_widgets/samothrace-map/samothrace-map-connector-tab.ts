@@ -35,6 +35,20 @@ function connectorConfirmedPath(plan: ContourPlan): string {
 const CONNECTOR_STREAMS_PATH = 'Data/mapFeatures/SamoWeb_ActualStatePlan_Streams.geojson';
 const CONNECTOR_LOG_PATH = '.desk_temp/contour-connector-log.json';
 
+// Layer-panel id for the "Confirmed Connections" row, own "User Changes"
+// group (samothrace-map.ts's own buildLayersPanel, injected right after
+// the "Restored State" group) -- same `<namespace>:<thing>` convention
+// CONTOURS_LAYER_PREFIX/STAGE_LAYER_PREFIX already use elsewhere in this
+// project, purely to keep ids from colliding in the single shared
+// `visibleLayers: Set<string>` every layer kind reads from. Requested
+// 2026-10-17, by voice recording: the amber dashed confirmed-connection
+// lines drawConfirmed() draws were "always shown" with no way to turn
+// them off outside the Connector tab's own (now-removed) local
+// `showConfirmed` toggle -- this replaces that with the same main
+// -layer-panel mechanism every other piece of map content already uses,
+// rather than two different, overlapping ways to control one thing.
+const CONNECTOR_CONFIRMED_LAYER_ID = 'connector:confirmed';
+
 type ConnectionSource = 'auto-gap' | 'stream-guided' | 'manual';
 
 interface ConnectorConnection {
@@ -134,7 +148,6 @@ class ContourConnectorTabController {
   private connectDrag: ConnectDragState | null = null;
   private maxSuggestDistPx = 140;
   private showSuggested = true;
-  private showConfirmed = true;
   private showStreamGuide = true;
 
   constructor(
@@ -290,7 +303,6 @@ class ContourConnectorTabController {
 
     return `<div class="qa-cc-toolbar">
       <label class="qa-cc-toggle"><input type="checkbox" class="qa-cc-show-suggested" ${this.showSuggested ? 'checked' : ''} /> Show suggested</label>
-      <label class="qa-cc-toggle"><input type="checkbox" class="qa-cc-show-confirmed" ${this.showConfirmed ? 'checked' : ''} /> Show confirmed</label>
       <label class="qa-cc-toggle"><input type="checkbox" class="qa-cc-show-stream-guide" ${this.showStreamGuide ? 'checked' : ''} /> Stream guide (Restored)</label>
       <div class="qa-cc-slider-row">
         <label>Max suggested gap <span class="qa-cc-slider-readout">${this.maxSuggestDistPx}px</span></label>
@@ -305,11 +317,6 @@ class ContourConnectorTabController {
   attachHandlers(container: HTMLElement): void {
     container.querySelector<HTMLInputElement>('.qa-cc-show-suggested')?.addEventListener('change', (e) => {
       this.showSuggested = (e.currentTarget as HTMLInputElement).checked;
-      this.onChanged();
-      this.scheduleRedraw();
-    });
-    container.querySelector<HTMLInputElement>('.qa-cc-show-confirmed')?.addEventListener('change', (e) => {
-      this.showConfirmed = (e.currentTarget as HTMLInputElement).checked;
       this.onChanged();
       this.scheduleRedraw();
     });
@@ -382,7 +389,11 @@ class ContourConnectorTabController {
     const TOL = 7;
     let best: ConnectorHit | null = null;
     let bestDist = TOL;
-    if (this.showConfirmed) {
+    // Same "can't select what you can't see" principle this project's
+    // own overlay hit-testing already follows elsewhere -- if the
+    // "Confirmed Connections" layer is toggled off, clicking where one
+    // WOULD be (to select it for Remove, say) shouldn't hit it either.
+    if (visibleLayers.has(CONNECTOR_CONFIRMED_LAYER_ID)) {
       this.confirmed.forEach((c, idx) => {
         const d = distancePointToSegment(p, toScreen(c.aLon, c.aLat), toScreen(c.bLon, c.bLat));
         if (d < bestDist) {
@@ -621,6 +632,18 @@ class ContourConnectorTabController {
     await desk.fs.writeFile(CONNECTOR_LOG_PATH, JSON.stringify(this.log, null, 2));
   }
 
+  // ── Layer panel ──
+
+  // The "User Changes" group's one row (samothrace-map.ts's own
+  // buildLayersPanel, injected between "Restored State" and "Pipeline
+  // (Topographic)") -- same shape ContoursLayerController.rowFor
+  // returns, just parameterless since there's only ever one row here
+  // (unlike that method, not per-plan -- `confirmed` already spans both
+  // plans in one list, same as `summary()`'s own count already does).
+  rowFor(): { id: string; label: string } {
+    return { id: CONNECTOR_CONFIRMED_LAYER_ID, label: 'Confirmed Connections' };
+  }
+
   // ── Drawing ──
 
   // Called UNCONDITIONALLY every redraw (see samothrace-map.ts's own
@@ -637,8 +660,22 @@ class ContourConnectorTabController {
   // connections actually get made), so no real "clutters every tab"
   // cost the way always-showing the (thousands-per-plan) suggested list
   // would have.
-  drawConfirmed(ctx: CanvasRenderingContext2D, toScreen: (lon: number, lat: number) => ScreenPoint): void {
-    if (!this.showConfirmed) return;
+  //
+  // Gated on the "Confirmed Connections" layer-panel toggle (2026-10-17,
+  // requested directly: "I believe I've accepted connections of some
+  // kind. They're amber and dashed and I would like them to not be
+  // always shown, but instead their own layer... between restored state
+  // and pipeline topographic, there should be a new category which is
+  // like, user changes") -- replaces the old `showConfirmed` field +
+  // its own "Show confirmed" checkbox in this tab's own toolbar (removed
+  // the same day), which only controlled visibility while sitting on
+  // THIS tab and wasn't discoverable from the main layer panel the way
+  // every other piece of map content already is. `visibleLayers` passed
+  // straight through from samothrace-map.ts's own redraw, same pattern
+  // every other `draw()`/`drawVisible()` method in this project already
+  // takes it.
+  drawConfirmed(ctx: CanvasRenderingContext2D, toScreen: (lon: number, lat: number) => ScreenPoint, visibleLayers: Set<string>): void {
+    if (!visibleLayers.has(CONNECTOR_CONFIRMED_LAYER_ID)) return;
     this.confirmed.forEach((c, idx) => {
       const isHover = !this.connectDrag && this.hoverTarget?.kind === 'confirmed' && this.hoverTarget.idx === idx;
       const isSelected = this.selectedConfirmedIdx === idx;

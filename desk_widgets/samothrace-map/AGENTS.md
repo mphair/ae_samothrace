@@ -87,7 +87,17 @@ and get concatenated in that order; it does **not** matter for *type
 4. **`samothrace-map-qa-panel.ts`** — `LabelReviewTabController` and
    `MinorBandsTabController`, the first two Q&A tabs.
 5. **`samothrace-map-connector-tab.ts`** — `ContourConnectorTabController`,
-   the third Q&A tab (drag-to-connect).
+   the third Q&A tab (drag-to-connect). Its confirmed-connections line
+   (`drawConfirmed`, always drawn regardless of active tab) is, as of
+   2026-10-17, gated behind its own layer-panel toggle — "Confirmed
+   Connections," in a new "User Changes" group `samothrace-map.ts`'s own
+   `buildLayersPanel` injects between "Restored State" and "Pipeline
+   (Topographic)" (directly requested by name, via voice recording).
+   `rowFor()` (parameterless, unlike `ContoursLayerController.rowFor`'s
+   per-plan version — `confirmed` already spans both plans in one list)
+   returns that row's id/label; replaces the tab's own former
+   `showConfirmed` toggle, which only controlled visibility while
+   sitting on this specific tab.
 6. **`samothrace-map-agent-qa-tab.ts`** — `AgentQaTabController`, the
    fourth Q&A tab and the leftmost/default one. Unlike the other three
    (each driven by a pipeline-written queue file, loaded once at init),

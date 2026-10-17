@@ -3,6 +3,35 @@
 See `AGENTS.md` for the full picture of this widget; this file just
 tracks specific open items worth picking up later.
 
+- **Confirmed-connection lines ("amber and dashed") moved from
+  always-on to a real layer toggle — 2026-10-17, requested by voice
+  recording.** `ContourConnectorTabController.drawConfirmed()` used to
+  draw every confirmed connection unconditionally, every redraw,
+  regardless of tab — the only way to hide it was a "Show confirmed"
+  checkbox local to the Connector tab's own toolbar (easy to miss, only
+  usable while that tab happened to be open). Replaced with a proper
+  layer-panel row, **"Confirmed Connections,"** in a brand-new
+  **"User Changes"** group — both names taken directly from the
+  recording ("there should be a new category which is like, user
+  changes... one of those layers should be these expected ones or
+  accepted ones"). `samothrace-map.ts`'s `buildLayersPanel` injects this
+  group right between "Restored State" and "Pipeline (Topographic),"
+  same position named in the recording; `ContourConnectorTabController.
+  rowFor()` (new, parameterless — `confirmed` already spans both plans
+  in one list, unlike `ContoursLayerController.rowFor`'s per-plan
+  version) supplies the row. The old `showConfirmed` field, its
+  checkbox, and its own `hitTestAll` gating are gone — `drawConfirmed`
+  and `hitTestAll` both now check `visibleLayers.has('connector:confirmed')`
+  directly, same mechanism (and same "can't select what you can't see"
+  principle) every other layer kind in this widget already uses. Starts
+  OFF by default (nothing seeds it into `visibleLayers` at init, same as
+  every other non-hmsvc layer row) — matches "I would like them to not
+  be always shown." The Connector tab's own "Show me" button on a
+  confirmed-connection row now also auto-enables this layer first if
+  it's off, same pattern `showMeContourFragments` already uses, so
+  clicking "Show me" can't pan/zoom to a line that then doesn't actually
+  render.
+
 - **~~Investigate: a confirmed minor-band session-local override may not
   always be live.~~ Resolved 2026-10-16 — stale-instance artifact, not a
   bug.** Fragment 103 was confirmed (band-35-40-2, 36m, 2026-10-14) but

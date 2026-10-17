@@ -231,7 +231,19 @@ class SamothraceMapElement extends HTMLElement {
     () => this.renderQaPanel(),
     () => this.scheduleRedraw(),
     this.contoursLayer,
-    (bounds) => this.fitToBounds(padBounds(bounds, 0.6), 0),
+    // "Show me" on a confirmed connection -- same "ensure the relevant
+    // layer is visible first" step showMeContourFragments already takes
+    // (below), added here 2026-10-17 alongside the new "Confirmed
+    // Connections" layer toggle itself: without this, clicking "Show me"
+    // would pan/zoom to a connection that's possibly not actually drawn,
+    // if that layer happens to be off.
+    (bounds) => {
+      if (!this.visibleLayers.has(CONNECTOR_CONFIRMED_LAYER_ID)) {
+        this.onLayerToggle(CONNECTOR_CONFIRMED_LAYER_ID, true);
+        this.syncLayerCheckboxes();
+      }
+      this.fitToBounds(padBounds(bounds, 0.6), 0);
+    },
   );
   // Leftmost, default tab -- see samothrace-map-agent-qa-tab.ts's own
   // header comment. Declared after `recording` (same field-initializer
@@ -607,6 +619,7 @@ class SamothraceMapElement extends HTMLElement {
     if (this.layerMetas.some((m) => m.id === id)) return true;
     if (id === this.contoursLayer.rowFor('actual').id || id === this.contoursLayer.rowFor('restored').id) return true;
     if (this.stageLayers.allLayerRows().some((r) => r.id === id)) return true;
+    if (id === this.connectorTab.rowFor().id) return true;
     return false;
   }
 
@@ -753,6 +766,26 @@ class SamothraceMapElement extends HTMLElement {
         pushRow(row.id, row.label, false);
       }
       closeGroup();
+
+      // "User Changes" -- a new group injected right here (between
+      // "Restored State" and "Pipeline (Topographic)"), requested
+      // directly via recording, including the group's own name: "between
+      // restored state and pipeline topographic, there should be a new
+      // category which is like, user changes." Not an hmsvc group (no
+      // tile-service layer backs it), so it can't just fall out of the
+      // normal `groups` loop above the way imagery/restored/pipeline
+      // -topographic do -- injected here, tied to 'restored' finishing,
+      // since that's the fixed position in hmsvc's own LAYERS ordering
+      // (service.py) right before 'pipeline-topographic' starts. Same
+      // reasoning as the contours-row injection just above: real,
+      // session-confirmed map content joins its own purpose-built group
+      // rather than hunting for an existing one that doesn't quite fit.
+      if (group === 'restored') {
+        openGroup('user-changes', 'User Changes');
+        const row = this.connectorTab.rowFor();
+        pushRow(row.id, row.label, false);
+        closeGroup();
+      }
     }
 
     // Pipeline stage layers (phase 2 of plans/samothrace-map
@@ -1370,8 +1403,11 @@ class SamothraceMapElement extends HTMLElement {
     // drawn on every tab (2026-10-14 fix: previously only rendered while
     // sitting on the Connector tab, so a connection confirmed via the
     // Agent Q&A tab looked un-fixed everywhere else -- see
-    // ContourConnectorTabController.drawConfirmed's own comment).
-    this.connectorTab.drawConfirmed(ctx, toScreen);
+    // ContourConnectorTabController.drawConfirmed's own comment). Gated
+    // on the "Confirmed Connections" layer toggle (2026-10-17, see that
+    // method's own comment) the same way every other layer kind already
+    // is -- `visibleLayers` passed straight through.
+    this.connectorTab.drawConfirmed(ctx, toScreen, this.visibleLayers);
     // Phase 6: suggested connections, the live drag line, and the
     // anchor/drag-target/hover overdraw -- only while that tab is active
     // (see this file's own "kept self-contained" comments at the
