@@ -72,6 +72,31 @@
 // exact same connection symmetrically) and, on apply, calls the exact
 // same onUndoConnection callback Undo already used.
 //
+// A fourth, structurally very different question type,
+// 'adjust-image-transform', followed the same day: a photo of a
+// different, hand-annotated plan of the sanctuary got georeferenced
+// automatically first (desk-installed-jobs/samothrace-initial-map/, a
+// control-point/piecewise-affine warp) -- it didn't work well enough.
+// This type drops automatic alignment entirely: the question's own card
+// renders four LIVE sliders (rotation, scale, and two tilt axes --
+// "photo-angle distortion," confirmed directly as a real 3D tilt, not a
+// 2D approximation) plus a draggable `<img>` overlay positioned directly
+// on the map canvas (not canvas-drawn -- a real CSS 3D `transform`,
+// rendered natively by the browser; see SamothraceMapElement's own
+// positionImageOverlay), so the user can dial the alignment in BY EYE
+// against the real map underneath, then "Lock In" (semantically this
+// file's own Confirm path, see applyImageTransform) to write the final
+// numbers to Data/mapSources/<slug>/transform.json and bake them into
+// real tiles via desk-installed-jobs/map-import-from-photo/ (the
+// renamed, generalized successor to the scrapped piecewise-affine job --
+// see that job's own header comment for the exact CSS-transform
+// <-> homography math bridging what the user saw to what gets baked).
+// No `plan` concept, no reused ConfirmConnectionQuestionData/
+// ConfirmMinorBandPatchData shape -- different enough (own working
+// -state model, own card renderer, own apply/cancel methods) that it's
+// noted in full here rather than folded into the "scope" framing the
+// first three paragraphs above share.
+//
 // Two question types now: 'confirm-connection' (the original, "is this
 // suggested/already-applied contour connection correct?") and
 // 'confirm-minor-band' (added 2026-10-16, both as Undo's own "convert
@@ -188,7 +213,43 @@ const AGENT_PATCH_VISIBLE_HISTORY = 8;
 // is a hand-authored CSS block, not generated from this file.
 const QA_ARCHIVE_DELAY_MS = 8500;
 
-type AgentQuestionType = 'confirm-connection' | 'confirm-minor-band';
+type AgentQuestionType = 'confirm-connection' | 'confirm-minor-band' | 'adjust-image-transform';
+
+// 'adjust-image-transform' (added 2026-10-17, same day as its own
+// predecessor's control-point/piecewise-affine approach was scrapped for
+// not working well enough) -- an interactive tool, not a yes/no
+// judgment. The user rotates/scales/tilts (and drags to reposition) a
+// live overlay of an uploaded photo directly against the real map,
+// confirmed by eye, then "Lock In" (semantically this file's own
+// Confirm path, just relabeled -- see applyImageTransform) writes the
+// final numbers into Data/mapSources/<slug>/transform.json and calls
+// desk.installedJobs.run('map-import-from-photo', ...) to bake them into
+// real tiles immediately. See desk-installed-jobs/map-import-from-photo/
+// main.py's own header comment for the exact math (a real CSS 3D
+// transform on a plain <img>, not canvas-drawn -- the browser renders
+// the live preview natively; the job reconstructs the IDENTICAL 4x4
+// matrix pipeline in Python so what was seen is exactly what gets
+// baked, not an approximation of it).
+//
+// Zoom-independent by design (same reasoning transform.json's own shape
+// documents in that job's header comment) -- `metersPerPhotoPx` /
+// `userScale` describe a REAL-WORLD size, not a screen size; converting
+// to an actual on-screen CSS pixel size for the live preview (which
+// DOES depend on current zoom) is SamothraceMapElement's own job
+// (positionImageOverlay), not this controller's.
+interface AdjustImageTransformQuestionData {
+  slug: string; // Data/mapSources/<slug>/ -- also the hmsvc /source/<slug> endpoint's own path segment
+  layerId: string; // which "imagery" layer to refresh after Lock In (desk_hmsvc/samothrace-tiles/service.py's own LAYERS id)
+  centerLon: number;
+  centerLat: number;
+  metersPerPhotoPx: number;
+  userScale: number;
+  rotateDeg: number;
+  tiltXDeg: number;
+  tiltYDeg: number;
+  photoWidth: number;
+  photoHeight: number;
+}
 
 interface ConfirmConnectionQuestionData {
   connectionId: string;
@@ -222,7 +283,7 @@ interface AgentQuestion {
   // all global-script interfaces in one compiled program; declaration
   // order only matters for the compiled JS of CONCRETE code, never for
   // type-checking (see this widget's own AGENTS.md).
-  data: ConfirmConnectionQuestionData | ConfirmMinorBandPatchData;
+  data: ConfirmConnectionQuestionData | ConfirmMinorBandPatchData | AdjustImageTransformQuestionData;
 }
 
 interface AgentQuestionsFile {
@@ -408,6 +469,18 @@ class AgentQaTabController {
   private archiveDrawerOpen = false;
   private archiveSortBy: ArchiveSortBy = 'answer-age';
 
+  // ── 'adjust-image-transform' working state ──
+  // Working (not-yet-locked-in) parameter copies, keyed by questionId --
+  // seeded lazily from the question's own `data` (the initial guess) the
+  // first time it's touched (slider input, drag, or just rendered), kept
+  // SEPARATE from `data` itself so the original guess survives a Cancel.
+  // In practice there's realistically 0 or 1 of these pending at once
+  // (a deliberate, rare per-import action, not a queue), but keyed by id
+  // rather than a single slot anyway -- cheap, and avoids any ambiguity
+  // if that assumption's ever wrong.
+  private imageAdjustments = new Map<string, AdjustImageTransformQuestionData>();
+  private imageTransformError: string | null = null; // last Lock In failure message, if any -- cleared on next attempt
+
   // ── AgentPatchChannel state ──
   private patches: AgentPatch[] = [];
   private recentApplied: AppliedPatchDisplay[] = []; // newest first, capped at AGENT_PATCH_VISIBLE_HISTORY, resynced from disk every poll -- UNRESOLVED patches only (see reload()'s own split)
@@ -468,6 +541,14 @@ class AgentQaTabController {
     // controller's own "remove" method to delegate to; MinorBandsTabController
     // has no undo UI of its own yet (see this widget's own TODO.md).
     private readonly onBandUndo: (plan: QaPlan, fragmentIds: number[]) => void,
+    // 'adjust-image-transform' Lock In -- called right after
+    // map-import-from-photo finishes regenerating a layer's real tiles,
+    // so the main element can bust its own tile-URL cache (hmsvc's
+    // responses are aggressively cached, see that method's own comment)
+    // and redraw. Not called on failure -- see applyImageTransform's own
+    // comment on why a failed auto-run is still a safe, recoverable
+    // state (transform.json is already saved by then regardless).
+    private readonly onImageTransformApplied: (layerId: string) => void,
   ) {}
 
   async init(): Promise<void> {
@@ -659,13 +740,19 @@ class AgentQaTabController {
         <div class="qa-archiving-message">${message}</div>
       </div>`;
     }
+    // 'adjust-image-transform' has no `plan` chip (no concept of one)
+    // and its own Lock In/Cancel footer instead of Confirm/Reject --
+    // different enough from the other two types' shared card shape that
+    // it builds its own whole card rather than slotting into this one.
+    if (q.type === 'adjust-image-transform') return this.renderImageAdjustCard(q);
+
     const answer = this.answers.get(q.id);
     const answeredBadge = answer ? `<div class="qa-answered-badge">✓ ${answer.decision === 'confirm' ? 'Confirmed' : 'Rejected'}</div>` : '';
     const busy = this.busyIds.has(q.id);
     const body = q.type === 'confirm-connection' ? this.renderConnectionCardBody(q) : this.renderMinorBandCardBody(q);
     return `<div class="qa-card${answer ? ' answered' : ''}" data-question-id="${escapeHtml(q.id)}">
       <div class="qa-card-header">
-        <span class="qa-plan-chip">${escapeHtml(QA_PLAN_LABEL[q.data.plan])}</span>
+        <span class="qa-plan-chip">${escapeHtml(QA_PLAN_LABEL[(q.data as ConfirmConnectionQuestionData | ConfirmMinorBandPatchData).plan])}</span>
         <button type="button" class="qa-show-me-button qa-agent-show-me-button" data-question-id="${escapeHtml(q.id)}">📍 Show me</button>
       </div>
       ${body}
@@ -692,6 +779,82 @@ class AgentQaTabController {
     const fragLabels = data.fragments.map((f) => `#${f.fragmentId}${f.elevationM !== null ? ` (${f.elevationM}m)` : ''}`).join(', ');
     return `<div class="qa-reason-line">${escapeHtml(q.prompt)}</div>
       <div class="qa-ocr-line">Between ${data.elevLow}m and ${data.elevHigh}m — ${data.fragments.length} fragment(s): ${escapeHtml(fragLabels)}</div>`;
+  }
+
+  // ── 'adjust-image-transform' ──
+
+  // Lazily seeds a working (not-yet-locked-in) copy from the question's
+  // own `data` (the initial guess) the first time it's touched --
+  // SEPARATE from `data` itself so Cancel can just drop the working copy
+  // and the original guess is still there next time. See this
+  // controller's own "working state" class-field comment.
+  private workingImageDataFor(q: AgentQuestion): AdjustImageTransformQuestionData {
+    let working = this.imageAdjustments.get(q.id);
+    if (!working) {
+      working = { ...(q.data as AdjustImageTransformQuestionData) };
+      this.imageAdjustments.set(q.id, working);
+    }
+    return working;
+  }
+
+  // SamothraceMapElement's own read side -- called every redraw
+  // (positionImageOverlay) to know whether/where/how to show the live
+  // `<img>` overlay. At most one UNANSWERED 'adjust-image-transform'
+  // question is ever "active" at a time (the first one found) -- see
+  // this controller's own "working state" field comment on why that's a
+  // safe assumption to make here rather than threading a questionId
+  // through from the caller.
+  getActiveImageAdjustment(): { questionId: string; data: AdjustImageTransformQuestionData } | null {
+    const q = this.questions.find((x) => x.type === 'adjust-image-transform' && !this.answers.has(x.id));
+    if (!q) return null;
+    return { questionId: q.id, data: this.workingImageDataFor(q) };
+  }
+
+  // SamothraceMapElement's own drag handler calls this directly (not a
+  // constructor callback -- this is main-element-initiated, not
+  // tab-initiated, same shape as e.g. contoursLayer's own public setters
+  // other controllers already call directly).
+  updateImageAdjustmentPosition(questionId: string, centerLon: number, centerLat: number): void {
+    const working = this.imageAdjustments.get(questionId);
+    if (!working) return;
+    working.centerLon = centerLon;
+    working.centerLat = centerLat;
+    this.scheduleRedraw();
+  }
+
+  private renderImageAdjustCard(q: AgentQuestion): string {
+    const answer = this.answers.get(q.id);
+    if (answer) {
+      return `<div class="qa-card answered" data-question-id="${escapeHtml(q.id)}">
+        <div class="qa-card-header"><span class="qa-plan-chip">Imagery</span></div>
+        <div class="qa-reason-line">${escapeHtml(q.prompt)}</div>
+        <div class="qa-answered-badge">✓ Locked in</div>
+      </div>`;
+    }
+    const working = this.workingImageDataFor(q);
+    const busy = this.busyIds.has(q.id);
+    const errorLine = this.imageTransformError
+      ? `<div class="qa-img-status qa-img-status-error">⚠️ ${escapeHtml(this.imageTransformError)}</div>`
+      : '';
+    const sliderRow = (field: string, label: string, min: number, max: number, step: number, value: number, suffix: string, decimals: number): string => `
+      <div class="qa-img-slider-row" data-field="${field}">
+        <label>${label} <span class="qa-img-readout">${value.toFixed(decimals)}${suffix}</span></label>
+        <input type="range" class="qa-img-slider" data-field="${field}" data-question-id="${escapeHtml(q.id)}" min="${min}" max="${max}" step="${step}" value="${value}" ${busy ? 'disabled' : ''} />
+      </div>`;
+    return `<div class="qa-card" data-question-id="${escapeHtml(q.id)}">
+      <div class="qa-card-header"><span class="qa-plan-chip">Imagery</span></div>
+      <div class="qa-reason-line">${escapeHtml(q.prompt)}</div>
+      <div class="qa-img-hint">Drag the image directly on the map to reposition it. Adjust below until it lines up, then Lock In.</div>
+      ${errorLine}
+      ${sliderRow('rotateDeg', 'Rotation', -180, 180, 1, working.rotateDeg, '°', 0)}
+      ${sliderRow('userScale', 'Scale', 0.3, 3, 0.01, working.userScale, '×', 2)}
+      ${sliderRow('tiltXDeg', 'Tilt X (left/right)', -60, 60, 1, working.tiltXDeg, '°', 0)}
+      ${sliderRow('tiltYDeg', 'Tilt Y (up/down)', -60, 60, 1, working.tiltYDeg, '°', 0)}
+      <div class="qa-actions">
+        <button type="button" class="qa-accept-button qa-img-lock-in-button" data-question-id="${escapeHtml(q.id)}" ${busy ? 'disabled' : ''}>🔒 Lock In</button>
+        <button type="button" class="qa-reject-button qa-img-cancel-button" data-question-id="${escapeHtml(q.id)}" ${busy ? 'disabled' : ''}>Cancel</button>
+      </div>
+    </div>`;
   }
 
   attachHandlers(container: HTMLElement): void {
@@ -744,6 +907,44 @@ class AgentQaTabController {
       });
     });
 
+    // ── 'adjust-image-transform' sliders ──
+    // Direct DOM mutation on `input` (not this.onChanged()) -- same
+    // reasoning the Connector tab's own "Max suggested gap" slider
+    // already follows: re-rendering the whole card on every tick would
+    // recreate the slider mid-drag, which browsers handle badly (focus/
+    // drag state lost). The working copy (this.imageAdjustments) is the
+    // actual source of truth; the DOM readout text is just kept in sync
+    // alongside it.
+    container.querySelectorAll<HTMLInputElement>('.qa-img-slider').forEach((input) => {
+      input.addEventListener('input', () => {
+        const questionId = input.dataset.questionId;
+        const field = input.dataset.field;
+        if (!questionId || !field) return;
+        const working = this.imageAdjustments.get(questionId);
+        if (!working) return;
+        const value = Number(input.value);
+        if (field === 'rotateDeg') working.rotateDeg = value;
+        else if (field === 'userScale') working.userScale = value;
+        else if (field === 'tiltXDeg') working.tiltXDeg = value;
+        else if (field === 'tiltYDeg') working.tiltYDeg = value;
+        const readout = input.closest('.qa-img-slider-row')?.querySelector('.qa-img-readout');
+        if (readout) readout.textContent = field === 'userScale' ? `${value.toFixed(2)}×` : `${value.toFixed(0)}°`;
+        this.scheduleRedraw();
+      });
+    });
+    container.querySelectorAll<HTMLButtonElement>('.qa-img-lock-in-button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.questionId;
+        if (id) void this.applyImageTransform(id);
+      });
+    });
+    container.querySelectorAll<HTMLButtonElement>('.qa-img-cancel-button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.questionId;
+        if (id) this.cancelImageAdjustment(id);
+      });
+    });
+
     // ── Archive drawer ──
     const drawerBody = container.querySelector<HTMLElement>('.qa-archive-body');
     const chevron = container.querySelector<HTMLElement>('.qa-archive-chevron');
@@ -771,10 +972,16 @@ class AgentQaTabController {
     });
   }
 
+  // Confirm/Reject path -- 'confirm-connection' and 'confirm-minor-band'
+  // only. 'adjust-image-transform' has its own Lock In/Cancel path
+  // (applyImageTransform/cancelImageAdjustment below) with no Confirm/
+  // Reject buttons rendered for it at all (see renderImageAdjustCard),
+  // so this should never actually be called for one -- guarded anyway,
+  // rather than relying purely on "no button exists to trigger it."
   private async answer(questionId: string, decision: AgentAnswerDecision): Promise<void> {
     if (this.busyIds.has(questionId)) return; // already mid-submit
     const q = this.questions.find((x) => x.id === questionId);
-    if (!q || this.answers.has(questionId)) return; // unknown, or a stale re-click after it's already answered
+    if (!q || this.answers.has(questionId) || q.type === 'adjust-image-transform') return;
     this.busyIds.add(questionId);
     this.onChanged(); // re-render immediately so the buttons disable right away
     try {
@@ -788,6 +995,87 @@ class AgentQaTabController {
       this.busyIds.delete(questionId);
       this.onChanged();
     }
+  }
+
+  // Lock In -- semantically this file's own Confirm path (see the
+  // comment above), just with a different label and different side
+  // effects: besides the normal AgentAnswer, this ALSO writes the final
+  // parameters into Data/mapSources/<slug>/transform.json (durable,
+  // source-controllable -- the whole point, per the user's own framing
+  // of this as "the first of many such map data extractions to come")
+  // and calls desk.installedJobs.run('map-import-from-photo', ...) to
+  // bake them into real tiles immediately.
+  //
+  // Best-effort on the job-run half specifically: transform.json is
+  // already saved by the time that call happens, so even if
+  // desk.installedJobs.run itself fails (see this method's own
+  // worry about whether that Bridge-triggered path reliably gets a
+  // usable project directory, same gotcha
+  // desk-installed-jobs/map-import-from-photo/main.py's own header
+  // comment documents for the agent-triggered MCP path), nothing is
+  // lost -- the parameters are safely on disk either way, and the job
+  // can always be run again afterward (by the agent, or by Lock-In-ing
+  // again).
+  private async applyImageTransform(questionId: string): Promise<void> {
+    if (this.busyIds.has(questionId)) return;
+    const q = this.questions.find((x) => x.id === questionId);
+    if (!q || this.answers.has(questionId) || q.type !== 'adjust-image-transform') return;
+    const working = this.workingImageDataFor(q);
+    this.busyIds.add(questionId);
+    this.imageTransformError = null;
+    this.onChanged();
+    try {
+      const desk = window.desk;
+      if (!desk) throw new Error('Desk bridge unavailable');
+      await desk.fs.writeFile(`Data/mapSources/${working.slug}/transform.json`, JSON.stringify(working, null, 2));
+
+      const ans: AgentAnswer = { questionId, decision: 'confirm', answeredAt: new Date().toISOString() };
+      this.answers.set(questionId, ans);
+      await this.appendAnswer(ans);
+
+      // An Installed Job gets neither a reliable cwd nor a reliable
+      // DESK_PROJECT_DIR env var (confirmed by real failed runs -- see
+      // map-import-from-photo/main.py's own _project_dir_and_slug
+      // comment), so project_dir must be passed explicitly here, same as
+      // the agent's own MCP-tool-triggered runs already do.
+      // self.getManifest() needs no capability declaration of its own.
+      const manifest = await desk.self.getManifest();
+      const configPath = `.desk_temp/map-import-from-photo-config-${working.slug}.json`;
+      await desk.fs.writeFile(
+        configPath,
+        JSON.stringify({ project_dir: manifest.directory, slug: working.slug }, null, 2)
+      );
+      const result = await desk.installedJobs.run('map-import-from-photo', configPath);
+      this.recording.log('qa:agent', 'image-transform-locked-in', { questionId, slug: working.slug, ok: result.ok, data: working });
+      if (result.ok) {
+        this.onImageTransformApplied(working.layerId);
+      } else {
+        // Not fatal -- see this method's own header comment. Surfaced
+        // in the card (re-rendered below, archiving hasn't started yet
+        // so the error line is still visible) rather than only in the
+        // recording log, since there's no guarantee anyone's watching
+        // that log right now.
+        this.imageTransformError = `Tiles weren't regenerated automatically (${result.stderr || result.traceback || 'unknown error'}) -- parameters are saved; ask the agent to run map-import-from-photo manually.`;
+      }
+      this.startArchiving(questionId, this.archivingQuestions, 'confirm');
+    } catch (err) {
+      this.imageTransformError = err instanceof Error ? err.message : String(err);
+    } finally {
+      this.imageAdjustments.delete(questionId);
+      this.busyIds.delete(questionId);
+      this.onChanged();
+    }
+  }
+
+  // Cancel -- abandons the current working adjustment (reverts to the
+  // original guess next time this question is touched) WITHOUT
+  // answering the question; it stays pending. Nothing durable to undo
+  // (transform.json is only ever written by a successful Lock In).
+  private cancelImageAdjustment(questionId: string): void {
+    this.imageAdjustments.delete(questionId);
+    this.imageTransformError = null;
+    this.onChanged();
+    this.scheduleRedraw();
   }
 
   // Shared by both archiving flavors (questions and applied-patch rows) --
@@ -935,7 +1223,17 @@ class AgentQaTabController {
     const ans = this.answers.get(questionId);
     if (!q || !ans) return;
     try {
-      if (ans.decision === 'confirm') await this.reverseAppliedDecision(q.type, q.data);
+      // 'adjust-image-transform' has no live-state reversal of its own
+      // (see this widget's own TODO.md on this being a known,
+      // deliberately-accepted simplification for this first version) --
+      // Reset still removes the answer below either way, which for THIS
+      // type just means "show the adjustment card again, re-adjust and
+      // Lock In whenever" -- a perfectly reasonable "I want to redo
+      // this" interpretation, so no special-casing needed beyond
+      // skipping the reversal call itself.
+      if (ans.decision === 'confirm' && q.type !== 'adjust-image-transform') {
+        await this.reverseAppliedDecision(q.type as AgentPatchType, q.data as ConfirmConnectionQuestionData | ConfirmMinorBandPatchData);
+      }
     } catch (err) {
       console.warn('reversing answer during reset failed (best-effort, resetting anyway):', err);
     }
@@ -966,10 +1264,17 @@ class AgentQaTabController {
     for (const q of this.questions) {
       const ans = this.answers.get(q.id);
       if (!ans || this.archivingQuestions.has(q.id)) continue;
+      // 'adjust-image-transform' doesn't fit summarizeDecisionData's own
+      // connection/minor-band-shaped fields (no .source/.groupId etc.) --
+      // its own short summary instead.
+      const summary =
+        q.type === 'adjust-image-transform'
+          ? `Image layer "${(q.data as AdjustImageTransformQuestionData).slug}" adjustment`
+          : summarizeDecisionData(q.type as AgentPatchType, q.data as ConfirmConnectionQuestionData | ConfirmMinorBandPatchData);
       items.push({
         kind: 'question',
         id: q.id,
-        summary: summarizeDecisionData(q.type, q.data),
+        summary,
         resolutionLabel: ans.decision === 'confirm' ? 'Confirmed' : 'Rejected',
         createdAt: q.createdAt,
         resolvedAt: ans.answeredAt,

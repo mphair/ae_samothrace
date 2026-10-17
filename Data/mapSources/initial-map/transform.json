@@ -1,0 +1,13 @@
+{
+  "slug": "initial-map",
+  "layerId": "initial-map",
+  "centerLon": 25.53036442807897,
+  "centerLat": 40.500621878179366,
+  "metersPerPhotoPx": 0.09675644648568256,
+  "userScale": 1.31,
+  "rotateDeg": -10,
+  "tiltXDeg": 0,
+  "tiltYDeg": -10,
+  "photoWidth": 1975,
+  "photoHeight": 2262
+}

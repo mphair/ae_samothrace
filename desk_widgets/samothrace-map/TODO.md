@@ -3,6 +3,122 @@
 See `AGENTS.md` for the full picture of this widget; this file just
 tracks specific open items worth picking up later.
 
+- **New "Initial Map" imagery layer, from a user-uploaded photo — now
+  interactive, user-driven (2026-10-17, same day as the first,
+  automatic-alignment attempt that didn't work well enough).** The user
+  dropped a photo of a DIFFERENT, hand-annotated chronology plan of the
+  sanctuary (own numbering scheme, black-ink identifications like
+  "Diana"/"Palace"/"Hall of Dancers, summer festival" added on top of
+  the printed building outlines/chronology key/north-arrow/scale-bar)
+  and asked for it georeferenced and added as a 4th "imagery" radio
+  option.
+
+  **~~First attempt: automatic control-point/piecewise-affine
+  georeferencing~~ — didn't work well enough, scrapped same day.**
+  `desk-installed-jobs/samothrace-initial-map/` (now deleted) matched 11
+  structures by shape/position, fit a global homography + a
+  `skimage.transform.PiecewiseAffineTransform`, and baked the result
+  automatically -- verified with small numeric residuals (worst ~11m
+  across a ~250m scene) but the user's own live-eyes judgment was "it
+  really didn't work very well." Direct lesson: small numeric residuals
+  on hand-picked control points don't necessarily translate to a result
+  that reads as correct by eye -- worth remembering before trusting a
+  "the math checks out" result over direct visual feedback again.
+
+  **Second approach, current: the USER aligns it, live, by eye.** No
+  automatic control-point picking at all. The photo is imported with a
+  simple initial guess (roughly the sanctuary's own real-world size,
+  centered on it, zero rotation/tilt -- computed once from
+  `SamoWeb_RestoredStatePlan_Overlay.geojson`'s own combined bounding
+  box), then a new Agent Q&A question type,
+  **`'adjust-image-transform'`** (`samothrace-map-agent-qa-tab.ts`),
+  gives the user real interactive tools: a semi-transparent, draggable
+  `<img>` overlaid directly on the map canvas (a real CSS 3D
+  `transform`, not canvas-drawn -- the browser renders rotate/tilt/
+  perspective natively, see `SamothraceMapElement.positionImageOverlay`)
+  plus four live sliders (Rotation, Scale, Tilt X, Tilt Y -- "photo
+  -angle distortion" as a genuine 3D camera tilt, confirmed directly
+  with the user rather than a 2D approximation). Drag to reposition,
+  adjust until it visually lines up against the real map underneath,
+  then **Lock In**.
+
+  **Exact math bridge, not an approximation of it**: a CSS 3D transform
+  on a flat element is mathematically a real projective transform --
+  the renamed, generalized installed job,
+  **`desk-installed-jobs/map-import-from-photo/`**, reconstructs the
+  IDENTICAL 4x4 matrix pipeline in Python (same composition order CSS
+  itself uses) over the photo's own 4 corners, then
+  `cv2.getPerspectiveTransform` (exact for 4 points, not a
+  least-squares fit) + `cv2.warpPerspective` bakes EXACTLY what the user
+  saw into real tiles. Full math in that job's own header comment.
+
+  **Reusable data layout, not hardcoded to this one photo** (explicitly
+  the first of a planned series): `Data/mapSources/<slug>/source.<ext>`
+  + `Data/mapSources/<slug>/transform.json`
+  (`{centerLon, centerLat, metersPerPhotoPx, userScale, rotateDeg,
+  tiltXDeg, tiltYDeg, photoWidth, photoHeight}` -- zero-independent by
+  design) -- both committed to source control. The job takes
+  `{"slug": "..."}` via its own `config_path`, so a future import reuses
+  it unchanged. `desk_hmsvc/samothrace-tiles/service.py` gets one more
+  tiny endpoint, `/source/{slug}`, serving the raw photo so the overlay
+  `<img>` has something to point its own `src` at (same reasoning every
+  tile already goes through hmsvc instead of the widget reading file
+  bytes itself over the Bridge API).
+
+  **Lock In runs the bake live**: writes `transform.json`, writes the
+  normal `AgentAnswer`, then calls
+  `desk.installedJobs.run('map-import-from-photo', ...)` directly from
+  the widget (new `installed_jobs` capability in `widget.json` +
+  `Window.desk.installedJobs` in `samothrace-map-recording.ts`) --
+  no agent round-trip needed for the common case. `transform.json` is
+  ALREADY saved before that call regardless of how it goes -- nothing is
+  lost even if the bake itself fails, the job can always be run again
+  afterward. Tile URLs get a `?v=N` cache-buster per layer after a
+  successful run (`SamothraceMapElement.bustTileCache`) since hmsvc's
+  own tile responses are aggressively cached (`max-age=31536000,
+  immutable`) -- without it the browser would keep serving pre-Lock-In
+  tiles forever.
+
+  **Found and fixed, 2026-10-17 — the first real Lock In's auto-bake
+  silently failed.** The user locked in real values (rotateDeg -10,
+  tiltYDeg -10, userScale 1.31, recentered) but the tile directory's own
+  mtime stayed older than the answer -- `applyImageTransform`'s
+  `config_path` only wrote `{"slug": ...}`, omitting `project_dir`,
+  exactly the gap flagged (but left unverified) above: an Installed Job
+  gets neither a reliable `cwd` nor a reliable `DESK_PROJECT_DIR`, so
+  `map-import-from-photo`'s own `_project_dir_and_slug()` raised. The
+  error was real but easy to miss in the moment -- `imageTransformError`
+  does get set and rendered, but `startArchiving` fires right after
+  regardless of `ok`, so the card (and its error line) animates away on
+  the normal archive timer either way. Worked around for that one run by
+  running the job directly via the agent-facing MCP tool with an
+  explicit `project_dir`, which did produce correct tiles (spot-checked
+  by fetching and stitching several zoom-19 tiles directly over HTTP --
+  photo visibly rotated, hand annotations/chronology key/N
+  arrow/scale bar all intact). **Root-cause fixed**: added
+  `desk.self.getManifest()` to `Window.desk` (capability-free, returns
+  `{directory: ...}` — confirmed against `desk/server/app.py`'s own
+  `self_get_manifest` handler) and `applyImageTransform` now reads
+  `manifest.directory` and includes it as `project_dir` in the written
+  config, same shape the MCP-tool path already used successfully. Not
+  yet re-exercised through a real Lock In click (no pointer-simulation
+  tool available this session) — next real adjustment + Lock In should
+  be watched to confirm the auto-bake actually completes now.
+
+  **Known, accepted simplification**: Reset (from the archive drawer) on
+  an answered `'adjust-image-transform'` question clears the answer and
+  re-shows the adjustment card (a reasonable "redo this" action) but does
+  NOT attempt to revert the tiles a previous Lock In already baked --
+  there's no real "undo" concept for a generative bake without keeping a
+  full history, not solved now.
+
+  Wiring (both attempts, unchanged by the rewrite):
+  `desk_hmsvc/samothrace-tiles/service.py`'s `RAW_LAYER_DIRS["initial-map"]`
+  + `LAYERS` entry (group `"imagery"`, between `"blank"` and
+  `"restored"`) -- no widget-side layer-panel changes needed, same
+  reasoning as the "Blank" layer, the imagery radio group is already
+  fully generic over whatever `/layers` returns.
+
 - **Confirmed-connection lines ("amber and dashed") moved from
   always-on to a real layer toggle — 2026-10-17, requested by voice
   recording.** `ContourConnectorTabController.drawConfirmed()` used to

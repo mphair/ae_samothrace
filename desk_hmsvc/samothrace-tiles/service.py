@@ -28,6 +28,7 @@ since there's no Desk process to set it for you; see `_project_dir()`.
 import io
 import json
 import math
+import mimetypes
 import os
 from functools import lru_cache
 from pathlib import Path
@@ -79,6 +80,14 @@ def _project_dir() -> Path:
 PROJECT_DIR = _project_dir()
 TILES_DIR = PROJECT_DIR / "Data" / "mapTiles"
 FEATURES_DIR = PROJECT_DIR / "Data" / "mapFeatures"
+# Data/mapSources/<slug>/source.<ext> -- see desk-installed-jobs/
+# map-import-from-photo/'s own header comment for the full convention
+# (source photo + transform.json per import). Served raw here so the
+# widget's own live-adjustment preview (an <img>, not a tile) can just
+# point its `src` at this URL -- same reasoning every tile layer already
+# goes through this hmsvc instead of the widget trying to read the file
+# bytes itself over the Bridge API.
+MAP_SOURCES_DIR = PROJECT_DIR / "Data" / "mapSources"
 
 PLAN_DIRS = {
     "actual": TILES_DIR / "SamoWebsite_ActualStatePlan_3857",
@@ -96,6 +105,13 @@ RAW_LAYER_DIRS = {
     # which needs to show the original, undecomposed sources.
     "actual-plan-raw": PLAN_DIRS["actual"],
     "restored-plan-raw": PLAN_DIRS["restored"],
+    # Baked via desk-installed-jobs/map-import-from-photo/ from the
+    # user's own interactively locked-in rotate/scale/tilt/position
+    # values (Data/mapSources/initial-map/transform.json) -- see that
+    # job's own header comment for the full story. A plain, pre-rendered
+    # TMS tile set same as "aerial" above, nothing computed per-request
+    # here.
+    "initial-map": TILES_DIR / "SamoWebsite_InitialMap_3857",
 }
 COMPUTED_LAYERS = {"topographic", "actual-structures", "restored-structures"}
 
@@ -117,6 +133,12 @@ LAYERS = [
     # id) -- useful for looking at just the vector overlays with nothing
     # underneath but a plain backdrop.
     {"id": "blank", "label": "Blank", "group": "imagery", "order": 2, "defaultVisible": False},
+    # A different, hand-annotated chronology plan of the sanctuary the
+    # user photographed and had georeferenced (2026-10-17) -- see
+    # desk-installed-jobs/samothrace-initial-map/'s own header comment
+    # for the control-point/warp story. Radio-selects against the other
+    # three "imagery" layers the same way they already do.
+    {"id": "initial-map", "label": "Initial Map", "group": "imagery", "order": 3, "defaultVisible": False},
     {"id": "restored-structures", "label": "Restored State — Structures", "group": "restored", "order": 21, "defaultVisible": False},
     {"id": "restored-monuments", "label": "Restored State — Monuments", "group": "restored", "order": 31, "defaultVisible": False},
     # 2026-10-15: a staged reveal of how "topographic" (above) gets
@@ -387,6 +409,24 @@ def _raw_png(layer: str, z: int, x: int, y: int) -> bytes | None:
 @app.get("/layers")
 def layers():
     return {"layers": LAYERS, "minZoom": MIN_ZOOM, "maxZoom": MAX_ZOOM, "tileSize": TILE_SIZE}
+
+
+@app.get("/source/{slug}")
+def source_photo(slug: str):
+    """Raw bytes of Data/mapSources/<slug>/source.<ext> -- NOT a tile
+    (no z/x/y), just the original uploaded photo, for the widget's own
+    'adjust-image-transform' live-preview `<img src>` to point at
+    directly. 404s the same way a missing tile does if the slug or its
+    source file doesn't exist."""
+    source_dir = MAP_SOURCES_DIR / slug
+    if not source_dir.is_dir():
+        return Response(status_code=404)
+    candidates = [p for p in source_dir.iterdir() if p.stem == "source"]
+    if not candidates:
+        return Response(status_code=404)
+    path = candidates[0]
+    media_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
+    return Response(content=path.read_bytes(), media_type=media_type, headers=PNG_HEADERS)
 
 
 @app.get("/tiles/{layer}/{z}/{x}/{y}.png")

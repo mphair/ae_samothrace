@@ -152,6 +152,19 @@ and get concatenated in that order; it does **not** matter for *type
    retracted" question — by the time Undo runs, the connection is
    already back).
 
+   **A fourth question type, `'adjust-image-transform'`** (added
+   2026-10-17, same day): interactive, not a yes/no judgment -- renders
+   four live sliders (rotation/scale/two tilt axes) plus a draggable,
+   semi-transparent `<img>` overlay positioned directly on the map
+   canvas via a real CSS 3D `transform` (`SamothraceMapElement.
+   positionImageOverlay`, not canvas-drawn), so a user can align an
+   uploaded photo against the real map by eye, then "Lock In" to bake it
+   via `desk-installed-jobs/map-import-from-photo/` (the exact math
+   bridging the CSS preview to that job's own Python bake is documented
+   in that job's own header comment). See this widget's own `TODO.md`
+   for the fuller story, including the scrapped automatic-alignment
+   attempt this replaced.
+
    **Archiving** (same addition): once a question is answered or an
    applied-patch row is resolved (OK/Undo), it shows a brief placeholder
    ("✓ Confirmed — archiving…" etc.), then — via a CSS `@keyframes`
@@ -227,7 +240,11 @@ find nothing for `actual` and show Restored-only data.
 | `.desk_temp/samothrace-map-agent-answers.json` | read + write | Agent Q&A tab's durable answers, keyed by question uuid |
 | `.desk_temp/samothrace-map-agent-patches.json` | read | AgentPatchChannel's patch queue — agent-authored, polled, applied live with no user confirmation |
 | `.desk_temp/samothrace-map-agent-patches-applied.json` | read + write | AgentPatchChannel's ack log, keyed by patch uuid — append-only, never trimmed (`renderAutoApplied`'s own display cap only limits what's SHOWN, not what's kept) |
+| `Data/mapSources/<slug>/transform.json` | write | `'adjust-image-transform'`'s own Lock In — the locked-in rotate/scale/tilt/position parameters; also read by `desk-installed-jobs/map-import-from-photo/` (a separate process, not this widget) |
 | `desk.hmsvc.samothrace-tiles` (shared state, not a file) | read | Tile service URL discovery — **never hardcode the port**, it changes every launch |
+| `<serviceUrl>/source/<slug>` (hmsvc HTTP, not `desk.fs`) | read | `'adjust-image-transform'`'s own live overlay `<img src>` — the raw uploaded photo, served by a small dedicated endpoint (not a tile) so the widget never has to shuttle binary image bytes through the Bridge API itself |
+| `desk.installedJobs.run('map-import-from-photo', ...)` (Bridge, capability `installed_jobs`) | — | Triggered by Lock In to bake the locked-in transform into real tiles immediately — see `samothrace-map-recording.ts`'s own `Window.desk.installedJobs` |
+| `desk.self.getManifest()` (Bridge, no capability needed) | read | Lock In's own `project_dir` for the job's `config_path` — an Installed Job gets neither a reliable `cwd` nor `DESK_PROJECT_DIR` (found the hard way 2026-10-17: the first real Lock In's auto-bake silently failed without this, see `TODO.md`) |
 
 ## Key conventions — follow these, don't reinvent them
 

@@ -97,6 +97,22 @@ function unprojectWorld(x: number, y: number, zoom: number, tileSize: number): {
   return { lon, lat: (latRad * 180) / Math.PI };
 }
 
+// Inverse of the standard ~156543*cos(lat)/2**zoom meters-per-pixel Web
+// Mercator formula -- same one desk_hmsvc/samothrace-tiles/service.py's
+// own STRUCTURE_BUFFER_PX_AT_Z20 comment documents, and EXACTLY the
+// formula desk-installed-jobs/map-import-from-photo/main.py's own
+// world_px_per_meter uses. Used only by positionImageOverlay, to turn
+// an 'adjust-image-transform' question's zoom-independent
+// `metersPerPhotoPx` into an actual on-screen CSS pixel size at
+// whatever zoom the user is currently looking at -- kept in exact sync
+// with that Python copy is what makes the live preview and the job's
+// own baked output agree (see that question type's own header comment
+// in samothrace-map-agent-qa-tab.ts).
+function worldPxPerMeter(zoom: number, lat: number): number {
+  const metersPerPx = (156543.03392 * Math.cos((lat * Math.PI) / 180)) / Math.pow(2, zoom);
+  return 1 / metersPerPx;
+}
+
 function collectRings(geometry: { type: string; coordinates: unknown }): number[][][] {
   if (geometry.type === 'Polygon') {
     return geometry.coordinates as number[][][];
@@ -192,6 +208,7 @@ class SamothraceMapElement extends HTMLElement {
   private qaTabButtonsEl: HTMLElement | null = null;
   private qaSummaryEl: HTMLElement | null = null;
   private qaTabContentEl: HTMLElement | null = null;
+  private imageOverlayEl: HTMLImageElement | null = null;
   private resizeObserver: ResizeObserver | null = null;
 
   // Phase 1 of plans/samothrace-map-consolidation.md -- see
@@ -287,6 +304,12 @@ class SamothraceMapElement extends HTMLElement {
     // samothrace-map-agent-qa-tab.ts (no other controller's method to
     // delegate that half to, see that file's own comment).
     (plan, fragmentIds) => this.contoursLayer.clearFragmentElevationOverrides(plan, fragmentIds),
+    // 'adjust-image-transform' Lock In, after map-import-from-photo
+    // successfully regenerates a layer's real tiles -- busts this
+    // layer's own tile-URL cache (hmsvc's responses are aggressively
+    // cached, see bustTileCache's own comment) and redraws, so the
+    // freshly-baked tiles actually show up without a widget reload.
+    (layerId) => this.bustTileCache(layerId),
   );
   private activeQaTab: 'agent-qa' | 'label-review' | 'minor-bands' | 'contour-connector' = 'agent-qa';
 
@@ -368,6 +391,20 @@ class SamothraceMapElement extends HTMLElement {
     this.qaTabButtonsEl = shadow.querySelector('.qa-tabs');
     this.qaSummaryEl = shadow.querySelector('.qa-summary');
     this.qaTabContentEl = shadow.querySelector('.qa-tab-content');
+    this.imageOverlayEl = shadow.querySelector('.image-overlay');
+    this.setupImageOverlayDrag();
+    // Diagnostic only -- a broken/failed load here would otherwise be
+    // invisible to anyone not looking directly at the widget (no thrown
+    // exception, nothing in the recording log); console.warn at least
+    // makes it discoverable via the browser devtools, and the recording
+    // log entry means a FUTURE investigation reading back a session's
+    // own log doesn't have to guess blindly the way this one did the
+    // first time a broken image src was reported.
+    this.imageOverlayEl?.addEventListener('error', () => {
+      const src = this.imageOverlayEl?.src ?? '(no element)';
+      console.warn('image overlay failed to load:', src);
+      this.recording.log('map', 'image-overlay-load-error', { src });
+    });
     this.qaTabButtonsEl?.querySelectorAll<HTMLButtonElement>('.qa-tab-button').forEach((btn) => {
       btn.addEventListener('click', () => {
         const tab = btn.dataset.tab;
@@ -1340,8 +1377,138 @@ class SamothraceMapElement extends HTMLElement {
     });
   }
 
+  // Bumped per-layerId after a 'adjust-image-transform' Lock In
+  // regenerates that layer's real tiles at the SAME urls -- hmsvc's own
+  // tile responses carry `Cache-Control: public, max-age=31536000,
+  // immutable` (see PNG_HEADERS in desk_hmsvc/samothrace-tiles/
+  // service.py), so without a cache-busting query param the browser's
+  // own HTTP cache would keep serving the pre-Lock-In tiles forever.
+  // Absent (undefined) for every other layer -- this never changes their
+  // URLs, so their existing aggressive caching is untouched.
+  private tileCacheBust = new Map<string, number>();
+
   private tileUrl(layerId: string, z: number, x: number, y: number): string {
-    return `${this.serviceUrl}/tiles/${layerId}/${z}/${x}/${y}.png`;
+    const bust = this.tileCacheBust.get(layerId);
+    const suffix = bust !== undefined ? `?v=${bust}` : '';
+    return `${this.serviceUrl}/tiles/${layerId}/${z}/${x}/${y}.png${suffix}`;
+  }
+
+  // Called after a successful map-import-from-photo run (see
+  // AgentQaTabController's own applyImageTransform) -- forces every
+  // subsequent tile request for this layer onto a fresh URL, bypassing
+  // the browser's own aggressive tile cache.
+  private bustTileCache(layerId: string): void {
+    this.tileCacheBust.set(layerId, (this.tileCacheBust.get(layerId) ?? 0) + 1);
+    this.scheduleRedraw();
+  }
+
+  // ── 'adjust-image-transform' live overlay ──
+  // See samothrace-map-agent-qa-tab.ts's own header comment on that
+  // question type, and desk-installed-jobs/map-import-from-photo/
+  // main.py's own header comment for the CSS-transform<->homography
+  // math this mirrors. `this.agentQaTab` OWNS the working parameters
+  // (rotate/scale/tilt/position); this element only reads them (via
+  // getActiveImageAdjustment) and is the one place that knows how to
+  // turn zoom-independent real-world parameters into an actual
+  // on-screen CSS transform at whatever zoom/pan is current -- called
+  // every redraw, same cadence as everything else drawn on the canvas.
+  // Keyed on slug+serviceUrl TOGETHER, not slug alone -- a real bug this
+  // guarded against finding only after a live report of a broken image
+  // src: agentQaTab's own init() (which can make getActiveImageAdjustment
+  // start returning non-null) runs in PARALLEL with this element's own
+  // init() setting `this.serviceUrl` for the first time (both kicked off
+  // around the same point in init(), one awaited sequentially, the other
+  // fire-and-forget) -- if positionImageOverlay's first real call ever
+  // landed before serviceUrl was set, the old slug-only key would freeze
+  // `img.src` at that broken ".../source/<slug>" (serviceUrl empty)
+  // value forever, since the slug itself never changes again afterward.
+  private currentOverlayKey: string | null = null;
+
+  private positionImageOverlay(): void {
+    const img = this.imageOverlayEl;
+    if (!img) return;
+    const active = this.agentQaTab.getActiveImageAdjustment();
+    if (!active) {
+      img.style.display = 'none';
+      this.currentOverlayKey = null;
+      return;
+    }
+    const { data } = active;
+    const key = `${this.serviceUrl ?? ''}::${data.slug}`;
+    if (this.currentOverlayKey !== key) {
+      img.src = `${this.serviceUrl}/source/${encodeURIComponent(data.slug)}`;
+      this.currentOverlayKey = key;
+    }
+
+    const screenPxPerPhotoPx = data.metersPerPhotoPx * data.userScale * worldPxPerMeter(this.view.zoom, data.centerLat);
+    const cssWidth = data.photoWidth * screenPxPerPhotoPx;
+    const cssHeight = data.photoHeight * screenPxPerPhotoPx;
+    // Same ratio desk-installed-jobs/map-import-from-photo/main.py's own
+    // PERSPECTIVE_DISTANCE_MULTIPLIER uses, over the image's own
+    // CURRENTLY-rendered size -- keeping this relative (not an absolute
+    // px count) is what makes the tilt distortion look identical here
+    // and in that job's own bake, regardless of zoom (see that
+    // constant's own comment for the full reasoning).
+    const perspectivePx = 2.5 * Math.max(cssWidth, cssHeight);
+
+    const { x: screenX, y: screenY } = this.toScreen(data.centerLon, data.centerLat);
+    img.style.left = `${screenX}px`;
+    img.style.top = `${screenY}px`;
+    img.style.width = `${cssWidth}px`;
+    img.style.height = `${cssHeight}px`;
+    img.style.transform =
+      `translate(-50%, -50%) perspective(${perspectivePx}px) ` +
+      `rotateX(${data.tiltYDeg}deg) rotateY(${data.tiltXDeg}deg) rotate(${data.rotateDeg}deg)`;
+    img.style.display = 'block';
+  }
+
+  // Drag-to-reposition -- not one of the question's own three named
+  // sliders (rotation/scale/tilt), but clearly needed in practice (the
+  // initial guess's own center is never going to be exact); the most
+  // direct way to handle it is just letting the user pick the overlay up
+  // and move it, same as dragging the map itself already works.
+  // Attached once, here, rather than per-question -- there's at most one
+  // active adjustment at a time (getActiveImageAdjustment's own single
+  // -slot contract), so one set of listeners on the one overlay element
+  // is all this ever needs.
+  private setupImageOverlayDrag(): void {
+    const img = this.imageOverlayEl;
+    if (!img) return;
+    let drag: { questionId: string; startClientX: number; startClientY: number; startLon: number; startLat: number } | null = null;
+
+    img.addEventListener('pointerdown', (e) => {
+      const active = this.agentQaTab.getActiveImageAdjustment();
+      if (!active) return;
+      drag = { questionId: active.questionId, startClientX: e.clientX, startClientY: e.clientY, startLon: active.data.centerLon, startLat: active.data.centerLat };
+      img.classList.add('dragging');
+      img.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    img.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      // A screen-pixel delta equals the same world-pixel delta at the
+      // CURRENT zoom (toScreen is just `world - centerWorld + viewport/2`
+      // -- centerWorld cancels out of any delta), so converting the drag
+      // offset is just: start anchor's own world-px + raw client delta,
+      // then straight back to lon/lat.
+      const startWorld = projectWorld(drag.startLon, drag.startLat, this.view.zoom, this.tileSize);
+      const newWorldX = startWorld.x + (e.clientX - drag.startClientX);
+      const newWorldY = startWorld.y + (e.clientY - drag.startClientY);
+      const { lon, lat } = unprojectWorld(newWorldX, newWorldY, this.view.zoom, this.tileSize);
+      this.agentQaTab.updateImageAdjustmentPosition(drag.questionId, lon, lat);
+    });
+    const endDrag = (e: PointerEvent): void => {
+      if (!drag) return;
+      drag = null;
+      img.classList.remove('dragging');
+      try {
+        img.releasePointerCapture(e.pointerId);
+      } catch {
+        // already released (e.g. pointercancel) -- harmless
+      }
+    };
+    img.addEventListener('pointerup', endDrag);
+    img.addEventListener('pointercancel', endDrag);
   }
 
   private getTile(url: string): TileEntry {
@@ -1414,6 +1581,12 @@ class SamothraceMapElement extends HTMLElement {
     // pointer handlers above).
     if (this.activeQaTab === 'contour-connector') this.connectorTab.draw(ctx, toScreen);
     if (this.debugHitTraceVisible) this.drawDebugHitTrace(ctx, toScreen);
+
+    // Not canvas-drawn (a real <img>, see .image-overlay's own CSS
+    // comment) but repositioned every redraw anyway, same cadence as
+    // everything else here, so panning/zooming while adjusting keeps it
+    // correctly anchored.
+    this.positionImageOverlay();
   }
 
   // Debug aid: every hit-test this session (hover and click) plotted as a

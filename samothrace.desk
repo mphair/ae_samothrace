@@ -36,10 +36,10 @@
     {
       "widget_id": "SamothraceDescription",
       "instance_id": "cb314ecb-7253-4017-a7e1-cef53c12e96b",
-      "x": 340.28285565059645,
-      "y": -251.51076356626263,
+      "x": 324.14767044612785,
+      "y": -231.1803372907787,
       "width": 460.0,
-      "height": 700.0,
+      "height": 787.9997679119336,
       "state": {},
       "locked": false,
       "placed_content_hash": "2a136b77f3fe"
@@ -47,10 +47,10 @@
     {
       "widget_id": "git_status",
       "instance_id": "4fa22c9a",
-      "x": -1184.2869263435928,
-      "y": 1705.1717784791879,
-      "width": 622.47637215101,
-      "height": 484.0301877613856,
+      "x": -1633.7500778770848,
+      "y": 1023.20708339388,
+      "width": 622.0,
+      "height": 484.0,
       "state": {},
       "locked": false,
       "placed_content_hash": null
@@ -58,10 +58,10 @@
     {
       "widget_id": "claude_desk",
       "instance_id": "bf796696-acdb-4e7c-b39c-0db8ba006bb7",
-      "x": -1615.9297663346254,
-      "y": -174.76430133772155,
-      "width": 674.2961590961899,
-      "height": 962.8052792460492,
+      "x": -1663.7590777920157,
+      "y": -312.4873868350608,
+      "width": 674.0,
+      "height": 1046.6159210252476,
       "state": {
         "model": "claude-sonnet-5",
         "permission_mode": "auto"
@@ -74,8 +74,8 @@
       "instance_id": "7ccdbdc8-e537-4c52-8766-aad4326b5dd5",
       "x": -3009.333904631032,
       "y": -372.11114228297373,
-      "width": 1281.3816832605842,
-      "height": 1215.4439762576935,
+      "width": 1281.0,
+      "height": 1215.0,
       "state": {
         "path": "/Users/mphair/desk_imports/ae_samothrace/ARCHITECTURE.md"
       },
@@ -84,32 +84,67 @@
     },
     {
       "widget_id": "SamothraceMap",
-      "instance_id": "3a684219",
-      "x": -881.7871365353735,
-      "y": -231.45002240144422,
-      "width": 1176.591107109665,
-      "height": 803.3166821561339,
+      "instance_id": "34a5236c",
+      "x": -882.2126933178419,
+      "y": -312.82189723647696,
+      "width": 1096.0048065752785,
+      "height": 841.158765069763,
       "state": {
+        "recordingLogId": "079dad9b",
         "visibleLayers": [
-          "topographic",
-          "restored-plan-raw",
-          "restored-monuments"
+          "initial-map"
         ],
-        "recordingLogId": "4000a971",
         "view": {
-          "lon": 25.529599219186196,
-          "lat": 40.50073972013015,
-          "zoom": 19
+          "lon": 25.53131755599344,
+          "lat": 40.50073855558267,
+          "zoom": 17
         },
-        "selectedWebCode": null
+        "selectedWebCode": null,
+        "collapsedGroups": [
+          "hmsvc:pipeline-topographic",
+          "user-changes"
+        ]
       },
       "locked": false,
-      "placed_content_hash": "17d9d84cedec"
+      "placed_content_hash": "27f5d9bb14c1"
+    },
+    {
+      "widget_id": "project_files",
+      "instance_id": "877b5d4c",
+      "x": -837.3942764164246,
+      "y": -1113.18840232857,
+      "width": 360.0,
+      "height": 640.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "image_viewer",
+      "instance_id": "ac08e5d5-3d70-4fe9-86c4-aa2bb10ebb58",
+      "x": -856.6562542508005,
+      "y": 841.5684729175928,
+      "width": 480.0,
+      "height": 400.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "installed_jobs",
+      "instance_id": "f072dd91",
+      "x": -347.84358694236647,
+      "y": 562.7691112613537,
+      "width": 420.0,
+      "height": 320.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
     }
   ],
-  "pan_x": -742.1761004087031,
-  "pan_y": 1425.8293541901965,
-  "scale": 0.7518431268437766,
+  "pan_x": -1127.4244325487007,
+  "pan_y": 276.3937804600981,
+  "scale": 0.9153606842340818,
   "custom_widgets": [
     {
       "keyword": "SamothraceMap",
@@ -212,6 +247,17 @@
         "state"
       ],
       "source_path": "desk_widgets/contour-connector"
+    },
+    {
+      "keyword": "SystemClock",
+      "label": "System Clock",
+      "html_b64": "PCFET0NUWVBFIGh0bWw+CjxodG1sPgo8aGVhZD4KPG1ldGEgY2hhcnNldD0idXRmLTgiPgo8c3R5bGU+CiAgaHRtbCwgYm9keSB7CiAgICBtYXJnaW46IDA7CiAgICBoZWlnaHQ6IDEwMCU7CiAgICBiYWNrZ3JvdW5kOiAjMTExNDE4OwogICAgY29sb3I6ICM3Q0ZDOUE7CiAgICBmb250LWZhbWlseTogJ1NGIE1vbm8nLCAnQ291cmllciBOZXcnLCBtb25vc3BhY2U7CiAgICBkaXNwbGF5OiBmbGV4OwogICAgYWxpZ24taXRlbXM6IGNlbnRlcjsKICAgIGp1c3RpZnktY29udGVudDogY2VudGVyOwogIH0KICAud3JhcCB7IHRleHQtYWxpZ246IGNlbnRlcjsgfQogICNjbG9jayB7CiAgICBmb250LXNpemU6IDU2cHg7CiAgICBmb250LXdlaWdodDogNjAwOwogICAgbGV0dGVyLXNwYWNpbmc6IDNweDsKICB9CiAgI2RhdGUgewogICAgZm9udC1zaXplOiAxNXB4OwogICAgbWFyZ2luLXRvcDogMTBweDsKICAgIGNvbG9yOiAjOWZiM2E4OwogICAgbGV0dGVyLXNwYWNpbmc6IDFweDsKICB9CiAgI3R6IHsKICAgIGZvbnQtc2l6ZTogMTFweDsKICAgIG1hcmdpbi10b3A6IDRweDsKICAgIGNvbG9yOiAjNWY3MjY4OwogIH0KPC9zdHlsZT4KPC9oZWFkPgo8Ym9keT4KPGRpdiBjbGFzcz0id3JhcCI+CiAgPGRpdiBpZD0iY2xvY2siPi0tOi0tOi0tPC9kaXY+CiAgPGRpdiBpZD0iZGF0ZSI+PC9kaXY+CiAgPGRpdiBpZD0idHoiPjwvZGl2Pgo8L2Rpdj4KPHNjcmlwdD4KZnVuY3Rpb24gcGFkKG4pIHsgcmV0dXJuIG4udG9TdHJpbmcoKS5wYWRTdGFydCgyLCAnMCcpOyB9CgpmdW5jdGlvbiB0aWNrKCkgewogIHZhciBub3cgPSBuZXcgRGF0ZSgpOwogIHZhciBoID0gcGFkKG5vdy5nZXRIb3VycygpKTsKICB2YXIgbSA9IHBhZChub3cuZ2V0TWludXRlcygpKTsKICB2YXIgcyA9IHBhZChub3cuZ2V0U2Vjb25kcygpKTsKICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnY2xvY2snKS50ZXh0Q29udGVudCA9IGggKyAnOicgKyBtICsgJzonICsgczsKICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnZGF0ZScpLnRleHRDb250ZW50ID0gbm93LnRvTG9jYWxlRGF0ZVN0cmluZyh1bmRlZmluZWQsIHsKICAgIHdlZWtkYXk6ICdsb25nJywgeWVhcjogJ251bWVyaWMnLCBtb250aDogJ2xvbmcnLCBkYXk6ICdudW1lcmljJwogIH0pOwogIHZhciB0ek5hbWUgPSBJbnRsLkRhdGVUaW1lRm9ybWF0KCkucmVzb2x2ZWRPcHRpb25zKCkudGltZVpvbmU7CiAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3R6JykudGV4dENvbnRlbnQgPSB0ek5hbWUgKyAnIChzeXN0ZW0gY2xvY2spJzsKfQoKdGljaygpOwpzZXRJbnRlcnZhbCh0aWNrLCAyMDApOwo8L3NjcmlwdD4KPC9ib2R5Pgo8L2h0bWw+Cg==",
+      "default_size": {
+        "width": 360,
+        "height": 220
+      },
+      "capabilities": [],
+      "source_path": null
     }
   ],
   "file_type_registry": [],
@@ -449,12 +495,210 @@
             "plan": "Overview"
           },
           "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(6)Milesian",
+            "label": "6",
+            "name": "Milesian",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(0)Introduction",
+            "label": "",
+            "name": "Overview",
+            "plan": "Overview"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(30)MonumentPlatformsSteppedRetainingWall",
+            "label": "30",
+            "name": "Monument Platforms and Stepped Retaining Wall",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(0)Introduction",
+            "label": "",
+            "name": "Overview",
+            "plan": "Overview"
+          },
+          "edit": null
         }
       ]
     }
   },
-  "installed_jobs": [],
+  "installed_jobs": [
+    {
+      "name": "samothrace-initial-map",
+      "version_hash": "3e6a6c94a0e1",
+      "installed_at": "2026-10-17T02:07:45.849303"
+    },
+    {
+      "name": "map-import-from-photo",
+      "version_hash": "86a11c60a4c8",
+      "installed_at": "2026-10-17T02:58:02.146719"
+    }
+  ],
   "recently_removed": [
+    {
+      "widget_id": "scratch",
+      "kind": "python",
+      "label": "Scratch (f8af81b5)",
+      "instance_id": "f8af81b5",
+      "state": {
+        "label": "untitled",
+        "text": "allow sorting by question age or answer age, default sort: ascending by answer age, so that it is okay to immediately archive on answer and user can find it easily."
+      },
+      "width": 360.0,
+      "height": 320.0,
+      "removed_at": 1792212867.855722
+    },
+    {
+      "widget_id": "claude_desk",
+      "kind": "python",
+      "label": "Claude (Desk) (fa9bfaac)",
+      "instance_id": "fa9bfaac-82be-48ee-8507-e8aad20b8bc8",
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "width": 586.2325395809212,
+      "height": 560.0,
+      "removed_at": 1792212328.625126
+    },
+    {
+      "widget_id": "SystemClock",
+      "kind": "html",
+      "label": "System Clock (b29c9b40)",
+      "instance_id": "b29c9b40-2368-4625-9c88-844cb4a7966b",
+      "state": {},
+      "width": 360.0,
+      "height": 220.0,
+      "removed_at": 1792212315.5784152
+    },
+    {
+      "widget_id": "SystemClockTS",
+      "kind": "html",
+      "label": "System Clock (16f9b537)",
+      "instance_id": "16f9b537-2a6c-4f5a-9c7e-6f0f2b1e5a3d",
+      "state": {},
+      "width": 360.0,
+      "height": 175.5314124931474,
+      "removed_at": 1792212313.6054232
+    },
+    {
+      "widget_id": "claude_desk",
+      "kind": "python",
+      "label": "Claude (Desk) (6457e6a3)",
+      "instance_id": "6457e6a3-efe4-4a86-978a-deb1a9fa0f24",
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "width": 480.0,
+      "height": 789.4932606818696,
+      "removed_at": 1792202335.866534
+    },
+    {
+      "widget_id": "focus_logger",
+      "kind": "python",
+      "label": "Focus Logger (b14110bd)",
+      "instance_id": "b14110bd",
+      "state": {},
+      "width": 460.0,
+      "height": 360.0,
+      "removed_at": 1792201850.432192
+    },
+    {
+      "widget_id": "claude_desk",
+      "kind": "python",
+      "label": "Claude (Desk) (625702b6)",
+      "instance_id": "625702b6-fb87-4915-ac1e-1d5c294c8b3d",
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "width": 679.0676649658276,
+      "height": 697.2244035379762,
+      "removed_at": 1792201846.5754619
+    },
+    {
+      "widget_id": "claude_desk",
+      "kind": "python",
+      "label": "Claude (Desk) (3271bb7e)",
+      "instance_id": "3271bb7e-d520-4a69-9ae0-468d32a4020a",
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "width": 612.4125866722028,
+      "height": 758.2355938639427,
+      "removed_at": 1792195936.740198
+    },
+    {
+      "widget_id": "claude_desk",
+      "kind": "python",
+      "label": "Claude (Desk) (564eac02)",
+      "instance_id": "564eac02-800d-4bd2-bba4-86dd499d01c1",
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "width": 480.0,
+      "height": 560.0,
+      "removed_at": 1792187099.3928351
+    },
+    {
+      "widget_id": "git_status",
+      "kind": "python",
+      "label": "Git Status (6f1f263c)",
+      "instance_id": "6f1f263c",
+      "state": {},
+      "width": 420.0,
+      "height": 360.0,
+      "removed_at": 1792172112.2797492
+    },
+    {
+      "widget_id": "todo",
+      "kind": "python",
+      "label": "TODO (25c7550b)",
+      "instance_id": "25c7550b",
+      "state": {},
+      "width": 480.0,
+      "height": 560.0,
+      "removed_at": 1792171330.054977
+    },
+    {
+      "widget_id": "SamothraceMap",
+      "kind": "html",
+      "label": "Samothrace Map (3a684219)",
+      "instance_id": "3a684219",
+      "state": {
+        "visibleLayers": [
+          "topographic",
+          "restored-plan-raw",
+          "restored-monuments"
+        ],
+        "recordingLogId": "4000a971",
+        "view": {
+          "lon": 25.529599219186196,
+          "lat": 40.50073972013015,
+          "zoom": 19
+        },
+        "selectedWebCode": null
+      },
+      "width": 1177.0,
+      "height": 803.0,
+      "removed_at": 1792169923.833271
+    },
     {
       "widget_id": "project_files",
       "kind": "python",
@@ -553,248 +797,6 @@
       "width": 720.0,
       "height": 653.1248736640338,
       "removed_at": 1791777826.2253911
-    },
-    {
-      "widget_id": "ContourConnector",
-      "kind": "html",
-      "label": "Contour Connector (d1b238d5)",
-      "instance_id": "d1b238d5-80c9-4328-9f37-8d94f2098326",
-      "state": {},
-      "width": 1100.0,
-      "height": 860.0,
-      "removed_at": 1791776874.547093
-    },
-    {
-      "widget_id": "MinorContourReview",
-      "kind": "html",
-      "label": "Minor Contour Review (78954685)",
-      "instance_id": "78954685-994b-48ae-8e7f-1c68716a23c0",
-      "state": {},
-      "width": 1040.0,
-      "height": 820.0,
-      "removed_at": 1791776861.98542
-    },
-    {
-      "widget_id": "PipelineStageViewer",
-      "kind": "html",
-      "label": "Pipeline Stage Viewer (2ffb795f)",
-      "instance_id": "2ffb795f-3c5c-4c2e-ae94-28bcb3431d9f",
-      "state": {},
-      "width": 820.0,
-      "height": 760.0,
-      "removed_at": 1791776855.3944619
-    },
-    {
-      "widget_id": "ContourLabelReview",
-      "kind": "html",
-      "label": "Contour Label Review (e963d42a)",
-      "instance_id": "e963d42a-6eab-48e9-9556-e4f2741cd3e5",
-      "state": {},
-      "width": 460.0,
-      "height": 680.0,
-      "removed_at": 1791776849.125943
-    },
-    {
-      "widget_id": "TopoCompare",
-      "kind": "html",
-      "label": "Topographic Source Comparison (45a17a41)",
-      "instance_id": "45a17a41-81c2-4762-8a1c-954e91f2d630",
-      "state": {},
-      "width": 1040.0,
-      "height": 980.0,
-      "removed_at": 1791776844.4338481
-    },
-    {
-      "widget_id": "ContourConnector",
-      "kind": "html",
-      "label": "Contour Connector (93aea20e)",
-      "instance_id": "93aea20e-a8f4-4b5b-a85b-e481fc92b1a2",
-      "state": {
-        "log": {
-          "connections": [
-            {
-              "connectionId": "manual-restored-1791684498288-786748",
-              "plan": "restored",
-              "source": "manual",
-              "aLon": 25.530296713113785,
-              "aLat": 40.49988256426461,
-              "bLon": 25.530273914337158,
-              "bLat": 40.499881544478946,
-              "elevationM": 45,
-              "confirmedAt": "2026-10-11T02:08:18.289Z"
-            },
-            {
-              "connectionId": "manual-restored-1791684512347-718699",
-              "plan": "restored",
-              "source": "manual",
-              "aLon": 25.530296713113785,
-              "aLat": 40.49988256426461,
-              "bLon": 25.530273914337158,
-              "bLat": 40.499881544478946,
-              "elevationM": 45,
-              "confirmedAt": "2026-10-11T02:08:32.347Z"
-            },
-            {
-              "connectionId": "restored-auto-gap-309",
-              "plan": "restored",
-              "source": "auto-gap",
-              "aLon": 25.52903339266777,
-              "aLat": 40.50152439907453,
-              "bLon": 25.5289489030838,
-              "bLat": 40.50140610672966,
-              "elevationM": null,
-              "confirmedAt": "2026-10-11T02:12:25.034Z"
-            },
-            {
-              "connectionId": "manual-restored-1791684759436-982465",
-              "plan": "restored",
-              "source": "manual",
-              "aLon": 25.529050827026367,
-              "aLat": 40.501591703246596,
-              "bLon": 25.52904948592186,
-              "bLat": 40.50158966372723,
-              "elevationM": null,
-              "confirmedAt": "2026-10-11T02:12:39.436Z"
-            }
-          ],
-          "rejections": [],
-          "removed": []
-        }
-      },
-      "width": 1100.0,
-      "height": 1162.0,
-      "removed_at": 1791776714.708938
-    },
-    {
-      "widget_id": "minimap",
-      "kind": "python",
-      "label": "Minimap (2114efdb)",
-      "instance_id": "2114efdb",
-      "state": {},
-      "width": 420.0,
-      "height": 360.0,
-      "removed_at": 1791776549.4926562
-    },
-    {
-      "widget_id": "claude_desk",
-      "kind": "python",
-      "label": "Claude (Desk) (0cddb8e0)",
-      "instance_id": "0cddb8e0-025b-4e30-806e-bdf91db1b821",
-      "state": {
-        "model": "claude-sonnet-5",
-        "permission_mode": "auto"
-      },
-      "width": 480.0,
-      "height": 560.0,
-      "removed_at": 1791776546.901584
-    },
-    {
-      "widget_id": "TopoCompare",
-      "kind": "html",
-      "label": "Topographic Source Comparison (a46798e6)",
-      "instance_id": "a46798e6-4937-4627-86e4-e4afed64b76c",
-      "state": {
-        "entries": [
-          {
-            "id": 3,
-            "source": "vectors",
-            "sub": {
-              "combinedLayer": null,
-              "vectorPlan": "actual"
-            },
-            "rect": {
-              "x": 142.6740993869657,
-              "y": 179.1065140565461,
-              "width": 61.73356472677139,
-              "height": 71.27789986448494
-            },
-            "lonLatBounds": {
-              "west": 25.52887205296426,
-              "north": 40.50158311069374,
-              "east": 25.529203217611922,
-              "south": 40.50129236471544
-            },
-            "comment": "There are several different issues shown in this selection. (1) there are disconnected amber paths which do have faint lines between them, such that they shouldn't be broken. (2) some of the elevation lines are interrupted by buildings. (3) some building label numbers (e.g. 1) have been accidentally detected as contour lines. Please build some simple UI that will let me use my human vision and judgement to work with the image processing tools to clean this up.",
-            "savedAt": "2026-10-10T02:41:49.238Z"
-          },
-          {
-            "id": 4,
-            "source": "vectors",
-            "sub": {
-              "combinedLayer": null,
-              "vectorPlan": "actual"
-            },
-            "rect": {
-              "x": 548.5445569989056,
-              "y": 146.9855580366933,
-              "width": 128.22292588181472,
-              "height": 157.6919713141354
-            },
-            "lonLatBounds": {
-              "west": 25.531049311764832,
-              "north": 40.50171413320478,
-              "east": 25.531737153140227,
-              "south": 40.501070899643416
-            },
-            "comment": "I've made some additional corrections in this area, which are all connecting broken unlabelled contour lines. There should be four vertical-ish unlabelled lines between each of the labelled lines in this area (starting with 45m on the left, 50m in the middle, and 55m on the right). These contour lines are definitely there, which makes me wonder if those are possibly 1m minor contours (if they are a different line weight in the original) or if maybe the 45m, 50m, or 55m lines in this area were improperly detected; do we know how they got marked as labelled lines? what evidence? ",
-            "savedAt": "2026-10-10T05:31:25.148Z"
-          }
-        ],
-        "nextId": 5,
-        "collapsedSections": [
-          "combined",
-          "overlay"
-        ]
-      },
-      "width": 979.0,
-      "height": 1027.0,
-      "removed_at": 1791776541.9007518
-    },
-    {
-      "widget_id": "ContourLabelReview",
-      "kind": "html",
-      "label": "Contour Label Review (5419457a)",
-      "instance_id": "5419457a-bbdd-47a5-aacd-0b9ff80f5e77",
-      "state": {
-        "answers": [
-          {
-            "reviewId": "actual-contours-0",
-            "plan": "actual",
-            "fragmentAId": 683,
-            "fragmentBId": 635,
-            "decision": "reject",
-            "value": null,
-            "ocrText": "09 \u0433",
-            "ocrConfidence": 0.5,
-            "parsedValue": 9,
-            "reason": "OCR read 9, which is not a multiple of the established 5m contour interval",
-            "answeredAt": "2026-10-10T07:06:29.349Z"
-          }
-        ]
-      },
-      "width": 460.0,
-      "height": 680.0,
-      "removed_at": 1791776537.338868
-    },
-    {
-      "widget_id": "MinorContourReview",
-      "kind": "html",
-      "label": "Minor Contour Review (a5a2c30c)",
-      "instance_id": "a5a2c30c-3291-433f-b56f-cde8916fb358",
-      "state": {},
-      "width": 1040.0,
-      "height": 1034.0,
-      "removed_at": 1791776531.277447
-    },
-    {
-      "widget_id": "PipelineStageViewer",
-      "kind": "html",
-      "label": "Pipeline Stage Viewer (00e0f097)",
-      "instance_id": "00e0f097-2dab-4fbc-b28a-d62c4f8d6522",
-      "state": {},
-      "width": 820.0,
-      "height": 760.0,
-      "removed_at": 1791776523.6659
     }
   ]
 }

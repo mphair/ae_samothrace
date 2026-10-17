@@ -180,6 +180,31 @@
         .map-canvas:active {
           cursor: grabbing;
         }
+        /* Live preview for the Agent Q&A tab's 'adjust-image-transform'
+           question -- see samothrace-map-agent-qa-tab.ts's own header
+           comment and SamothraceMapElement.positionImageOverlay. A real
+           <img>, not canvas-drawn, so the browser's own CSS 3D transform
+           engine renders rotate/tilt/perspective natively; `left`/`top`/
+           `width`/`height`/`transform` are all set inline, per redraw,
+           in TS -- nothing here but the parts that don't change.
+           Semi-transparent by default (not full opacity) so the real map
+           underneath stays visible for comparison while adjusting --
+           an "onion-skin" overlay, the whole point of this tool. */
+        .image-overlay {
+          position: absolute;
+          left: 0;
+          top: 0;
+          transform-origin: center center;
+          opacity: 0.72;
+          cursor: grab;
+          touch-action: none;
+          user-select: none;
+          -webkit-user-drag: none;
+        }
+        .image-overlay.dragging {
+          cursor: grabbing;
+          opacity: 0.85;
+        }
         .zoom-controls {
           position: absolute;
           right: 10px;
@@ -763,6 +788,37 @@
         .qa-cc-max-dist {
           width: 100%;
         }
+        /* 'adjust-image-transform' question card (Agent Q&A tab) -- same
+           visual shape as .qa-cc-slider-row above, own class names since
+           this isn't Connector-tab-specific. */
+        .qa-img-slider-row {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+          margin-bottom: 8px;
+        }
+        .qa-img-slider-row label {
+          font-size: 11px;
+          color: #cbd5e1;
+          display: flex;
+          justify-content: space-between;
+        }
+        .qa-img-slider-row input[type="range"] {
+          width: 100%;
+        }
+        .qa-img-hint {
+          font-size: 10.5px;
+          color: #70798a;
+          margin: -4px 0 10px;
+          line-height: 1.4;
+        }
+        .qa-img-status {
+          font-size: 11px;
+          margin-bottom: 7px;
+        }
+        .qa-img-status-error {
+          color: #f3b4b4;
+        }
         .qa-cc-list-title {
           font-size: 11px;
           text-transform: uppercase;
@@ -787,6 +843,7 @@
           </div>
           <div class="map-pane">
             <canvas class="map-canvas"></canvas>
+            <img class="image-overlay" draggable="false" style="display:none;" />
             <div class="zoom-controls">
               <button type="button" class="zoom-in-button" title="Zoom in">+</button>
               <button type="button" class="zoom-out-button" title="Zoom out">−</button>

@@ -32,6 +32,16 @@ interface Window {
       getLocalStorage(): Promise<{ data: Record<string, unknown> }>;
       setLocalStorage(data: Record<string, unknown>): Promise<{ ok: boolean }>;
       setSubtitle(text: string | null): Promise<{ ok: boolean }>;
+      // Added for applyImageTransform (samothrace-map-agent-qa-tab.ts) --
+      // an Installed Job gets neither a reliable cwd nor a reliable
+      // DESK_PROJECT_DIR env var (see map-import-from-photo/main.py's own
+      // _project_dir_and_slug comment), so a Bridge-triggered run needs to
+      // pass the project directory explicitly via config_path. No
+      // capability required for this call (confirmed against
+      // desk/server/app.py: self.getManifest is the one capability-free
+      // route). Only the one field this widget actually uses is declared
+      // here -- the real response has more (id, name, capabilities, etc.).
+      getManifest(): Promise<{ directory: string }>;
     };
     fs: {
       readFile(path: string): Promise<{ contents: string }>;
@@ -65,6 +75,17 @@ interface Window {
       open(path: string): Promise<{ handle: string }>;
       read(handle: string, opts: { offset: number; length: number }): Promise<{ data: string; eof: boolean }>;
       close(handle: string): Promise<{ closed: boolean }>;
+    };
+    // Added for samothrace-map-agent-qa-tab.ts's 'adjust-image-transform'
+    // question -- "Lock In" calls this directly (capability
+    // `installed_jobs`, declared in widget.json) to regenerate the real
+    // tile layer the moment the user confirms their rotate/scale/tilt
+    // adjustment, rather than requiring a separate agent-triggered step.
+    // Bounded to 120s by Desk itself (see tempui-custom-widgets.md) --
+    // the actual bake has run in a few seconds every time it's been
+    // tried, comfortably inside that.
+    installedJobs: {
+      run(name: string, configPath?: string | null): Promise<{ ok: boolean; stdout: string; stderr: string; traceback: string }>;
     };
   };
 }

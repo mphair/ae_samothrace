@@ -8,3 +8,6 @@
 
 # Desk-specific
 desk_widgets/**/.build/
+
+# Desk-specific
+desk-installed-jobs/**/target/
