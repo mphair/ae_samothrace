@@ -10,6 +10,13 @@ import lives at:
 
     Data/mapSources/<slug>/source.<ext>    -- the uploaded photo, as-is
     Data/mapSources/<slug>/transform.json  -- the locked-in parameters
+    Data/mapSources/<slug>/keys/<id>.png   -- optional, see extract_keys()
+
+`transform.json` may also carry a "keys" list -- axis-aligned boxes (in
+the photo's own unwarped pixel space) to crop out as their own standalone
+images AND blank out of the main raster bake, e.g. a printed legend that
+shouldn't pan/zoom with the map (served by hmsvc as a fixed-position
+"Keys" layer instead -- see extract_keys()'s own docstring).
 
 Pass which slug to process via this job's own config_path (see
 tempui-installed-jobs.md): `{"project_dir": "...", "slug": "initial-map"}`.
@@ -48,7 +55,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw
 
 TILE = 256
 REF_ZOOM = 20
@@ -190,6 +197,56 @@ def build_homography(transform: dict) -> tuple[np.ndarray, int, int, float, floa
     return homography, canvas_w, canvas_h, origin_x, origin_y
 
 
+def extract_keys(photo: Image.Image, keys: list[dict], keys_dir: Path) -> Image.Image:
+    """`transform.json`'s own optional "keys" list -- axis-aligned boxes
+    in the ORIGINAL, unwarped photo's own pixel space (simplest possible
+    thing to specify, and simplest to crop: a plain `Image.crop`, no
+    homography involved at all since this runs BEFORE that's built).
+    For each one: crop it out to its own standalone PNG under
+    `keys_dir/<id>.png` (served by hmsvc's own `/key/<slug>/<id>.png`,
+    picked up by the widget's "Keys" layer-panel group -- see that
+    group's own comment in samothrace-map.ts for why it's rendered as a
+    fixed-screen-position overlay instead of a geo-tied tile layer: a
+    printed legend box has no real-world lon/lat of its own). Returns a
+    COPY of `photo` with the relevant region(s) flat-filled, so the
+    warped/tiled main raster doesn't show it a second time -- "extract
+    INTO its own layer," not "also still baked into the map." The fill
+    color is sampled from a point just above each masked box (assumed
+    blank paper) rather than hardcoded white, so the cutout blends into
+    the surrounding paper tone instead of reading as an obvious
+    rectangle.
+
+    The single `x0/y0/x1/y1` box is always what gets CROPPED into the
+    standalone key PNG -- generous margins there are harmless (and often
+    nicer-looking) since it's just a small reference image. What gets
+    MASKED off the main raster is a SEPARATE, optional `maskBoxes` list
+    (each `{x0,y0,x1,y1}`) -- defaults to `[the single box]` when absent,
+    but can be one or more TIGHTER sub-rectangles instead, for a legend
+    that isn't itself a clean rectangle in the photo (2026-10-17, found
+    live: the first version's one generous box also blanked out a real
+    stretch of river, a "regio" arrow+label pointing at it, and the top
+    edge of an unrelated labeled square that all happened to sit inside
+    that same bounding box, in the gap/margin around the actual legend
+    text -- none of those are part of the legend and shouldn't have been
+    touched at all)."""
+    if not keys:
+        return photo
+    keys_dir.mkdir(parents=True, exist_ok=True)
+    masked = photo.copy()
+    draw = ImageDraw.Draw(masked)
+    for key in keys:
+        crop_box = (key["x0"], key["y0"], key["x1"], key["y1"])
+        photo.crop(crop_box).save(keys_dir / f"{key['id']}.png")
+        mask_boxes = key.get("maskBoxes") or [key]
+        for mb in mask_boxes:
+            box = (mb["x0"], mb["y0"], mb["x1"], mb["y1"])
+            sample_x = max(0, min(photo.width - 1, box[0]))
+            sample_y = max(0, box[1] - 20)
+            fill = photo.getpixel((sample_x, sample_y))
+            draw.rectangle(box, fill=fill)
+    return masked
+
+
 def rasterize(photo: Image.Image, homography: np.ndarray, canvas_w: int, canvas_h: int) -> Image.Image:
     photo_bgr = cv2.cvtColor(np.asarray(photo), cv2.COLOR_RGB2BGR)
     warped_bgr = cv2.warpPerspective(photo_bgr, homography, (canvas_w, canvas_h))
@@ -264,10 +321,15 @@ def main() -> None:
     photo = Image.open(source_candidates[0]).convert("RGB")
     print(f"slug={slug!r} source={source_candidates[0].name} photo={photo.size} transform={transform}")
 
+    keys = transform.get("keys", [])
+    photo_for_raster = extract_keys(photo, keys, source_dir / "keys")
+    if keys:
+        print(f"extracted {len(keys)} key region(s) to {source_dir / 'keys'}")
+
     homography, canvas_w, canvas_h, origin_x, origin_y = build_homography(transform)
     print(f"canvas: {canvas_w}x{canvas_h} at world-px origin ({origin_x:.1f}, {origin_y:.1f}), zoom {REF_ZOOM}")
 
-    raster = rasterize(photo, homography, canvas_w, canvas_h)
+    raster = rasterize(photo_for_raster, homography, canvas_w, canvas_h)
 
     layer_id = transform.get("layerId", slug)
     output_dir = project_dir / "Data" / "mapTiles" / f"SamoWebsite_{_camel_case(layer_id)}_3857"

@@ -3,6 +3,212 @@
 See `AGENTS.md` for the full picture of this widget; this file just
 tracks specific open items worth picking up later.
 
+- **New "Keys" layer-panel category — the "Initial Map" photo's own
+  printed Chronology legend, extracted (2026-10-17, requested live while
+  trying out the new annotation tool: drew a purple box around it, "this
+  part here, the chronology key, let's... extract that into its own
+  layer... new category of layers, called keys... in the same spot, but
+  not tied to the map").**
+
+  **A genuinely new layer KIND, not a variant of the tile-layer system**:
+  a printed legend has no real-world lon/lat of its own, so unlike every
+  other layer in this widget it is never geo-projected/tiled — it's
+  drawn at a FIXED canvas position instead (`drawKeyLayers`, bottom
+  -right corner, cleared above `.zoom-controls`), same corner it
+  occupied in the source photo. Deliberately still CANVAS-drawn (not a
+  plain positioned `<img>`, which would've been simpler) for the same
+  reason the annotation layer is: it composites into a screenshot for
+  free, no special-casing needed in `captureScreenshot`.
+
+  **Generalized, not hardcoded to "chronology"** — same "first of many
+  such map data extractions" framing the whole `map-import-from-photo`
+  job already carries. `transform.json` gains an optional `"keys"` list
+  (axis-aligned boxes in the photo's own UNWARPED pixel space — simplest
+  possible thing to specify, no homography involved since this runs
+  before that's built): `desk-installed-jobs/map-import-from-photo/
+  main.py`'s new `extract_keys()` does both halves of the job in one
+  pass — crops each box to its own standalone
+  `Data/mapSources/<slug>/keys/<id>.png`, AND flat-fills that same box
+  (color sampled from just above it, not hardcoded white, so the cutout
+  blends into the surrounding paper tone) on a COPY of the photo that
+  actually gets warped/tiled, so the main raster doesn't show it twice.
+  `desk_hmsvc/samothrace-tiles/service.py` gets a new
+  `/key/<slug>/<id>.png` endpoint (same shape as the existing
+  `/source/<slug>`) plus a new, fully self-discovering `keys` field on
+  `/layers` (`_discover_keys()` scans every slug's own `transform.json`
+  — a future second photo import's own keys need zero widget-side code
+  changes to show up). The widget's own "Keys" `<details>` group in
+  `buildLayersPanel` only renders at all if at least one key has ever
+  been extracted anywhere — a complete no-op otherwise.
+
+  **The exact crop box** — `(1180, 1570)` to `(1790, 2110)` in the
+  source photo's own 1975×2262 pixel space — was determined by directly
+  viewing `Data/mapSources/initial-map/source.jpg` and iterating a test
+  crop (`PIL`) until the margins were clean, not by reconstructing the
+  on-screen annotation the user actually drew (that would need inverting
+  the full homography+CSS-transform math back from a specific screen
+  rectangle at a specific pan/zoom to original photo pixels — doable
+  with the exact same math `main.py` already has, but a materially
+  bigger lift than just looking at the photo directly; worth considering
+  if a FUTURE extraction wants "turn any annotation box into a crop
+  region" as a real tool rather than an agent eyeballing it once).
+
+  **Fixed, same day: the first mask was too generous.** The user came
+  back after trying it (next recording) and asked to "restore the
+  waterway, the arrow on the waterway, and... the little annotation with
+  the arrow pointing out of the waterway with the label... and the top
+  of this labeled square" — the single `(1180,1570)-(1790,2110)` box
+  used for BOTH the key's own crop AND the main-raster mask happened to
+  also swallow a real stretch of river, a "regio" arrow+label pointing
+  at it, and the top edge of an unrelated "onimus" square, all sitting
+  in the margin/gap around the actual legend text (the legend itself is
+  an L-shape — a narrower title line, then a wider swatch block below a
+  gap — not a clean rectangle, and the regio label happens to sit
+  exactly in that gap). Fixed by generalizing `extract_keys()`: the
+  single box is still what's CROPPED into the key's own thumbnail
+  (unchanged — the user explicitly liked that part, "I like the
+  extraction," so no reason to touch it), but what's MASKED off the main
+  raster is now a separate, optional `maskBoxes` list — here, two
+  tighter sub-rectangles (title line, swatch block) verified by directly
+  masking the source photo locally and LOOKING at the result (not just
+  eyeballing an outline overlaid on the original — a first attempt at
+  tighter boxes, checked only by eye against an outline, still clipped
+  letters at the bottom; the real fix came from iterating against the
+  actual masked-and-cropped output each time). Verify any future
+  `maskBoxes` change the same way: mask the real photo, crop the region
+  in question, and look, don't just eyeball a rectangle on top of the
+  unmasked original.
+
+  **A real operational mistake worth flagging**: re-running the Python
+  job required `desk_install_job` to re-approve it (source changed) and
+  a fresh run via `desk_run_installed_job` — routine. But hmsvc itself
+  needed a restart to pick up `service.py`'s own changes (same "a code
+  edit doesn't auto-restart an already-running hmsvc" gap noted earlier
+  this session), and the first attempt to fix that — `kill <pid>` on the
+  live process, assuming Desk's own supervisor would relaunch it the way
+  "supervises... and restarts for you" (`tempui-hmsvc.md`) suggested —
+  did NOT auto-recover within ~35s of waiting. Recovered by directly
+  launching `python3 -m desk.hmsvc_host <service-dir> <port> 127.0.0.1`
+  using `desk-stable`'s own `.venv` interpreter (the one with `desk`
+  actually importable) on the SAME port, which came back up seamlessly
+  (zero widget-side disruption, since `serviceUrl` never changed). This
+  likely leaves Desk's own Microservices widget showing this service as
+  "crashed"/stale even though it's actually fine — a real Restart click
+  there, whenever convenient, would reconcile that bookkeeping cleanly
+  (fresh port, live `desk.state.changed` event, widget already listens
+  for exactly that via `watchTileServiceState`). **Lesson for next
+  time**: don't `kill` a running hmsvc process speculatively hoping for
+  an auto-restart — there wasn't one within any reasonable wait, and
+  recovering required knowing which Python environment actually has
+  `desk` importable, which isn't obvious from `ps aux` alone.
+
+- **Recording-mode toolbar: timecoded screenshots + a quick annotation
+  layer (2026-10-17).** A small 3-button toolbar, top-center over the
+  map canvas, visible only while a recording is active (same
+  `RecordingController.onChange` gating `.recording-indicator` already
+  uses): **Screenshot now**, **Screenshot in 5s** (second click cancels
+  the countdown instead of queuing another one), and an **Annotate**
+  toggle (7-color pen palette + Clear, shown only while toggled on).
+
+  **Confirmed with the user**: pan/zoom is deliberately DISABLED the
+  whole time the annotation layer is toggled on (not "pinned to the
+  map," not "fixed to the screen either" in the sense of tracking a view
+  that can change — the view literally can't change while annotating).
+  Guarded at the two canonical camera-mutating entry points,
+  `zoomBy`/`fitToBounds`, rather than scattered across call sites — this
+  transparently blocks the zoom buttons, wheel-zoom, "Show me" jumps,
+  monument selection, and the home/Overview button with no
+  special-casing needed. The pointer-drag pan is blocked separately, by
+  a guard at the very top of `onPointerDown`/`onPointerMove`/
+  `onPointerUp` that redirects to stroke-drawing instead. Because the
+  view can't change while drawing, strokes are stored as plain
+  screen-pixel coordinates (`{color, points: {x,y}[]}`) — no lon/lat
+  projection math needed at all, unlike every other canvas-drawn layer
+  in this widget.
+
+  Annotations are drawn as one more layer directly on the shared
+  `map-canvas` inside `redraw()` (`drawAnnotations`, last in the stack,
+  gated on `annotationLayerOn` alone) rather than a separate overlay
+  canvas, so a screenshot is just `this.canvas.toDataURL('image/png')`
+  with nothing else to composite.
+
+  **"Persistent" corrected, 2026-10-17, directly by the user**: the
+  first version of this saved `annotationLayerOn`/`annotationStrokes`
+  via `desk.self.getLocalStorage`/`setLocalStorage` (same blob `view`/
+  `visibleLayers`/`collapsedGroups` live in), surviving a widget reload
+  and even a later, unrelated recording. That's not what was meant —
+  "persistent" meant "survives toggling off/on **for the duration of the
+  current recording**," full stop. Now: `recording.onChange` clears
+  `annotationStrokes`/`annotationDrawState` and forces `annotationLayerOn`
+  back to `false` the instant `recordingId` goes back to `null` (pan/zoom
+  unlocks again at the same moment, via the same flag `zoomBy`/
+  `fitToBounds` already guard on) — neither field is saved to local
+  storage at all any more, there being nothing left worth persisting past
+  that point. "Clearable" still means the explicit Clear button can empty
+  it early, before the recording itself ends.
+
+  **A real, easy-to-miss bug fixed along the way**: `canvas.toDataURL()`
+  throws a `SecurityError` on a "tainted" canvas — and the map's own
+  tile images were already being tainting it, silently, before this
+  feature ever existed, because `getTile()`'s `new Image()` never set
+  `img.crossOrigin = 'anonymous'` before assigning `src` to a
+  cross-origin hmsvc tile URL (a different port = a different origin,
+  even though hmsvc's own `CORSMiddleware` already sends
+  `Access-Control-Allow-Origin: *`, which allows the fetch but doesn't
+  by itself keep a plain `<img>` load from tainting the canvas it's
+  drawn onto). Fixed by setting `crossOrigin` unconditionally in
+  `getTile()`, not just while screenshotting — this was a latent bug
+  that happened to never matter until something actually called
+  `toDataURL()`. The one other place this widget draws a bitmap onto the
+  canvas, `StageLayersController`'s pipeline-stage snapshots, loads via
+  a `blob:` URL (`desk.documents` + `URL.createObjectURL`), which is
+  always same-origin and was never at risk.
+
+  **A second, immediate fallout from that same `crossOrigin` fix**: the
+  very next reload, the user reported Blank and Initial Map (whichever
+  layers happened to already be sitting in the browser's own HTTP cache
+  from earlier in the session) now failing with a real CORS error in the
+  console, even though a live `curl -H "Origin: ..."` against the same
+  tile URL (and its OPTIONS preflight) confirmed hmsvc's own
+  `CORSMiddleware` was returning completely correct headers either way.
+  Root cause: those exact tile URLs had already been cached by an
+  earlier, plain (non-`crossorigin`) `<img>` load, with no CORS
+  validation recorded against that cache entry — and because tiles are
+  served `Cache-Control: ..., immutable` (`PNG_HEADERS`, service.py),
+  the browser treats a cached entry as never needing revalidation,
+  so re-requesting the SAME url in `crossorigin="anonymous"` mode hits
+  that stale, mode-incompatible entry and fails outright instead of
+  quietly re-fetching over the network. Fixed by giving `tileUrl()` a
+  fixed `?e=1` cache-epoch marker (`TILE_CORS_CACHE_EPOCH`), so every
+  tile request becomes a URL the browser has never cached under the old,
+  incompatible mode — a one-time fix that covers every Desk session
+  loading this updated code, not a manual cache-clear only the one user
+  who hit it first would know to do. Bump this constant again if a
+  similar crossOrigin/caching mismatch ever resurfaces.
+
+  **`desk.fs.writeFile` is text-only** (confirmed against
+  `desk-stable/src/desk/server/app.py`'s own `fs_write_file`: it calls
+  Python's `Path.write_text(body.contents)`, which UTF-8-encodes a
+  string) — there is no binary-write Bridge call a widget can use
+  instead. So a screenshot is saved as a small self-contained `.html`
+  file (`<img src="data:image/png;base64,...">`), not a real `.png` —
+  directly double-click-viewable by a human with no decode tooling
+  needed, and still trivially machine-extractable (grep the base64
+  payload out, `base64 -d`) when an agent needs to look at one. Saved to
+  `.desk_temp/samothrace-map-screenshots/<recordingId>/<mm-ss-mmm>.html`
+  — `.desk_temp/` since this is ephemeral output (already fully
+  gitignored), not `Data/`. The timecode matches
+  `.desk_temp/timecoded-transcripts/<recording_id>.txt`'s own
+  `[mm:ss.mmm]` convention (`RecordingController` gained a
+  `recordingStartedAtMs` getter for this — it previously only tracked
+  `activeRecordingId`, nothing needed `started_at_ms` before now).
+
+  **Known, accepted gap**: the live `adjust-image-transform` `<img>`
+  overlay (a real DOM element with a CSS 3D transform, not canvas-drawn)
+  would NOT appear in a screenshot taken while it's visible — a narrow,
+  rare overlap between two features added the same day, not worth
+  solving now.
+
 - **New "Initial Map" imagery layer, from a user-uploaded photo — now
   interactive, user-driven (2026-10-17, same day as the first,
   automatic-alignment attempt that didn't work well enough).** The user

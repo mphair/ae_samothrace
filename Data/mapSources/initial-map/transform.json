@@ -9,5 +9,19 @@
   "tiltXDeg": 0,
   "tiltYDeg": -10,
   "photoWidth": 1975,
-  "photoHeight": 2262
+  "photoHeight": 2262,
+  "keys": [
+    {
+      "id": "chronology",
+      "label": "Chronology",
+      "x0": 1180,
+      "y0": 1570,
+      "x1": 1790,
+      "y1": 2110,
+      "maskBoxes": [
+        {"x0": 1178, "y0": 1650, "x1": 1620, "y1": 1755},
+        {"x0": 1178, "y0": 1770, "x1": 1770, "y1": 2050}
+      ]
+    }
+  ]
 }

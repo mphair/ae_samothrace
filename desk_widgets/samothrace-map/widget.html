@@ -205,6 +205,94 @@
           cursor: grabbing;
           opacity: 0.85;
         }
+        /* Recording-mode toolbar -- top-center over the map, only shown
+           while a recording is active (same gating as
+           .recording-indicator, both driven by RecordingController.
+           onChange). Two stacked rows: the always-present 3-button row
+           (screenshot now / screenshot in 5s / annotate toggle), and a
+           second row of 7 pen swatches + Clear that only appears while
+           the annotation layer is actually toggled on -- see
+           samothrace-map.ts's own "annotation layer" section for the
+           full story (pan/zoom is deliberately disabled while this is
+           on; screenshots are saved as self-contained base64-image HTML
+           files, not real .png, since the Bridge's own fs.writeFile is
+           text-only). */
+        .annotate-toolbar {
+          position: absolute;
+          top: 10px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: none;
+          align-items: center;
+          gap: 6px;
+          padding: 6px;
+          border-radius: 6px;
+          background: rgba(32, 38, 47, 0.92);
+          border: 1px solid #3a4454;
+          z-index: 15;
+        }
+        .annotate-toolbar button {
+          font-size: 11.5px;
+          padding: 6px 9px;
+          border-radius: 4px;
+          border: 1px solid #3a4454;
+          background: #2a3444;
+          color: #e6e9ef;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+        .annotate-toolbar button:hover {
+          background: #344258;
+        }
+        .annotate-toggle-button.active {
+          border-color: #2f7a4f;
+          background: #1f4a33;
+        }
+        .annotate-toggle-button.active:hover {
+          background: #276240;
+        }
+        .annotate-palette-row {
+          position: absolute;
+          top: 48px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: none;
+          align-items: center;
+          gap: 5px;
+          padding: 5px 6px;
+          border-radius: 6px;
+          background: rgba(32, 38, 47, 0.92);
+          border: 1px solid #3a4454;
+          z-index: 15;
+        }
+        .annotate-swatch {
+          width: 18px;
+          height: 18px;
+          padding: 0;
+          border-radius: 3px;
+          border: 1px solid rgba(255, 255, 255, 0.35);
+          cursor: pointer;
+        }
+        .annotate-swatch.active {
+          outline: 2px solid #fff;
+          outline-offset: 1px;
+        }
+        .annotate-clear-button {
+          font-size: 11px;
+          padding: 5px 8px;
+          border-radius: 4px;
+          border: 1px solid #3a4454;
+          background: #2a3444;
+          color: #e6e9ef;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+        .annotate-clear-button:hover {
+          background: #344258;
+        }
+        .map-canvas.annotating {
+          cursor: crosshair;
+        }
         .zoom-controls {
           position: absolute;
           right: 10px;
@@ -844,6 +932,21 @@
           <div class="map-pane">
             <canvas class="map-canvas"></canvas>
             <img class="image-overlay" draggable="false" style="display:none;" />
+            <div class="annotate-toolbar">
+              <button type="button" class="annotate-screenshot-now-button" title="Save a timecoded screenshot">📷 Now</button>
+              <button type="button" class="annotate-screenshot-5s-button" title="Save a timecoded screenshot in 5 seconds">📷 5s</button>
+              <button type="button" class="annotate-toggle-button" title="Toggle the annotation drawing layer (pauses pan/zoom while on)">✏️ Annotate</button>
+            </div>
+            <div class="annotate-palette-row">
+              <button type="button" class="annotate-swatch" data-color="#e6194b" style="background:#e6194b" title="Red"></button>
+              <button type="button" class="annotate-swatch" data-color="#f58231" style="background:#f58231" title="Orange"></button>
+              <button type="button" class="annotate-swatch" data-color="#ffe119" style="background:#ffe119" title="Yellow"></button>
+              <button type="button" class="annotate-swatch" data-color="#3cb44b" style="background:#3cb44b" title="Green"></button>
+              <button type="button" class="annotate-swatch" data-color="#4363d8" style="background:#4363d8" title="Blue"></button>
+              <button type="button" class="annotate-swatch" data-color="#911eb4" style="background:#911eb4" title="Purple"></button>
+              <button type="button" class="annotate-swatch" data-color="#000000" style="background:#000000" title="Black"></button>
+              <button type="button" class="annotate-clear-button">Clear</button>
+            </div>
             <div class="zoom-controls">
               <button type="button" class="zoom-in-button" title="Zoom in">+</button>
               <button type="button" class="zoom-out-button" title="Zoom out">−</button>

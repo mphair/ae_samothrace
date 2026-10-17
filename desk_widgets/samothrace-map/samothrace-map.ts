@@ -55,6 +55,24 @@ interface LayerMeta {
   defaultVisible: boolean;
 }
 
+// A "Keys" layer (2026-10-17, directly requested via recording while
+// trying out the new annotation tool -- a hand-drawn box around the
+// baked "Initial Map" photo's own printed chronology legend, "let's
+// extract that into its own layer... in the same spot, but not tied to
+// the map"). Deliberately NOT a LayerMeta -- a key has no real-world
+// lon/lat of its own (it's a printed legend, not map content), so it's
+// never geo-projected/tiled the way every hmsvc layer is; it's drawn at
+// a FIXED canvas position instead (see drawKeyLayers). `/layers`' own
+// new `keys` field (desk_hmsvc/samothrace-tiles/service.py's
+// `_discover_keys`) is fully self-discovering across every slug's own
+// `transform.json`, so a future second photo import's own keys need no
+// widget-side code changes to show up here.
+interface KeyLayerMeta {
+  id: string; // "key:<slug>:<keyId>" -- prefixed, same convention stage:/contours:/connector: ids already use
+  label: string;
+  url: string; // relative to serviceUrl, e.g. "/key/initial-map/chronology.png"
+}
+
 interface SelectedMonument {
   webCode: string;
   label: string;
@@ -111,6 +129,27 @@ function unprojectWorld(x: number, y: number, zoom: number, tileSize: number): {
 function worldPxPerMeter(zoom: number, lat: number): number {
   const metersPerPx = (156543.03392 * Math.cos((lat * Math.PI) / 180)) / Math.pow(2, zoom);
   return 1 / metersPerPx;
+}
+
+// For the screenshot toolbar's own timecode -- same `[mm:ss.mmm]` offset
+// convention `.desk_temp/timecoded-transcripts/<recording_id>.txt`
+// already uses (see tempui-widget-logs.md), computed the same way:
+// elapsed ms since the recording's own `started_at_ms`. `file` swaps
+// colons for dashes (filesystem-safe); `display` keeps the exact
+// transcript-matching punctuation for the screenshot's own <title>, so
+// a human can eyeball-correlate a saved screenshot against a transcript
+// line without doing the conversion themselves. No hour/day rollover,
+// same as the transcript format -- minutes just keep growing past 59 on
+// a very long recording.
+function formatTimecode(elapsedMs: number): { file: string; display: string } {
+  const totalMs = Math.max(0, Math.round(elapsedMs));
+  const minutes = Math.floor(totalMs / 60000);
+  const seconds = Math.floor((totalMs % 60000) / 1000);
+  const millis = totalMs % 1000;
+  const mm = String(minutes).padStart(2, '0');
+  const ss = String(seconds).padStart(2, '0');
+  const mmm = String(millis).padStart(3, '0');
+  return { file: `${mm}-${ss}-${mmm}`, display: `${mm}:${ss}.${mmm}` };
 }
 
 function collectRings(geometry: { type: string; coordinates: unknown }): number[][][] {
@@ -209,6 +248,10 @@ class SamothraceMapElement extends HTMLElement {
   private qaSummaryEl: HTMLElement | null = null;
   private qaTabContentEl: HTMLElement | null = null;
   private imageOverlayEl: HTMLImageElement | null = null;
+  private annotateToolbarEl: HTMLElement | null = null;
+  private annotatePaletteRowEl: HTMLElement | null = null;
+  private annotateToggleButtonEl: HTMLElement | null = null;
+  private annotateScreenshot5sButtonEl: HTMLElement | null = null;
   private resizeObserver: ResizeObserver | null = null;
 
   // Phase 1 of plans/samothrace-map-consolidation.md -- see
@@ -318,6 +361,8 @@ class SamothraceMapElement extends HTMLElement {
 
   private serviceUrl: string | null = null;
   private layerMetas: LayerMeta[] = [];
+  private keyLayers: KeyLayerMeta[] = [];
+  private keyImageCache = new Map<string, TileEntry>();
   private visibleLayers = new Set<string>();
   // Which layer-panel `<details>` groups are currently COLLAPSED (closed)
   // -- keyed by the same `hmsvc:<group>` / `stage:<group>` strings
@@ -372,6 +417,31 @@ class SamothraceMapElement extends HTMLElement {
   private lastWheelAt = 0;
   private redrawScheduled = false;
 
+  // ── Recording-mode toolbar: annotation layer + screenshots ──
+  // See widget.html's own ".annotate-toolbar" comment for the full
+  // design story (pan/zoom deliberately disabled while this is on, plain
+  // screen-pixel coordinates -- not lon/lat -- are enough since the view
+  // literally can't change while drawing). "Persistent" (corrected
+  // 2026-10-17, directly) means this survives toggling off/on WHILE a
+  // recording is still going -- NOT across a reload, and NOT past the
+  // recording ending: recording.onChange wipes both fields back to
+  // empty/off the instant `recordingId` goes back to null. Not saved via
+  // getLocalStorage/setLocalStorage at all (unlike view/visibleLayers/
+  // collapsedGroups, which genuinely do need to survive a reload).
+  // "Clearable" means the explicit Clear button empties it early, before
+  // the recording itself ends.
+  private readonly ANNOTATION_COLORS = ['#e6194b', '#f58231', '#ffe119', '#3cb44b', '#4363d8', '#911eb4', '#000000'];
+  private annotationLayerOn = false;
+  private annotationStrokes: Array<{ color: string; points: Array<{ x: number; y: number }> }> = [];
+  private activeAnnotationColor = this.ANNOTATION_COLORS[0]!;
+  // The stroke currently being drawn (pointer down, not yet released) --
+  // kept separate from annotationStrokes until pointerup so a stroke
+  // that never moves (a plain click) can be discarded instead of adding
+  // a single-point no-op "line."
+  private annotationDrawState: { color: string; points: Array<{ x: number; y: number }> } | null = null;
+  private screenshotCountdownInterval: number | null = null;
+  private screenshotCountdownTimer: number | null = null;
+
   connectedCallback(): void {
     const template = document.getElementById('samothrace-map-template');
     if (!(template instanceof HTMLTemplateElement)) {
@@ -393,6 +463,12 @@ class SamothraceMapElement extends HTMLElement {
     this.qaTabContentEl = shadow.querySelector('.qa-tab-content');
     this.imageOverlayEl = shadow.querySelector('.image-overlay');
     this.setupImageOverlayDrag();
+    this.annotateToolbarEl = shadow.querySelector('.annotate-toolbar');
+    this.annotatePaletteRowEl = shadow.querySelector('.annotate-palette-row');
+    this.annotateToggleButtonEl = shadow.querySelector('.annotate-toggle-button');
+    this.annotateScreenshot5sButtonEl = shadow.querySelector('.annotate-screenshot-5s-button');
+    this.setupAnnotateToolbar(shadow);
+    this.syncAnnotateSwatchUI();
     // Diagnostic only -- a broken/failed load here would otherwise be
     // invisible to anyone not looking directly at the widget (no thrown
     // exception, nothing in the recording log); console.warn at least
@@ -417,6 +493,31 @@ class SamothraceMapElement extends HTMLElement {
       if (this.recordingIndicatorEl) {
         this.recordingIndicatorEl.style.display = recordingId !== null ? 'flex' : 'none';
       }
+      if (this.annotateToolbarEl) {
+        this.annotateToolbarEl.style.display = recordingId !== null ? 'flex' : 'none';
+      }
+      // "Persistent" (per the direct correction this got, 2026-10-17)
+      // means "survives for the duration of THIS recording" -- not
+      // across reloads, and not past the recording ending. So the
+      // instant a recording stops, wipe the slate: clear every stroke,
+      // drop any in-progress one, and turn the layer back off (so the
+      // toggle button isn't left showing "on" with nothing to show, and
+      // pan/zoom is unlocked again). Also fires once, harmlessly, on
+      // this callback's own initial synchronous call at page load
+      // (recordingId is always null then) -- nothing to clear yet at
+      // that point either way. No longer saved via
+      // getLocalStorage/setLocalStorage at all (see saveUiState's own
+      // comment) -- there's nothing left for a reload to need to
+      // restore.
+      if (recordingId === null) {
+        this.annotationStrokes = [];
+        this.annotationDrawState = null;
+        this.annotationLayerOn = false;
+        this.canvas?.classList.remove('annotating');
+        this.annotateToggleButtonEl?.classList.remove('active');
+        this.scheduleRedraw();
+      }
+      this.syncAnnotatePaletteVisibility();
       // A recording's own narration can't be assumed to mention which
       // layers happen to be visible -- dump the full current set once,
       // right as recording starts, so that's known even if nothing gets
@@ -473,6 +574,8 @@ class SamothraceMapElement extends HTMLElement {
   disconnectedCallback(): void {
     this.resizeObserver?.disconnect();
     this.agentQaTab.dispose();
+    if (this.screenshotCountdownTimer !== null) clearTimeout(this.screenshotCountdownTimer);
+    if (this.screenshotCountdownInterval !== null) clearInterval(this.screenshotCountdownInterval);
   }
 
   private setStatus(text: string | null): void {
@@ -602,6 +705,12 @@ class SamothraceMapElement extends HTMLElement {
             restoredView = true;
           }
         }
+
+        // No annotation-layer restore here (removed 2026-10-17) -- it's
+        // no longer saved at all, see saveUiState's own comment. A fresh
+        // page load always starts with the layer off/empty, which is
+        // already true of annotationLayerOn/annotationStrokes' own field
+        // defaults -- nothing to do.
       } catch (err) {
         console.warn('restoring saved UI state failed (best-effort, using defaults):', err);
       }
@@ -635,8 +744,9 @@ class SamothraceMapElement extends HTMLElement {
     if (!this.serviceUrl) throw new Error('tile service URL unknown');
     const res = await fetch(`${this.serviceUrl}/layers`);
     if (!res.ok) throw new Error(`/layers request failed: ${res.status}`);
-    const data = (await res.json()) as { layers: LayerMeta[]; minZoom: number; maxZoom: number; tileSize: number };
+    const data = (await res.json()) as { layers: LayerMeta[]; minZoom: number; maxZoom: number; tileSize: number; keys?: KeyLayerMeta[] };
     this.layerMetas = data.layers;
+    this.keyLayers = data.keys ?? [];
     this.minZoom = data.minZoom;
     this.maxZoom = data.maxZoom;
     this.tileSize = data.tileSize;
@@ -657,6 +767,7 @@ class SamothraceMapElement extends HTMLElement {
     if (id === this.contoursLayer.rowFor('actual').id || id === this.contoursLayer.rowFor('restored').id) return true;
     if (this.stageLayers.allLayerRows().some((r) => r.id === id)) return true;
     if (id === this.connectorTab.rowFor().id) return true;
+    if (this.keyLayers.some((k) => k.id === id)) return true;
     return false;
   }
 
@@ -718,8 +829,9 @@ class SamothraceMapElement extends HTMLElement {
     if (!this.serviceUrl) return;
     const res = await fetch(`${this.serviceUrl}/layers`);
     if (!res.ok) throw new Error(`/layers request failed: ${res.status}`);
-    const data = (await res.json()) as { layers: LayerMeta[]; minZoom: number; maxZoom: number; tileSize: number };
+    const data = (await res.json()) as { layers: LayerMeta[]; minZoom: number; maxZoom: number; tileSize: number; keys?: KeyLayerMeta[] };
     this.layerMetas = data.layers;
+    this.keyLayers = data.keys ?? [];
     this.minZoom = data.minZoom;
     this.maxZoom = data.maxZoom;
     this.tileSize = data.tileSize;
@@ -823,6 +935,23 @@ class SamothraceMapElement extends HTMLElement {
         pushRow(row.id, row.label, false);
         closeGroup();
       }
+    }
+
+    // "Keys" (2026-10-17, directly requested via recording -- "let's
+    // have a new category of layers, and called keys") -- real,
+    // user-facing content (a legend, extracted from a photo import), so
+    // it sits with the cartographic groups above, not the diagnostic
+    // pipeline-stage section below. Not an hmsvc group (no `group` field
+    // on KeyLayerMeta at all -- see that interface's own comment for why
+    // it's not even a LayerMeta), so like "User Changes" it can't fall
+    // out of the main `groups` loop above; only rendered at all if at
+    // least one key has actually been extracted somewhere, so this is a
+    // complete no-op for any project/slug that's never used `keys` in
+    // its own transform.json.
+    if (this.keyLayers.length > 0) {
+      openGroup('keys', 'Keys');
+      for (const key of this.keyLayers) pushRow(key.id, key.label, false);
+      closeGroup();
     }
 
     // Pipeline stage layers (phase 2 of plans/samothrace-map
@@ -958,6 +1087,13 @@ class SamothraceMapElement extends HTMLElement {
         view: { lon: this.view.lon, lat: this.view.lat, zoom: this.view.zoom },
         selectedWebCode: this.selectedWebCode,
         collapsedGroups: Array.from(this.collapsedGroups),
+        // annotationLayerOn/annotationStrokes deliberately NOT saved
+        // here (removed 2026-10-17, a direct correction of the first
+        // version of this feature) -- "persistent" was meant to mean
+        // "survives for the duration of the current recording," not
+        // "survives a reload or a later recording." recording.onChange
+        // clears both fields the instant a recording stops, so there's
+        // nothing left worth persisting past that point anyway.
       });
     } catch (err) {
       console.warn('saving UI state failed (best-effort, ignoring):', err);
@@ -1113,6 +1249,15 @@ class SamothraceMapElement extends HTMLElement {
   // ── View (pan/zoom) ──
 
   private fitToBounds(bounds: LonLatBounds, extraPadFraction: number): void {
+    // Single canonical guard (see zoomBy's own, right below) -- this and
+    // zoomBy are the only two places `this.view` is ever mutated by a
+    // live user interaction (the plain pointer-drag pan is blocked
+    // separately, at the top of onPointerDown/Move/Up), so guarding
+    // here transparently covers every camera-moving path that funnels
+    // through it: the zoom buttons, wheel-zoom, "Show me" jumps,
+    // monument selection, and the home/Overview button, with no need to
+    // special-case any of them individually.
+    if (this.annotationLayerOn) return;
     const b = extraPadFraction > 0 ? padBounds(bounds, extraPadFraction) : bounds;
     let zoom = this.maxZoom;
     for (; zoom >= this.minZoom; zoom--) {
@@ -1129,6 +1274,7 @@ class SamothraceMapElement extends HTMLElement {
   }
 
   private zoomBy(delta: number, anchorScreenX: number, anchorScreenY: number): void {
+    if (this.annotationLayerOn) return; // pan/zoom disabled while annotating -- see fitToBounds's own comment
     const oldZoom = this.view.zoom;
     const newZoom = Math.min(Math.max(oldZoom + delta, this.minZoom), this.maxZoom);
     if (newZoom === oldZoom) return;
@@ -1163,6 +1309,20 @@ class SamothraceMapElement extends HTMLElement {
 
   private onPointerDown(e: PointerEvent): void {
     this.canvas?.setPointerCapture(e.pointerId);
+    // Annotation drawing preempts EVERYTHING else below (pan, hover,
+    // contour-connector drag-to-connect, monument click) while the
+    // layer is toggled on -- see this class's own "Annotation layer +
+    // screenshot toolbar" section header comment for why pan/zoom is
+    // deliberately disabled here too (zoomBy/fitToBounds both guard
+    // against this same flag on their own side).
+    if (this.annotationLayerOn) {
+      const rect = this.canvas?.getBoundingClientRect();
+      if (rect) {
+        this.annotationDrawState = { color: this.activeAnnotationColor, points: [{ x: e.clientX - rect.left, y: e.clientY - rect.top }] };
+        this.scheduleRedraw();
+      }
+      return;
+    }
     // Phase 6: drag-to-connect only engages while the Contour Connector
     // tab is active (plans/samothrace-map-consolidation.md's own "kept
     // self-contained... so it doesn't clash with plain hover/click
@@ -1183,6 +1343,23 @@ class SamothraceMapElement extends HTMLElement {
   }
 
   private onPointerMove(e: PointerEvent): void {
+    if (this.annotationDrawState) {
+      const rect = this.canvas?.getBoundingClientRect();
+      if (rect) {
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        // Only record a new point once the pointer has actually moved a
+        // couple pixels -- keeps a long, slow stroke's own point count
+        // (and thus its stored-JSON size) reasonable without any
+        // visible loss of smoothness.
+        const last = this.annotationDrawState.points[this.annotationDrawState.points.length - 1]!;
+        if (Math.abs(x - last.x) >= 2 || Math.abs(y - last.y) >= 2) {
+          this.annotationDrawState.points.push({ x, y });
+          this.scheduleRedraw();
+        }
+      }
+      return;
+    }
     if (this.activeQaTab === 'contour-connector' && this.connectorTab.isDragging()) {
       const rect = this.canvas?.getBoundingClientRect();
       if (rect) {
@@ -1235,6 +1412,22 @@ class SamothraceMapElement extends HTMLElement {
   }
 
   private onPointerUp(e: PointerEvent): void {
+    if (this.annotationDrawState) {
+      this.canvas?.releasePointerCapture(e.pointerId);
+      // A plain click (no movement -- still just the one seed point from
+      // pointerdown) draws nothing rather than leaving a stray 1-point
+      // "line" that drawAnnotations' own `points.length < 2` guard would
+      // just skip anyway -- discarded here instead so it doesn't bloat
+      // the stroke list with invisible entries. No scheduleSaveUiState()
+      // here (removed 2026-10-17) -- annotations are no longer persisted
+      // past the current recording, see saveUiState's own comment.
+      if (this.annotationDrawState.points.length >= 2) {
+        this.annotationStrokes.push(this.annotationDrawState);
+      }
+      this.annotationDrawState = null;
+      this.scheduleRedraw();
+      return;
+    }
     if (this.activeQaTab === 'contour-connector' && this.connectorTab.isDragging()) {
       this.canvas?.releasePointerCapture(e.pointerId);
       void this.connectorTab.endDrag();
@@ -1387,10 +1580,32 @@ class SamothraceMapElement extends HTMLElement {
   // URLs, so their existing aggressive caching is untouched.
   private tileCacheBust = new Map<string, number>();
 
+  // Bumped exactly once, 2026-10-17, alongside getTile()'s new
+  // `img.crossOrigin = 'anonymous'` (added for captureScreenshot's own
+  // canvas.toDataURL() -- see that field's own comment). A real,
+  // reported bug this fixes: a tile URL already in the browser's own
+  // HTTP cache from BEFORE that change was fetched in plain (non-CORS)
+  // mode, so the cached response has no recorded CORS validation.
+  // Re-requesting the exact same URL afterward, now in `crossorigin
+  // ="anonymous"` mode, hits that stale, mode-incompatible cache entry
+  // -- and because these tiles are served `Cache-Control: ...,
+  // immutable` (PNG_HEADERS, service.py), the browser treats them as
+  // never needing revalidation and fails outright with a console CORS
+  // error instead of quietly re-fetching over the network (confirmed
+  // the server's own CORS headers are correct either way -- `curl
+  // -H "Origin: ..."` against a live tile returns `access-control
+  // -allow-origin: *` on both the GET and an OPTIONS preflight).
+  // Appending a fixed marker here makes every tile request a URL the
+  // browser's cache has never seen under the old, incompatible mode,
+  // sidestepping the conflict entirely -- for every Desk session that
+  // loads this updated code, not just a one-time manual cache-clear for
+  // whoever hit it first.
+  private readonly TILE_CORS_CACHE_EPOCH = 1;
+
   private tileUrl(layerId: string, z: number, x: number, y: number): string {
     const bust = this.tileCacheBust.get(layerId);
-    const suffix = bust !== undefined ? `?v=${bust}` : '';
-    return `${this.serviceUrl}/tiles/${layerId}/${z}/${x}/${y}.png${suffix}`;
+    const suffix = bust !== undefined ? `&v=${bust}` : '';
+    return `${this.serviceUrl}/tiles/${layerId}/${z}/${x}/${y}.png?e=${this.TILE_CORS_CACHE_EPOCH}${suffix}`;
   }
 
   // Called after a successful map-import-from-photo run (see
@@ -1511,10 +1726,174 @@ class SamothraceMapElement extends HTMLElement {
     img.addEventListener('pointercancel', endDrag);
   }
 
+  // ── Annotation layer + screenshot toolbar ──
+  // See widget.html's own ".annotate-toolbar" comment and this class's
+  // own field-block comment above for the full design story. Wired once
+  // here, in connectedCallback, same as every other static toolbar
+  // control in this widget (zoom buttons, home button, ...).
+  private setupAnnotateToolbar(shadow: ShadowRoot): void {
+    shadow.querySelector('.annotate-screenshot-now-button')?.addEventListener('click', () => void this.captureScreenshot());
+    this.annotateScreenshot5sButtonEl?.addEventListener('click', () => this.toggleDelayedScreenshot());
+    this.annotateToggleButtonEl?.addEventListener('click', () => this.toggleAnnotationLayer());
+    shadow.querySelectorAll<HTMLButtonElement>('.annotate-swatch').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const color = btn.dataset.color;
+        if (color) this.setActiveAnnotationColor(color);
+      });
+    });
+    shadow.querySelector('.annotate-clear-button')?.addEventListener('click', () => this.clearAnnotations());
+  }
+
+  private toggleAnnotationLayer(): void {
+    this.annotationLayerOn = !this.annotationLayerOn;
+    // A stroke mid-draw when the layer gets toggled off (shouldn't
+    // normally happen -- the canvas is what you'd be dragging on to
+    // toggle it off in the first place -- but the toolbar button itself
+    // is reachable mid-drag via a second pointer/fast click) would
+    // otherwise leave a dangling in-progress stroke that redraw() keeps
+    // drawing forever with no way to finish it.
+    this.annotationDrawState = null;
+    if (this.canvas) this.canvas.classList.toggle('annotating', this.annotationLayerOn);
+    this.annotateToggleButtonEl?.classList.toggle('active', this.annotationLayerOn);
+    this.syncAnnotatePaletteVisibility();
+    this.syncAnnotateSwatchUI();
+    this.scheduleRedraw();
+  }
+
+  // Shown only while BOTH the recording-gated toolbar itself is visible
+  // AND the layer is toggled on -- called from both toggleAnnotationLayer
+  // and the recording.onChange callback above, since either one changing
+  // can flip whether this row should actually be on screen.
+  private syncAnnotatePaletteVisibility(): void {
+    if (!this.annotatePaletteRowEl) return;
+    const toolbarVisible = this.annotateToolbarEl?.style.display !== 'none';
+    this.annotatePaletteRowEl.style.display = toolbarVisible && this.annotationLayerOn ? 'flex' : 'none';
+  }
+
+  private setActiveAnnotationColor(color: string): void {
+    this.activeAnnotationColor = color;
+    this.syncAnnotateSwatchUI();
+  }
+
+  private syncAnnotateSwatchUI(): void {
+    this.annotatePaletteRowEl?.querySelectorAll<HTMLButtonElement>('.annotate-swatch').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.color === this.activeAnnotationColor);
+    });
+  }
+
+  private clearAnnotations(): void {
+    if (this.annotationStrokes.length === 0 && !this.annotationDrawState) return;
+    this.annotationStrokes = [];
+    this.annotationDrawState = null;
+    this.scheduleRedraw();
+  }
+
+  // Second click while counting down CANCELS it (an armed toggle, not a
+  // "queue another one") -- simplest way to let someone back out of a
+  // delayed screenshot without waiting it out.
+  private toggleDelayedScreenshot(): void {
+    if (this.screenshotCountdownTimer !== null) {
+      clearTimeout(this.screenshotCountdownTimer);
+      this.screenshotCountdownTimer = null;
+      if (this.screenshotCountdownInterval !== null) {
+        clearInterval(this.screenshotCountdownInterval);
+        this.screenshotCountdownInterval = null;
+      }
+      this.resetScreenshotDelayButtonLabel();
+      return;
+    }
+    let remaining = 5;
+    this.updateScreenshotDelayButtonLabel(remaining);
+    this.screenshotCountdownInterval = (setInterval(() => {
+      remaining -= 1;
+      if (remaining > 0) this.updateScreenshotDelayButtonLabel(remaining);
+    }, 1000) as unknown) as number;
+    this.screenshotCountdownTimer = (setTimeout(() => {
+      if (this.screenshotCountdownInterval !== null) {
+        clearInterval(this.screenshotCountdownInterval);
+        this.screenshotCountdownInterval = null;
+      }
+      this.screenshotCountdownTimer = null;
+      this.resetScreenshotDelayButtonLabel();
+      void this.captureScreenshot();
+    }, 5000) as unknown) as number;
+  }
+
+  private updateScreenshotDelayButtonLabel(remainingSeconds: number): void {
+    if (this.annotateScreenshot5sButtonEl) this.annotateScreenshot5sButtonEl.textContent = `📷 ${remainingSeconds}…`;
+  }
+
+  private resetScreenshotDelayButtonLabel(): void {
+    if (this.annotateScreenshot5sButtonEl) this.annotateScreenshot5sButtonEl.textContent = '📷 5s';
+  }
+
+  // Captures exactly what's currently baked into the shared map canvas
+  // (base tiles + every canvas-drawn layer, including annotations --
+  // see drawAnnotations's own call site in redraw()) and saves it as a
+  // timecoded, self-contained HTML file. NOT a real .png: the Bridge's
+  // own `desk.fs.writeFile` writes its `contents` as TEXT
+  // (`Path.write_text` server-side, confirmed against desk-stable's own
+  // `fs_write_file` handler) -- raw PNG bytes would corrupt on write,
+  // and there is no binary-write Bridge call for a widget to reach for
+  // instead. Base64-encoding the PNG and wrapping it in a one-line HTML
+  // document keeps it both directly double-click-viewable by a human (no
+  // decode tooling needed) and trivially machine-extractable (grep the
+  // base64 payload out, `base64 -d`) when an agent needs to actually
+  // look at one. Known, accepted gap: the live 'adjust-image-transform'
+  // `<img>` overlay (a real DOM element with a CSS 3D transform, not
+  // canvas-drawn) would NOT appear here if visible -- narrow, rare
+  // overlap, not worth solving now.
+  private async captureScreenshot(): Promise<void> {
+    const desk = window.desk;
+    if (!desk || !this.canvas) return;
+    const recordingId = this.recording.recordingId;
+    const startedAtMs = this.recording.recordingStartedAtMs;
+    // Both should always be set together whenever this is reachable at
+    // all (the toolbar itself is recording-gated) -- guarded anyway
+    // rather than assumed, consistent with this widget's general
+    // "best-effort, never throw into a click handler" standard.
+    if (recordingId === null || startedAtMs === null) return;
+    const elapsedMs = Date.now() - startedAtMs;
+    const { file, display } = formatTimecode(elapsedMs);
+    let dataUrl: string;
+    try {
+      dataUrl = this.canvas.toDataURL('image/png');
+    } catch (err) {
+      console.warn('screenshot capture failed:', err);
+      return;
+    }
+    const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
+    const html =
+      `<!doctype html>\n<meta charset="utf-8">\n` +
+      `<title>Samothrace Map screenshot [${display}]</title>\n` +
+      `<img src="data:image/png;base64,${base64}" style="max-width:100%;display:block;">\n`;
+    const path = `.desk_temp/samothrace-map-screenshots/${recordingId}/${file}.html`;
+    try {
+      await desk.fs.writeFile(path, html);
+      this.recording.log('screenshot', 'captured', { path, elapsedMs });
+    } catch (err) {
+      console.warn('screenshot save failed:', err);
+    }
+  }
+
   private getTile(url: string): TileEntry {
     let entry = this.tileCache.get(url);
     if (!entry) {
       const img = new Image();
+      // Required for captureScreenshot's own canvas.toDataURL() to work
+      // at all -- tiles are loaded cross-origin (hmsvc runs on its own
+      // port, a different origin than this widget's page), and a canvas
+      // with ANY cross-origin image drawn onto it via a plain, non-CORS
+      // `<img>` load becomes "tainted": toDataURL() throws a
+      // SecurityError for every future call, even once the tile itself
+      // has nothing to do with the part of the canvas being captured.
+      // Setting crossOrigin BEFORE `src` makes the browser fetch it in
+      // CORS mode instead -- safe to do unconditionally (not just while
+      // annotating/screenshotting) since hmsvc's own CORSMiddleware
+      // already sends `Access-Control-Allow-Origin: *` on every route
+      // (service.py), so this changes nothing about whether the load
+      // itself succeeds, only whether the canvas stays "clean" after.
+      img.crossOrigin = 'anonymous';
       entry = { img, status: 'loading' };
       img.onload = () => {
         entry!.status = 'loaded';
@@ -1525,6 +1904,28 @@ class SamothraceMapElement extends HTMLElement {
       };
       img.src = url;
       this.tileCache.set(url, entry);
+    }
+    return entry;
+  }
+
+  // Same caching/crossOrigin pattern as getTile() above -- a key image
+  // is canvas-drawn too (drawKeyLayers, fixed position), so it needs the
+  // same "don't taint the canvas" treatment, same reasoning.
+  private getKeyImage(url: string): TileEntry {
+    let entry = this.keyImageCache.get(url);
+    if (!entry) {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      entry = { img, status: 'loading' };
+      img.onload = () => {
+        entry!.status = 'loaded';
+        this.scheduleRedraw();
+      };
+      img.onerror = () => {
+        entry!.status = 'error';
+      };
+      img.src = url;
+      this.keyImageCache.set(url, entry);
     }
     return entry;
   }
@@ -1581,12 +1982,92 @@ class SamothraceMapElement extends HTMLElement {
     // pointer handlers above).
     if (this.activeQaTab === 'contour-connector') this.connectorTab.draw(ctx, toScreen);
     if (this.debugHitTraceVisible) this.drawDebugHitTrace(ctx, toScreen);
+    // Last of everything canvas-drawn -- deliberate marks over whatever
+    // else is on screen, should never be obscured by any other layer.
+    // Gated on `annotationLayerOn` alone -- toggling the button OFF is
+    // "shows/hides" per this tool's own design. recording.onChange's own
+    // comment covers the other half: a recording ending clears strokes
+    // AND forces this flag back to false, so there's nothing left to
+    // gate once the toolbar itself disappears either.
+    if (this.annotationLayerOn) this.drawAnnotations(ctx);
+    // "Keys" layer-panel group -- drawn last of all, even after
+    // annotations, since a legend should never be obscured by anything.
+    // See KeyLayerMeta's own comment for why this is a fixed-position
+    // canvas draw rather than a geo-projected tile layer.
+    this.drawKeyLayers(ctx);
 
     // Not canvas-drawn (a real <img>, see .image-overlay's own CSS
     // comment) but repositioned every redraw anyway, same cadence as
     // everything else here, so panning/zooming while adjusting keeps it
     // correctly anchored.
     this.positionImageOverlay();
+  }
+
+  // Screen-pixel strokes (NOT lon/lat -- see this class's own "Annotation
+  // layer + screenshot toolbar" field comment for why plain screen
+  // coordinates are correct here: pan/zoom is disabled for as long as
+  // the layer is drawable, so there's never a view change for these
+  // points to need to track). Drawn under the same dpr-scaled transform
+  // `redraw()` already set (ctx.setTransform(this.dpr, ...) at its own
+  // top) -- CSS-px coordinates work directly, no extra scaling math,
+  // same reasoning drawDebugHitTrace below already relies on.
+  private drawAnnotations(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 3;
+    const strokes = this.annotationDrawState ? [...this.annotationStrokes, this.annotationDrawState] : this.annotationStrokes;
+    for (const stroke of strokes) {
+      if (stroke.points.length < 2) continue;
+      ctx.strokeStyle = stroke.color;
+      ctx.beginPath();
+      ctx.moveTo(stroke.points[0]!.x, stroke.points[0]!.y);
+      for (let i = 1; i < stroke.points.length; i++) ctx.lineTo(stroke.points[i]!.x, stroke.points[i]!.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // Fixed CSS-px corner constants for drawKeyLayers below -- bottom-right,
+  // same corner the key actually occupied in the source photo ("in the
+  // same spot" per the recording that requested this), cleared above
+  // .zoom-controls (right:10px, bottom:10px, ~56px tall) with a 10px gap
+  // so the two never overlap.
+  private static readonly KEY_LAYER_RIGHT_PAD = 10;
+  private static readonly KEY_LAYER_BOTTOM_PAD = 76;
+  private static readonly KEY_LAYER_MAX_WIDTH = 180;
+
+  // Each visible key is drawn at a FIXED canvas position -- NOT
+  // toScreen-projected, deliberately, the one thing that makes this
+  // different from every other layer in this widget (see KeyLayerMeta's
+  // own comment: a printed legend has no real-world lon/lat, so pinning
+  // it to the viewport instead of the map is the whole point, same as a
+  // real paper map's own legend never moves when you pan the map
+  // underneath it). Stacks upward from the bottom-right corner when more
+  // than one key is visible at once. Drawn under the same dpr-scaled
+  // transform redraw() already set, same reasoning drawAnnotations above
+  // relies on.
+  private drawKeyLayers(ctx: CanvasRenderingContext2D): void {
+    if (!this.serviceUrl) return;
+    let bottom = SamothraceMapElement.KEY_LAYER_BOTTOM_PAD;
+    for (const key of this.keyLayers) {
+      if (!this.visibleLayers.has(key.id)) continue;
+      const entry = this.getKeyImage(`${this.serviceUrl}${key.url}`);
+      if (entry.status !== 'loaded') continue;
+      const img = entry.img;
+      const scale = Math.min(1, SamothraceMapElement.KEY_LAYER_MAX_WIDTH / img.naturalWidth);
+      const w = img.naturalWidth * scale;
+      const h = img.naturalHeight * scale;
+      const x = this.viewportWidth - SamothraceMapElement.KEY_LAYER_RIGHT_PAD - w;
+      const y = this.viewportHeight - bottom - h;
+      ctx.save();
+      ctx.drawImage(img, x, y, w, h);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+      ctx.restore();
+      bottom += h + 10;
+    }
   }
 
   // Debug aid: every hit-test this session (hover and click) plotted as a

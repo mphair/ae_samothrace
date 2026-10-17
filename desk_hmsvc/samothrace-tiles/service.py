@@ -406,9 +406,46 @@ def _raw_png(layer: str, z: int, x: int, y: int) -> bytes | None:
     return path.read_bytes()
 
 
+def _discover_keys() -> list[dict]:
+    """Self-discovering, not hardcoded to any one slug/key -- scans every
+    Data/mapSources/<slug>/transform.json for an optional "keys" list
+    (desk-installed-jobs/map-import-from-photo/main.py's own
+    extract_keys() both produces the cropped PNGs this serves AND writes
+    that same list back here) and reports one widget-facing entry per
+    key. A future second photo import that uses "keys" needs zero
+    changes on either the widget or this service to show up -- the
+    widget's own "Keys" layer-panel group is built entirely from
+    whatever this returns. Cheap enough to do on every `/layers` call
+    (a handful of small JSON reads, same low-traffic expectations as
+    everything else in this dev-local service) -- not worth caching."""
+    keys: list[dict] = []
+    if not MAP_SOURCES_DIR.is_dir():
+        return keys
+    for slug_dir in sorted(MAP_SOURCES_DIR.iterdir()):
+        transform_path = slug_dir / "transform.json"
+        if not transform_path.is_file():
+            continue
+        try:
+            transform = json.loads(transform_path.read_text())
+        except (OSError, ValueError):
+            continue
+        for key in transform.get("keys", []):
+            key_id = key.get("id")
+            if not key_id:
+                continue
+            keys.append(
+                {
+                    "id": f"key:{slug_dir.name}:{key_id}",
+                    "label": key.get("label", key_id),
+                    "url": f"/key/{slug_dir.name}/{key_id}.png",
+                }
+            )
+    return keys
+
+
 @app.get("/layers")
 def layers():
-    return {"layers": LAYERS, "minZoom": MIN_ZOOM, "maxZoom": MAX_ZOOM, "tileSize": TILE_SIZE}
+    return {"layers": LAYERS, "minZoom": MIN_ZOOM, "maxZoom": MAX_ZOOM, "tileSize": TILE_SIZE, "keys": _discover_keys()}
 
 
 @app.get("/source/{slug}")
@@ -427,6 +464,19 @@ def source_photo(slug: str):
     path = candidates[0]
     media_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
     return Response(content=path.read_bytes(), media_type=media_type, headers=PNG_HEADERS)
+
+
+@app.get("/key/{slug}/{key_id}.png")
+def key_image(slug: str, key_id: str):
+    """Raw bytes of Data/mapSources/<slug>/keys/<key_id>.png -- a region
+    extract_keys() cropped out of the original photo and masked out of
+    the main raster bake (see that function's own docstring), for the
+    widget's "Keys" layer-panel group. Same shape as /source/<slug>
+    above (no z/x/y, not a tile) -- 404s the same way if missing."""
+    path = MAP_SOURCES_DIR / slug / "keys" / f"{key_id}.png"
+    if not path.is_file():
+        return Response(status_code=404)
+    return Response(content=path.read_bytes(), media_type="image/png", headers=PNG_HEADERS)
 
 
 @app.get("/tiles/{layer}/{z}/{x}/{y}.png")

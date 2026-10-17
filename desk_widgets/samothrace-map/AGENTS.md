@@ -206,6 +206,41 @@ and get concatenated in that order; it does **not** matter for *type
    monument overlay (the original functionality, predating all of the
    above), and wires every controller above together.
 
+   **Recording-mode toolbar: screenshots + an annotation layer**
+   (2026-10-17). Top-center over the map, visible only while
+   `this.recording.isRecording` (same `onChange` gating
+   `.recording-indicator` already uses) — see `TODO.md`'s own entry for
+   the fuller design story, including a real `canvas.toDataURL()`
+   `SecurityError` bug this fixed along the way (`getTile()` now sets
+   `img.crossOrigin = 'anonymous'` unconditionally). Short version:
+   annotation strokes are plain screen-pixel coordinates (not lon/lat)
+   because pan/zoom is deliberately disabled the whole time the layer is
+   toggled on (`zoomBy`/`fitToBounds` both guard on `annotationLayerOn`);
+   drawn as one more `redraw()` layer (`drawAnnotations`, last in the
+   stack) so a screenshot is just the canvas's own pixels, nothing to
+   composite. Screenshots save as self-contained base64-image `.html`
+   files, not real `.png` — `desk.fs.writeFile` is text-only. Scoped
+   STRICTLY to the current recording, not saved anywhere durable —
+   `recording.onChange` clears every stroke and forces the layer back off
+   the instant a recording stops (corrected 2026-10-17, see `TODO.md`'s
+   own entry for the first version this replaced).
+
+   **"Keys" layer-panel group** (2026-10-17, same day). A genuinely new
+   layer KIND — not geo-projected/tiled like every other layer here,
+   since a printed legend has no real-world lon/lat of its own. Drawn at
+   a FIXED canvas position (`drawKeyLayers`, bottom-right, cleared above
+   `.zoom-controls`) instead, last in `redraw()`'s stack (even after
+   annotations) so a legend is never obscured — and still CANVAS-drawn
+   rather than a positioned `<img>`, deliberately, so it composites into
+   a screenshot for free too. `KeyLayerMeta` (own interface, NOT a
+   `LayerMeta`) comes from `/layers`' new `keys` field, fully
+   self-discovering across every slug's own `transform.json` — the panel
+   group (`buildLayersPanel`) only renders at all if `keyLayers.length >
+   0`. See `TODO.md`'s own entry for the full extraction story
+   (`desk-installed-jobs/map-import-from-photo/`'s new `extract_keys()`)
+   and a real operational lesson (don't `kill` a running hmsvc process
+   hoping for an auto-restart).
+
 `widget.html` holds the template markup + all CSS (one `<style>` block
 inside the `<template>`); `widget.json` the manifest (keyword,
 capabilities, state schema).
@@ -245,6 +280,10 @@ find nothing for `actual` and show Restored-only data.
 | `<serviceUrl>/source/<slug>` (hmsvc HTTP, not `desk.fs`) | read | `'adjust-image-transform'`'s own live overlay `<img src>` — the raw uploaded photo, served by a small dedicated endpoint (not a tile) so the widget never has to shuttle binary image bytes through the Bridge API itself |
 | `desk.installedJobs.run('map-import-from-photo', ...)` (Bridge, capability `installed_jobs`) | — | Triggered by Lock In to bake the locked-in transform into real tiles immediately — see `samothrace-map-recording.ts`'s own `Window.desk.installedJobs` |
 | `desk.self.getManifest()` (Bridge, no capability needed) | read | Lock In's own `project_dir` for the job's `config_path` — an Installed Job gets neither a reliable `cwd` nor `DESK_PROJECT_DIR` (found the hard way 2026-10-17: the first real Lock In's auto-bake silently failed without this, see `TODO.md`) |
+| `.desk_temp/samothrace-map-screenshots/<recordingId>/<mm-ss-mmm>.html` | write | Recording-mode toolbar's own "Screenshot now"/"Screenshot in 5s" — a self-contained base64-image HTML file (NOT a real `.png`; `desk.fs.writeFile` is text-only), timecoded the same `[mm:ss.mmm]` way the transcript file for the same `recordingId` already is |
+| `Data/mapSources/<slug>/transform.json`'s own `keys` list | read | `extract_keys()`'s own input (a separate process, not this widget) — axis-aligned crop boxes, in the photo's own unwarped pixel space |
+| `Data/mapSources/<slug>/keys/<id>.png` | write (job), read (hmsvc) | `extract_keys()`'s own output — never read directly by this widget, which only ever reaches it via `<serviceUrl>/key/<slug>/<id>.png` |
+| `<serviceUrl>/key/<slug>/<id>.png` (hmsvc HTTP, not `desk.fs`) | read | The "Keys" layer-panel group's own canvas-drawn image source (`getKeyImage`/`drawKeyLayers`) — same reasoning `/source/<slug>` already documents for `/tiles/...` |
 
 ## Key conventions — follow these, don't reinvent them
 

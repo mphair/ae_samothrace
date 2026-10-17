@@ -134,6 +134,13 @@ const LOG_NAME_PREFIX = 'samothrace-map-';
 class RecordingController {
   private logName: string | null = null;
   private activeRecordingId: string | null = null;
+  // Added for the screenshot toolbar (samothrace-map.ts's own
+  // captureScreenshot) -- needed to compute a timecode the same way
+  // `.desk_temp/timecoded-transcripts/<recording_id>.txt` already does
+  // (elapsed = Date.now() - started_at_ms), not tracked by this class
+  // before since nothing needed it until now. Cleared back to null on
+  // stop, same lifecycle as `activeRecordingId`.
+  private startedAtMs: number | null = null;
   private changeListeners: Array<(recordingId: string | null) => void> = [];
 
   get isRecording(): boolean {
@@ -142,6 +149,10 @@ class RecordingController {
 
   get recordingId(): string | null {
     return this.activeRecordingId;
+  }
+
+  get recordingStartedAtMs(): number | null {
+    return this.startedAtMs;
   }
 
   // Called once, early, during the widget's own init() -- see this
@@ -163,7 +174,9 @@ class RecordingController {
     await desk.events.subscribe([RECORDING_STARTED_EVENT, RECORDING_STOPPED_EVENT]);
     desk.events.onMessage((name, payload) => {
       if (name === RECORDING_STARTED_EVENT) {
-        this.activeRecordingId = (payload as RecordingStartedPayload).recording_id;
+        const started = payload as RecordingStartedPayload;
+        this.activeRecordingId = started.recording_id;
+        this.startedAtMs = started.started_at_ms;
         this.notifyChange();
       } else if (name === RECORDING_STOPPED_EVENT) {
         // Guard against an unrelated widget's own stopped_recording somehow
@@ -174,6 +187,7 @@ class RecordingController {
         const stoppedId = (payload as RecordingStoppedPayload).recording_id;
         if (this.activeRecordingId === null || this.activeRecordingId === stoppedId) {
           this.activeRecordingId = null;
+          this.startedAtMs = null;
           this.notifyChange();
         }
       }
