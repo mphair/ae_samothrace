@@ -246,6 +246,35 @@ class SamothraceMapElement extends HTMLElement {
     // in sync the moment an agent-qa confirm/reject lands -- see that
     // controller's own applyExternalDecision for the full reasoning.
     (data, decision) => this.connectorTab.applyExternalDecision(data, decision),
+    // Shared by a 'confirm-minor-band' PATCH's auto-apply AND a
+    // 'confirm-minor-band' QUESTION's own real Confirm click (see
+    // samothrace-map-agent-qa-tab.ts's own header comment) -- unlike
+    // minorBandsTab's own identically-shaped callback below, this one
+    // ALSO flashes the same highlight "Show me" uses. Deliberately does
+    // NOT pan/zoom the camera there the way showMeContourFragments
+    // would -- yanking the view away from whatever the user is actually
+    // looking at is fine for a deliberate "Show me" click, not for a
+    // side effect of confirming/an autonomous patch landing; the visible
+    // "applied automatically" row or answered card (plus this flash, if
+    // that area happens to already be on screen) is the whole visibility
+    // story for this path.
+    (plan, overrides) => {
+      this.contoursLayer.setFragmentElevationOverrides(plan, overrides);
+      this.contoursLayer.highlightFragments(plan, overrides.map((o) => o.fragmentId), 3000);
+    },
+    // 'confirm-minor-band' question/patch "Show me" -- reuses the exact
+    // same pan/zoom/highlight path every other fragment-based "Show me"
+    // in this widget already uses, rather than reinventing a bounds
+    // calculation inside samothrace-map-agent-qa-tab.ts.
+    (plan, fragmentIds) => void this.showMeContourFragments(plan, fragmentIds),
+    // Undo (connection side) -- shares the exact same removal path the
+    // Connector tab's own manual "Remove" button already uses.
+    (connectionId) => void this.connectorTab.removeConfirmedById(connectionId),
+    // Undo (minor-band side) -- reverses the session-local color override;
+    // the durable log removal itself happens directly inside
+    // samothrace-map-agent-qa-tab.ts (no other controller's method to
+    // delegate that half to, see that file's own comment).
+    (plan, fragmentIds) => this.contoursLayer.clearFragmentElevationOverrides(plan, fragmentIds),
   );
   private activeQaTab: 'agent-qa' | 'label-review' | 'minor-bands' | 'contour-connector' = 'agent-qa';
 

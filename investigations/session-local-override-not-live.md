@@ -1,9 +1,10 @@
 # Investigation: a confirmed minor-band override may not always be live in the running widget
 
-Status: **open, unconfirmed**. Written 2026-10-16 from a real, observed
-discrepancy — not yet root-caused. Whoever (or whichever future agent)
-picks this up should start with the cheap direct test in §3 before
-reading further; it may resolve this in one step.
+Status: **resolved — stale-instance artifact, not a code bug.** See §6.
+Written 2026-10-16 from a real, observed discrepancy; closed the same
+day after the user restarted the `samothrace-tiles` hmsvc and refreshed
+the widget instance, which is exactly the "leading hypothesis" §3 named
+below.
 
 ## 1. What was observed
 
@@ -92,3 +93,49 @@ once already recorded correctly, that's worth understanding and fixing
 *before* making the agent write to this same mechanism more often and
 with less human-in-the-loop visibility into whether each change actually
 landed.
+
+## 6. Resolution (2026-10-16, same day)
+
+After the user restarted the `samothrace-tiles` hmsvc and refreshed the
+widget (a fresh, non-stale instance — confirmed via
+`desk_list_widget_instances`, `"stale": false`), ran the §3 direct test,
+but via pixel-color sampling instead of a live hover (no tool here can
+drive the widget's own pointer, so a hover-triggered log entry wasn't
+obtainable directly — see below for why color sampling is an equally
+valid substitute).
+
+**Method**: `ContoursLayerController.draw()`'s non-hover render path
+calls `effectiveColorFor`, which renders CONTOUR_COLOR.minor
+(`#f59e0b`) for ANY fragment with a live `elevationOverrides` entry —
+unconditionally, not just on hover. So the override's live-or-not status
+is directly visible in a plain screenshot, no pointer interaction
+needed. Took a screenshot of the running widget instance
+(`desk_screenshot_widget`, instance `34a5236c`, view already centered
+near fragment 103 per its own saved UI state), then independently
+reimplemented the widget's own `projectWorld`/`toScreen` web-mercator
+math in Python against the exact same `view` (`lon`/`lat`/`zoom`) the
+instance reported, to compute each candidate fragment's expected screen
+pixel from its real geometry in
+`Data/mapFeatures/SamoWeb_RestoredStatePlan_Contours.geojson` — then
+sampled actual pixel colors there.
+
+**Result — amber (`#f59e0b` exactly) found at the computed location for
+every one of the 7 currently-confirmed override fragments**
+(35, 36, 37, 38, 45, 103, 134 — all of `band-35-40-0/1/2` and
+`band-45-50-0/3` from `.desk_temp/minor-contour-review-log.json`),
+**and absent at all 8 sampled control locations** (on-screen fragments
+whose own `elevation_source` is also `"unlabeled"` but which are NOT in
+any confirmed-override group). Fragment 103 specifically: amber present
+in its immediate neighborhood, same as its confirmed partner fragment
+35.
+
+**Conclusion**: the `elevationOverrides` mechanism is working correctly
+and was live for fragment 103 in this fresh instance. The 2026-10-16
+`"elevationSource":"unlabeled"` hover-log entry that started this
+investigation is explained by the leading hypothesis in §3 — a
+stale-running-widget-instance artifact (the recording in question
+predates this session's restart/refresh) — not a real bug in the
+override code. Nothing to fix. Lesson for next time, same as any other
+code change to this widget: a `[STALE]` badge means the running instance
+may not reflect recently-added session-local state either, not just
+recently-added code.

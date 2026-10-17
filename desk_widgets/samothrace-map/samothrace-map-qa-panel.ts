@@ -304,6 +304,22 @@ interface MinorBandGroupAnswer {
   decision: 'confirmed' | 'skipped';
   fragments: MinorBandFragmentAnswer[];
   answeredAt: string;
+  // Same provenance convention as LogConnection's own appliedBy in
+  // samothrace-map-connector-tab.ts -- set only by
+  // samothrace-map-agent-qa-tab.ts's AgentPatchChannel logic for a
+  // 'confirm-minor-band' patch applied without a user clicking Confirm.
+  // Absent for every answer submitted through this tab's own UI.
+  appliedBy?: 'agent-autonomous';
+}
+
+// Shared by MinorBandsTabController.applyOverridesFor (below) and
+// AgentPatchChannel's own confirm-minor-band patch handling in
+// samothrace-map-agent-qa-tab.ts -- both need the exact same "drop
+// fragments marked not-a-contour, keep the rest as {fragmentId,
+// elevationM} overrides" conversion from a MinorBandGroupAnswer's own
+// `fragments` list, and they'd drift if each reimplemented it.
+function minorBandOverridesFrom(fragments: MinorBandFragmentAnswer[]): Array<{ fragmentId: number; elevationM: number }> {
+  return fragments.filter((f): f is { fragmentId: number; elevationM: number } => f.elevationM !== null).map((f) => ({ fragmentId: f.fragmentId, elevationM: f.elevationM }));
 }
 
 interface MinorBandWorkGroup {
@@ -355,9 +371,7 @@ class MinorBandsTabController {
   // submit() (a brand-new one) -- fragments marked "not a contour"
   // (elevationM null) are filtered out, nothing to recolor for those.
   private applyOverridesFor(answer: MinorBandGroupAnswer): void {
-    const overrides = answer.fragments
-      .filter((f): f is { fragmentId: number; elevationM: number } => f.elevationM !== null)
-      .map((f) => ({ fragmentId: f.fragmentId, elevationM: f.elevationM }));
+    const overrides = minorBandOverridesFrom(answer.fragments);
     if (overrides.length > 0) this.onBandConfirmed(answer.plan, overrides);
   }
 

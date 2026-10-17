@@ -105,6 +105,67 @@ and get concatenated in that order; it does **not** matter for *type
    story, including why its answer writes are deliberately NOT gated by
    the recording-vs-durable-file split every other tab uses (this
    widget's own `TODO.md` has the details).
+
+   **Same file, a second mechanism (added 2026-10-16): AgentPatchChannel.**
+   Not a question — no Confirm/Reject click. An agent that's already
+   investigated and is confident appends a `reason`-bearing patch (one of
+   `'confirm-connection'` / `'confirm-minor-band'`) to
+   `.desk_temp/samothrace-map-agent-patches.json`; this tab applies it on
+   the next poll — same durable-file write a human's own Confirm click
+   would make (tagged `appliedBy: 'agent-autonomous'` on the written
+   `LogConnection`/`MinorBandGroupAnswer` entry), same live-apply callback
+   (`ContourConnectorTabController.applyExternalDecision` /
+   `ContoursLayerController.setFragmentElevationOverrides`) — then acks
+   into `.desk_temp/samothrace-map-agent-patches-applied.json`. Renders as
+   a visible, timestamped "⚡ Applied automatically" row in this same tab
+   (`renderAutoApplied`), with **OK / Undo** buttons instead of plain
+   text — OK archives the row; Undo reverses the applied change
+   (`ContourConnectorTabController.removeConfirmedById` /
+   `ContoursLayerController.clearFragmentElevationOverrides`) and writes a
+   brand-new pending question carrying the patch's own `data`/`reason`
+   back into `AGENT_QUESTIONS_PATH` (`convertPatchToQuestion`), so nothing
+   the agent found is lost, just handed back for a deliberate decision.
+   `'confirm-minor-band'` is, as of the same addition, also a first-class
+   QUESTION type (not just something Undo produces) — see
+   `investigations/agent-autonomous-corrections-channel.md` for the full
+   design reasoning.
+
+   **Archiving** (same addition): once a question is answered or an
+   applied-patch row is resolved (OK/Undo), it shows a brief placeholder
+   ("✓ Confirmed — archiving…" etc.), then — via a CSS `@keyframes`
+   animation, not a `transition` (this renderer does a full `innerHTML`
+   replace on every change, which a transition can't survive but a
+   self-contained keyframe animation can) — fades out over 3s and
+   collapses over 0.5s after an initial 5s hold, then stops rendering in
+   the MAIN list. `QA_ARCHIVE_DELAY_MS` (the JS-side removal timer) and
+   `widget.html`'s `qa-archive-away` keyframe percentages must be kept in
+   sync by hand — see either one's own comment. "Archived" is a pure
+   DERIVED status, not a separately-tracked flag — a question is archived
+   once it has an answer and isn't mid-animation (`isQuestionResolved` +
+   `archivingQuestions`); a patch row is archived once its durable
+   `AppliedPatch.resolution` field is set (`'ok'` or `'undo'`) and isn't
+   mid-animation. A question/patch already resolved the first time this
+   tab loads (a prior session, or a different Desk instance) is simply
+   already-archived from the first render, no animation — the animation
+   is reserved for something resolved live.
+
+   **Archive drawer** (added the same day, directly requested right
+   after the above): a collapsed-by-default panel pinned toward the
+   bottom of this tab (`renderArchiveDrawer`) listing every archived
+   question and `'ok'`-resolved patch (an `'undo'`-resolved patch is
+   excluded — its lineage continues via the question `convertPatchToQuestion`
+   wrote, not as its own entry) with a **Reset** button each —
+   `resetQuestion` removes the `AgentAnswer` (and reverses whatever it
+   applied, via the same `reverseAppliedDecision` Undo uses, if it was a
+   confirm); `resetPatch` just clears `resolution`/`resolvedAt`. Either
+   way the item reappears in its main section. Sortable by question age
+   (`createdAt`) or answer age (when resolved) — `ArchiveSortBy`, default
+   `'answer-age'` ascending (most-recently-resolved first). The drawer's
+   own open/close toggle is handled via direct `classList` manipulation
+   in `attachHandlers`, not `onChanged()` — same "a transition needs an
+   existing node, not a freshly re-rendered one" reasoning, except here
+   the fix is a plain CSS `transition` since the node genuinely isn't
+   recreated on toggle.
 7. **`samothrace-map.ts`** — the custom element itself
    (`SamothraceMapElement`). Owns the canvas, the layer panel, the
    monument overlay (the original functionality, predating all of the
@@ -135,13 +196,15 @@ find nothing for `actual` and show Restored-only data.
 | `Data/mapFeatures/SamoWeb_<Plan>_Contours.review_queue.json` | read | Label-review tab's question queue |
 | `.desk_temp/contour-label-review-log.json` | read + write | Label-review tab's durable answers (shared with the old standalone widget — same shape, same file) |
 | `Data/mapFeatures/SamoWeb_<Plan>_Contours.minor_review_queue.json` | read | Minor-bands tab's question queue |
-| `.desk_temp/minor-contour-review-log.json` | read + write | Minor-bands tab's durable answers |
+| `.desk_temp/minor-contour-review-log.json` | read + write | Minor-bands tab's durable answers — **also written by** `AgentQaTabController` on a `'confirm-minor-band'` patch, same `MinorBandGroupAnswer` shape, `appliedBy: 'agent-autonomous'` tagged |
 | `Data/mapFeatures/SamoWeb_<Plan>_Contours.connections.suggested.json` | read | Connector tab's suggestion source |
 | `Data/mapFeatures/SamoWeb_<Plan>_Contours.connections.confirmed.json` | read | Connector tab's already-applied confirmations |
 | `Data/mapFeatures/SamoWeb_ActualStatePlan_Streams.geojson` | read | Connector tab's stream-guide overlay (Actual plan's own streams, shown as a reference while working on the Restored plan) |
-| `.desk_temp/contour-connector-log.json` | read + write | Connector tab's durable confirmations/rejections — **also written by** `AgentQaTabController` on a `'confirm-connection'` answer, same shape |
+| `.desk_temp/contour-connector-log.json` | read + write | Connector tab's durable confirmations/rejections — **also written by** `AgentQaTabController` on a `'confirm-connection'` answer OR patch, same `LogConnection` shape either way (an autonomous patch's own entry additionally carries `appliedBy: 'agent-autonomous'`) |
 | `.desk_temp/samothrace-map-agent-questions.json` | read | Agent Q&A tab's question queue — agent-authored, polled, not pipeline-written |
 | `.desk_temp/samothrace-map-agent-answers.json` | read + write | Agent Q&A tab's durable answers, keyed by question uuid |
+| `.desk_temp/samothrace-map-agent-patches.json` | read | AgentPatchChannel's patch queue — agent-authored, polled, applied live with no user confirmation |
+| `.desk_temp/samothrace-map-agent-patches-applied.json` | read + write | AgentPatchChannel's ack log, keyed by patch uuid — append-only, never trimmed (`renderAutoApplied`'s own display cap only limits what's SHOWN, not what's kept) |
 | `desk.hmsvc.samothrace-tiles` (shared state, not a file) | read | Tile service URL discovery — **never hardcode the port**, it changes every launch |
 
 ## Key conventions — follow these, don't reinvent them

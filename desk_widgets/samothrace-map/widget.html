@@ -370,6 +370,205 @@
           color: #4ade80;
           margin-bottom: 7px;
         }
+        /* AgentPatchChannel's "applied automatically" list -- see
+           samothrace-map-agent-qa-tab.ts's own renderAutoApplied. A
+           distinct amber-tinted strip (not the green "answered" look a
+           human-confirmed qa-card gets) so an autonomously-applied
+           change reads as its own category at a glance, not as just
+           another already-answered question. */
+        .qa-auto-applied-section {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          margin-bottom: 10px;
+        }
+        .qa-auto-applied-title {
+          font-size: 10.5px;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: #d8a944;
+        }
+        .qa-auto-row {
+          border: 1px solid #4a3b1f;
+          border-radius: 6px;
+          background: #241d10;
+          padding: 7px 9px;
+          font-size: 11px;
+        }
+        .qa-auto-row-error {
+          border-color: #5c2a2a;
+          background: #251414;
+        }
+        .qa-auto-summary {
+          color: #f0d9a8;
+          line-height: 1.4;
+        }
+        .qa-auto-row-error .qa-auto-summary {
+          color: #f3b4b4;
+        }
+        .qa-auto-reason {
+          color: #9aa5b5;
+          font-size: 10.5px;
+          margin-top: 3px;
+          line-height: 1.35;
+        }
+        .qa-auto-time {
+          color: #70798a;
+          font-size: 9.5px;
+          margin-top: 4px;
+        }
+        .qa-ok-button {
+          font-size: 10.5px;
+          padding: 3px 7px;
+          border-radius: 3px;
+          border: 1px solid #2f7a4f;
+          background: #1f3a28;
+          color: #c7f0d6;
+          cursor: pointer;
+        }
+        .qa-ok-button:hover {
+          background: #27492f;
+        }
+        .qa-undo-button {
+          font-size: 10.5px;
+          padding: 3px 7px;
+          border-radius: 3px;
+          border: 1px solid #5c4a24;
+          background: #2e2512;
+          color: #f0d9a8;
+          cursor: pointer;
+        }
+        .qa-undo-button:hover {
+          background: #3c2f17;
+        }
+        /* Archiving -- see samothrace-map-agent-qa-tab.ts's own
+           startArchiving/QA_ARCHIVE_DELAY_MS (8500ms total, MUST stay in
+           sync with the percentages below: 5000/8500=58.8%,
+           8000/8500=94.1%). A @keyframes animation, not a transition --
+           this renderer does a full innerHTML replace on every change, so
+           there's no "previous style" for a transition to animate FROM on
+           a freshly-created node; a self-contained keyframe animation
+           always plays its own timeline regardless. Known limitation: if
+           the whole panel re-renders for an unrelated reason while a row
+           is mid-animation, its node is recreated and the animation
+           visually restarts (the actual removal timer still fires on
+           schedule either way) -- rare enough in practice not to be worth
+           real DOM diffing to fix. */
+        @keyframes qa-archive-away {
+          0%, 58.8% { opacity: 1; max-height: 240px; }
+          94.1% { opacity: 0; max-height: 240px; }
+          100% { opacity: 0; max-height: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-width: 0; }
+        }
+        .qa-archiving {
+          animation: qa-archive-away 8.5s ease-out forwards;
+          overflow: hidden;
+        }
+        .qa-archiving-message {
+          font-size: 11.5px;
+          color: #9aa5b5;
+          font-style: italic;
+        }
+        /* Archive drawer -- see samothrace-map-agent-qa-tab.ts's own
+           renderArchiveDrawer. Pinned toward the bottom of the Agent Q&A
+           tab's scrollable content: `margin-top: auto` pushes it down to
+           the bottom of the flex column when the question list is short
+           (.qa-tab-content is `display:flex; flex-direction:column`, see
+           that rule above), and `position: sticky; bottom: ...` keeps it
+           visible at the bottom of the viewport while scrolling a long
+           list. The toggle's open/close transition is a plain CSS
+           `transition` (NOT a @keyframes animation like qa-archive-away
+           above) -- this element is toggled via direct classList
+           manipulation on the SAME existing node (see attachHandlers'
+           own comment), not recreated by a fresh render(), so a
+           transition has a real "previous style" to animate from. */
+        .qa-archive-drawer {
+          position: sticky;
+          bottom: -14px; /* cancels .qa-tab-content's own 14px bottom padding so this truly touches the panel's bottom edge */
+          margin-top: auto;
+          margin-left: -10px;
+          margin-right: -10px;
+          padding: 0 10px;
+          background: #161a21;
+          border-top: 1px solid #333c48;
+        }
+        .qa-archive-toggle {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: none;
+          border: none;
+          color: #9aa5b5;
+          font-size: 11px;
+          padding: 8px 0;
+          cursor: pointer;
+        }
+        .qa-archive-toggle:hover {
+          color: #e6e9ef;
+        }
+        .qa-archive-chevron {
+          display: inline-block;
+          transition: transform 0.3s ease;
+        }
+        .qa-archive-chevron.open {
+          transform: rotate(180deg);
+        }
+        .qa-archive-body {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease;
+        }
+        .qa-archive-body.open {
+          max-height: 320px;
+          overflow-y: auto;
+          padding-bottom: 10px;
+        }
+        .qa-archive-controls {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          gap: 4px;
+          margin-bottom: 8px;
+          font-size: 10.5px;
+          color: #9aa5b5;
+        }
+        .qa-archive-controls select {
+          background: #20262f;
+          color: #e6e9ef;
+          border: 1px solid #333c48;
+          border-radius: 3px;
+          font-size: 10.5px;
+          padding: 2px 4px;
+        }
+        .qa-archive-row {
+          border: 1px solid #2c3340;
+          border-radius: 6px;
+          background: #1b2027;
+          padding: 7px 9px;
+          font-size: 10.5px;
+          margin-bottom: 6px;
+        }
+        .qa-archive-row-summary {
+          color: #c7cdda;
+          line-height: 1.4;
+        }
+        .qa-archive-row-time {
+          color: #70798a;
+          font-size: 9.5px;
+          margin: 3px 0 6px;
+        }
+        .qa-reset-button {
+          font-size: 10px;
+          padding: 3px 7px;
+          border-radius: 3px;
+          border: 1px solid #3a4454;
+          background: #2a3444;
+          color: #e6e9ef;
+          cursor: pointer;
+        }
+        .qa-reset-button:hover {
+          background: #344258;
+        }
         .qa-actions {
           display: flex;
           gap: 6px;

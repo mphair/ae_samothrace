@@ -429,6 +429,16 @@ class ContoursLayerController {
     this.scheduleRedraw();
   }
 
+  // Reverse of the above -- called by AgentQaTabController's own Undo
+  // handler (samothrace-map-agent-qa-tab.ts) when a 'confirm-minor-band'
+  // patch gets undone: the override goes away, the fragment reverts to
+  // whatever contourColorFor would show for its real (still-unlabeled)
+  // *.geojson data, same as if it had never been confirmed at all.
+  clearFragmentElevationOverrides(plan: ContourPlan, fragmentIds: number[]): void {
+    for (const id of fragmentIds) this.elevationOverrides.delete(`${plan}:${id}`);
+    this.scheduleRedraw();
+  }
+
   // contourColorFor plus the session-local override above -- a
   // confirmed minor-band fragment always renders as CONTOUR_COLOR.minor
   // regardless of what the static *.geojson on disk still says, since

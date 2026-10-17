@@ -3,28 +3,145 @@
 See `AGENTS.md` for the full picture of this widget; this file just
 tracks specific open items worth picking up later.
 
-- **Investigate: a confirmed minor-band session-local override may not
-  always be live.** Fragment 103 was confirmed (band-35-40-2, 36m,
-  2026-10-14) but hovered as "unlabeled" in a later recording
-  (2026-10-16) -- geometry confirmed unchanged (not index drift from the
-  pipeline re-run), log entry confirmed still present, no obvious
-  clearing path found in source. Unconfirmed whether this is a stale
-  -running-widget-instance artifact (most likely) or a real bug. See
-  `investigations/session-local-override-not-live.md` for what's been
-  ruled out and the cheap direct test to run first.
+- **~~Investigate: a confirmed minor-band session-local override may not
+  always be live.~~ Resolved 2026-10-16 — stale-instance artifact, not a
+  bug.** Fragment 103 was confirmed (band-35-40-2, 36m, 2026-10-14) but
+  hovered as "unlabeled" in a later recording (2026-10-16). After a fresh
+  hmsvc restart + widget refresh, pixel-color-sampled the live render
+  (same `#f59e0b` amber `effectiveColorFor` draws for an override, no
+  pointer-simulation tool available to re-trigger the hover log directly)
+  against independently-computed screen positions for all 7
+  currently-confirmed override fragments (35/36/37/38/45/103/134) plus 8
+  unconfirmed controls — amber present at every confirmed fragment,
+  absent at every control. The mechanism works; the original symptom was
+  a pre-restart stale widget instance. See
+  `investigations/session-local-override-not-live.md` §6 for the full
+  method and result.
 
-- **Investigate: a channel for the agent to apply corrections live,
-  without per-item user confirmation.** Requested directly 2026-10-16,
-  after the agent resolved the 134/89/45 minor-band fragmentation by
-  hand-writing JSON into the two durable log files and telling the user
-  to reload -- "you should have been able to have those changes show up
-  in the UI immediately, as if I had confirmed it in an item in the Q/A
-  tab." Likely shape: a new polled file parallel to the Agent Q&A pair,
-  but applied immediately on write rather than waiting for a user
-  Confirm/Reject click. See
+- **Channel for the agent to apply corrections live, without per-item
+  user confirmation — first slice shipped 2026-10-16.** Requested
+  directly after the agent resolved the 134/89/45 minor-band
+  fragmentation by hand-writing JSON into the two durable log files and
+  telling the user to reload -- "you should have been able to have those
+  changes show up in the UI immediately, as if I had confirmed it in an
+  item in the Q/A tab." Built as "AgentPatchChannel," folded into
+  `samothrace-map-agent-qa-tab.ts` (same file, same poll loop as the
+  question/answer mechanism, since that tab is already the one visible
+  place "the agent telling you something" shows up): an agent appends a
+  `reason`-bearing patch (`'confirm-connection'` or
+  `'confirm-minor-band'`) to
+  `.desk_temp/samothrace-map-agent-patches.json`; the next poll writes
+  the exact same durable-log shape a human's own Confirm click would
+  (tagged `appliedBy: 'agent-autonomous'`), calls the same live-apply
+  path, and acks into
+  `.desk_temp/samothrace-map-agent-patches-applied.json`. Renders as a
+  visible, timestamped "⚡ Applied automatically" row in the Q&A tab —
+  deliberately not silent, per the investigation doc's own
+  "visibility/trust" open question.
+
+  **Open questions resolved for this first slice** (see
   `investigations/agent-autonomous-corrections-channel.md` for the
-  sketch and open questions (visibility/trust, provenance tagging,
-  reversibility) -- no code written yet.
+  reasoning): provenance via `appliedBy`, visibility via the always
+  -visible "applied automatically" list (no camera pan, just an optional
+  highlight flash if that spot happens to already be on screen), scope
+  limited to the same two confirm-only actions the existing tabs already
+  know how to apply (no reject/undo patch type).
+
+  **Still open**:
+  - Still polling (`AGENT_QA_POLL_INTERVAL_MS`), same unresolved FEEDBACK
+    gap as the question/answer side of this file.
+  - `investigations/session-local-override-not-live.md` (the thing this
+    channel was flagged as amplifying) is now resolved — see that doc's
+    own §6 — so that particular risk is cleared, but this channel's own
+    applied-overrides still haven't been exercised with a real agent
+    -authored patch yet, only hand-tested.
+
+  **~~No undo UI for an autonomously-applied minor-band confirmation~~
+  — fixed same day, folded in before anything above got committed.**
+  Requested directly after seeing the first version of this feature:
+  *"I'd like to add an archive to the Q/A panel... With
+  automatically-applied changes, instead of a confirm/reject, it should
+  be ok/undo, and clicking undo should undo it and convert it into a
+  question instead, so as not to lose the agent's change."* Scoped (the
+  user's own explicit choice, offered three options) to **the Agent Q&A
+  tab only** — Label Review/Minor Bands/Connector untouched.
+
+  Applied-patch rows now get **OK / Undo** instead of plain text. OK
+  archives the row. Undo reverses the live change —
+  `ContourConnectorTabController.removeConfirmedById` (new; delegates to
+  the same `removeConfirmed(idx)` the tab's own "Remove" button already
+  calls) for a connection patch, `ContoursLayerController.
+  clearFragmentElevationOverrides` (new; exact reverse of
+  `setFragmentElevationOverrides`) plus a direct `MINOR_BAND_LOG_PATH`
+  entry removal for a minor-band patch — then writes a fresh
+  `AgentQuestion` carrying the original patch's own `data`/`reason` back
+  into `AGENT_QUESTIONS_PATH`, so it reappears as an ordinary pending
+  question. This required `'confirm-minor-band'` becoming a real
+  first-class **question** type too (previously patch-only) —
+  `AgentQuestion.data` is now `ConfirmConnectionQuestionData |
+  ConfirmMinorBandPatchData`, `render()`/`answer()` branch per type.
+  `applyConfirmMinorBandPatch` was generalized into
+  `applyMinorBandDecision(data, decision, appliedBy?)` to serve both the
+  patch-apply and the real-human-Confirm/Reject paths (reject writes a
+  `'skipped'` answer, nothing visual to undo since nothing was ever
+  applied).
+
+  **Archiving**, same request's first half: once a question is
+  answered or an applied-patch row is OK'd/undone, it shows a brief
+  placeholder, then fades (3s) and collapses (0.5s) after a 5s hold, then
+  stops rendering — via a CSS `@keyframes animation` (`qa-archive-away`
+  in `widget.html`), deliberately NOT a `transition`, since this
+  renderer's full-`innerHTML`-replace-on-every-change approach gives a
+  `transition` no "previous style" to animate from on a freshly-created
+  node. A question already answered the first time this tab loads (prior
+  session, or a different instance) is pre-archived with no animation —
+  only something resolved live, in THIS instance, gets the placeholder
+  -then-fade treatment (see `seenAnsweredIds`'s own comment for the race
+  this guards against: a poll landing between the durable write and the
+  animation starting).
+
+  **Known limitation, accepted rather than fixed**: if the whole panel
+  re-renders for an unrelated reason (another patch/question arriving)
+  while a row is mid-animation, that row's DOM node is recreated and the
+  animation visually restarts from the top (the underlying removal timer
+  still fires on its original schedule regardless) — this widget has no
+  DOM diffing anywhere, full `innerHTML` replace is how every tab's
+  `render()` already works, not worth building real diffing just for
+  this. Rare in practice since a poll only triggers a re-render on an
+  actual change, not every tick.
+
+  **Archive drawer + Reset — added same day, directly requested right
+  after archiving above landed.** A collapsed-by-default panel pinned
+  toward the bottom of the tab (`renderArchiveDrawer`, slides open via a
+  plain CSS `transition` on its own existing node, toggled by direct
+  `classList` manipulation in `attachHandlers` rather than `onChanged()`)
+  listing every archived question and `'ok'`-resolved applied-patch row,
+  each with a **Reset** button. Reset undoes the original decision and
+  returns the item to its main section: for a question, removes the
+  `AgentAnswer` (and reverses whatever it applied, via the same
+  `reverseAppliedDecision` helper Undo uses, if it was a confirm); for a
+  patch, just clears the durable `resolution`/`resolvedAt` fields
+  `AppliedPatch` now carries (added specifically so OK/archived-ness
+  survives a reload — previously it was going to be in-memory-only,
+  which would have meant "archived" patches reappearing fresh after every
+  reload with no way back for an already-reset one). Sortable by question
+  age (`createdAt`) or answer age (when resolved) via a `<select>`,
+  default **ascending by answer age** (most-recently-resolved item
+  first — "ascending age" = smallest elapsed time first, same "most
+  recent first" convention the main question list already uses).
+  `'undo'`-resolved patches are deliberately excluded from the drawer —
+  their lineage continues via the question `convertPatchToQuestion`
+  wrote, which becomes its own separately-archivable/resettable item once
+  answered.
+
+  This required reworking "archived" from a separately-tracked
+  in-memory `Set` into a pure DERIVED status (answered-and-not-animating
+  for a question; `resolution`-set-and-not-animating for a patch) — the
+  old sets (`archivedQuestionIds`/`archivedPatchIds`/`seenAnsweredIds`)
+  are gone. This is both simpler (no "have we seen this before" tracking
+  needed) and more correct (durable for patches, survives a reload,
+  which the old purely-in-memory approach never would have for Reset to
+  work at all).
 
 - **Investigate: proactive, unprompted efficiency suggestions.**
   Requested directly 2026-10-16: ways the agent could notice and flag

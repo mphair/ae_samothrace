@@ -77,6 +77,16 @@ interface LogConnection {
   bLat: number;
   elevationM: number | null;
   confirmedAt: string;
+  // Set only by samothrace-map-agent-qa-tab.ts's own AgentPatchChannel
+  // logic when a patch applied this WITHOUT a user clicking
+  // Confirm/Reject -- see investigations/agent-autonomous-corrections
+  // -channel.md's own "provenance in the durable files" open question.
+  // Absent (not `false`) for every ordinary human-confirmed connection,
+  // whether via this tab's own UI or the Agent Q&A tab's Confirm button
+  // -- so an older log entry, or any reader that doesn't know this field
+  // exists yet (scripts/apply_contour_connections.py included), keeps
+  // working unchanged.
+  appliedBy?: 'agent-autonomous';
 }
 
 interface LogRejection {
@@ -576,6 +586,19 @@ class ContourConnectorTabController {
     }
     this.onChanged();
     this.scheduleRedraw();
+  }
+
+  // Public wrapper for AgentQaTabController's own Undo handler
+  // (samothrace-map-agent-qa-tab.ts) -- connections are confirmed/
+  // removed by connectionId everywhere else in this project (position
+  // -keyed, see this widget's own AGENTS.md), so the caller has no
+  // index into `this.confirmed` to give us; this just finds it and
+  // delegates to the same removeConfirmed(idx) the tab's own UI "Remove"
+  // button already calls, rather than duplicating its body.
+  async removeConfirmedById(connectionId: string): Promise<void> {
+    const idx = this.confirmed.findIndex((c) => c.connectionId === connectionId);
+    if (idx === -1) return;
+    await this.removeConfirmed(idx);
   }
 
   private async removeConfirmed(idx: number): Promise<void> {

@@ -1,10 +1,12 @@
 # Investigation: a channel for the agent to apply corrections live, without per-item user confirmation
 
-Status: **early, not designed yet**. Written 2026-10-16, directly
-requested: *"once you figured out what was going on with fragments
-{134, 89, 45}, you should have been able to have those changes show up
-in the UI immediately, as if I had confirmed it in an item in the Q/A
-tab."*
+Status: **first slice shipped, same day (2026-10-16).** Written after
+being directly requested: *"once you figured out what was going on with
+fragments {134, 89, 45}, you should have been able to have those changes
+show up in the UI immediately, as if I had confirmed it in an item in
+the Q/A tab."* See §5 for what actually got built and how it answered
+(or deliberately left open) each of §3's questions below — §§1-4 are
+kept as originally written, for the reasoning trail.
 
 ## 1. The gap this closes
 
@@ -106,3 +108,146 @@ corresponding "answer" from the user, since nothing is being asked):
 No code written for this yet -- this doc exists to capture the ask and
 the shape before the next session picks it up, per the user's own
 explicit "write up ... the beginnings of an investigation" framing.
+
+## 5. What got built (2026-10-16, same day)
+
+Built as "AgentPatchChannel" -- not a new standalone controller, folded
+directly into `AgentQaTabController`
+(`desk_widgets/samothrace-map/samothrace-map-agent-qa-tab.ts`), reusing
+its existing poll loop rather than inventing a second one (§2's own "reuse
+that exact mechanism/interval" instruction). File pair matches §2's
+sketch almost exactly: `.desk_temp/samothrace-map-agent-patches.json`
+(agent-authored) / `.desk_temp/samothrace-map-agent-patches-applied.json`
+(widget-authored ack).
+
+**How each §2/§3 open question actually landed**:
+
+- **Mechanism (§2)**: matches the sketch -- write the durable log entry
+  (same shape a human Confirm click produces), call the same live-apply
+  path (`ContourConnectorTabController.applyExternalDecision` /
+  `ContoursLayerController.setFragmentElevationOverrides`), ack the
+  patch. One deliberate simplification versus the sketch: no separate
+  `MinorBandsTabController`-shaped "apply" method was added for the
+  minor-band case -- `AgentQaTabController` writes
+  `MINOR_BAND_LOG_PATH` and calls the same `onBandConfirmed` callback
+  shape `MinorBandsTabController` already uses directly, rather than
+  routing through that controller at all. Simpler, and avoids giving one
+  tab controller a dependency on another's internals.
+- **Visibility/trust (§3)**: resolved as "a visible, timestamped list,
+  not a toast." Every applied patch (success or failure) renders as an
+  "⚡ Applied automatically" row in the Q&A tab for as long as it's within
+  the most recent `AGENT_PATCH_VISIBLE_HISTORY` (8) -- older ones stay in
+  the never-trimmed ack file but drop off the visible list. Deliberately
+  does NOT pan/zoom the camera to an autonomously-applied change (only an
+  optional highlight flash, same duration as any other "Show me," if
+  that spot happens to already be in view) -- panning unprompted felt
+  like it would fight whatever the user was actually doing at that
+  moment, worse than just showing up quietly in the sidebar.
+- **Provenance (§3)**: resolved exactly as sketched -- `appliedBy:
+  'agent-autonomous'` added to both `LogConnection`
+  (`samothrace-map-connector-tab.ts`) and `MinorBandGroupAnswer`
+  (`samothrace-map-qa-panel.ts`), optional, absent on every
+  human-confirmed entry, confirmed harmless for
+  `scripts/apply_contour_connections.py` (reads entries by explicit key
+  access into a newly-constructed dict, extra fields are simply never
+  read, not a schema-validated parse).
+- **Scope (§3)**: resolved as "exactly the two actions already proven in
+  this session" -- `'confirm-connection'` (reuses
+  `ConfirmConnectionQuestionData` as-is) and the new
+  `'confirm-minor-band'` (mirrors `MinorBandGroupAnswer`'s own
+  `fragments` shape). No reject/undo patch type -- a patch only ever
+  *adds* a confirmation.
+- **Reversibility (§3)**: **resolved, same day, before this work was
+  committed.** The user asked directly for OK/Undo buttons on applied
+  -patch rows (folded into the same archiving request covered in §6
+  below). Undo now reverses the live change --
+  `ContourConnectorTabController.removeConfirmedById` (new, delegates to
+  the same removal path the tab's own manual "Remove" button already
+  uses) for a connection patch, `ContoursLayerController.
+  clearFragmentElevationOverrides` (new) plus a direct
+  `MINOR_BAND_LOG_PATH` entry removal for a minor-band patch -- AND
+  converts the patch into a real pending question (same `data`/`reason`)
+  rather than just discarding it, so "undo" never means "lose what the
+  agent found," only "hand it back for a deliberate decision."
+- **Relationship to session-local-override-not-live (§3)**: that
+  investigation is now resolved (see its own §6) -- the override
+  mechanism this channel also writes through was confirmed live and
+  correct via direct pixel-sampling verification the same day, clearing
+  the specific risk §3 flagged before leaning on it further.
+
+**Verification status**: compiles clean (`tsc -p desk_widgets/samothrace-map`,
+exit 0). Not yet exercised end-to-end with a real agent-authored patch
+file in a live session -- only read through carefully against the
+existing question/answer and Minor-Bands/Connector code paths it reuses.
+First real patch written by an agent should be treated as this feature's
+actual first test, not just the compile check.
+
+## 6. Archiving + OK/Undo (same day, folded in before anything above was committed)
+
+Directly requested, before this whole feature's code was committed:
+*"I'd like to add an archive to the Q/A panel. When a user confirms or
+rejects or otherwise answers a question, the question should be
+archived, after a placeholder message appears in its same place saying
+how it was answered and that it is being archived, which then animates
+away after 5s, starting with a 3s fade and then a vertical collapse over
+0.5s. With automatically-applied changes, instead of a confirm/reject,
+it should be ok/undo, and clicking undo should undo it and convert it
+into a question instead, so as not to lose the agent's change."*
+
+Scoped, via the user's own explicit choice among three offered options,
+to **the Agent Q&A tab only** -- Label Review, Minor Bands, and the
+Connector tab's own confirmed-list UI are untouched.
+
+**What shipped**: covered in detail in this widget's own `TODO.md`
+(search "Archiving") and `AGENTS.md`'s file-manifest entry for
+`samothrace-map-agent-qa-tab.ts`. In short --
+- Answering a question, or OK/Undo-ing an applied-patch row, shows a
+  placeholder, then a CSS `@keyframes` animation (not a `transition` --
+  this renderer's full-`innerHTML`-replace-per-change approach can't
+  support a transition reacting to a prior style) fades it out over 3s
+  and collapses it over 0.5s after an initial 5s hold, then it stops
+  rendering in the MAIN list (see §7 below for where it goes instead).
+- "Archived" is a pure DERIVED status (answered-and-not-animating for a
+  question; `resolution`-set-and-not-animating for a patch), not a
+  separately-tracked flag -- so a question/patch already resolved the
+  FIRST time this tab loads (a prior session, or a different Desk
+  instance) is simply already-archived from the first render, no
+  animation needed or played.
+- Undo closes this doc's own §3/§5 "reversibility" gap directly (see the
+  updated bullet above) -- and required `'confirm-minor-band'` becoming a
+  real first-class QUESTION type, not just a patch type, since Undo needs
+  somewhere to hand a minor-band patch BACK to for a real decision.
+
+This answers the open question §3 raised about undo more completely than
+expected going in -- not just "can a connection be undone" but a general
+pattern (apply live -> show -> OK or undo-and-reconsider) that could, in
+principle, extend to future patch types the same way.
+
+## 7. Archive drawer + Reset (same day, immediately following §6)
+
+Directly requested right after §6 landed, before any of this was
+committed: *"please add a slide-up-from-the-bottom panel to the Q/A tab
+which shows archived items. Items should all have 'reset' buttons, which
+undoes the decision and returns the item to the main Q/A section. allow
+sorting by question age or answer age, default sort: ascending by answer
+age."*
+
+**What shipped**: a collapsed-by-default drawer pinned toward the bottom
+of the tab, listing every archived question and `'ok'`-resolved
+applied-patch row (an `'undo'`-resolved one is excluded -- its lineage
+continues via the question §6's own Undo spawned, not as its own entry),
+each with a Reset button and sortable by question age or answer age
+(default ascending-by-answer-age = most-recently-resolved first).
+
+The one real design decision this forced: `AppliedPatch` (the durable
+record in `.desk_temp/samothrace-map-agent-patches-applied.json`) needed
+new `resolution`/`resolvedAt` fields. Without them, "has this applied row
+been OK'd/archived" would have had nowhere durable to live -- a purely
+in-memory flag would make Reset pointless (archived-ness, and therefore
+what Reset even has to undo, would evaporate on every reload) and would
+also mean a freshly-reloaded widget shows every past applied patch as
+"live" again regardless of whether a human had already OK'd it. Writing
+the resolution durably, and letting "archived" be DERIVED from it rather
+than tracked separately, fixed both problems at once and turned out
+simpler than the original (now-removed) in-memory-Set-based design from
+§6 -- see this widget's own `TODO.md` for the fuller before/after.

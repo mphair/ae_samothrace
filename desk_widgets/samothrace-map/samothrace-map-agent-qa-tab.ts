@@ -26,11 +26,87 @@
 // a real MCP tool pair would replace the polling/file-drop round trip
 // entirely.
 //
-// First (and currently only) question type: 'confirm-connection' -- "is
-// this suggested (or already-applied) contour connection correct?"
-// Deliberately starting with exactly one type rather than a general
-// schema -- see this widget's own TODO.md for the open design questions
-// a second type should settle (generality of the question shape, etc.).
+// Second mechanism in this same file, added 2026-10-16 per
+// investigations/agent-autonomous-corrections-channel.md -- "AgentPatchChannel"
+// (not a separate class; folded into this controller since it shares
+// this tab's own poll loop and this tab is already the one visible place
+// "the agent telling you something" shows up). Unlike the question/answer
+// flow above, a PATCH is not a question -- there is no Confirm/Reject
+// click, no AgentAnswer. An agent that has already investigated and is
+// confident appends a patch (own uuid, a `reason` string, one of the two
+// types below) to AGENT_PATCHES_PATH; this tab applies it immediately on
+// the next poll, writes the correction into the SAME durable per-tab log
+// file the matching manual UI action would have (tagged `appliedBy:
+// 'agent-autonomous'` for provenance -- see LogConnection's and
+// MinorBandGroupAnswer's own comments), and acks it into
+// AGENT_PATCHES_APPLIED_PATH. Per that investigation doc's own
+// "visibility/trust" open question, this deliberately does NOT apply
+// silently: every applied patch renders as a visible "⚡ Applied
+// automatically" row with **OK / Undo** buttons (added the same day,
+// folded in per direct request before this work got committed) -- OK
+// just archives the row (see the archiving section below); Undo reverses
+// the applied change (removes the connection / clears the elevation
+// override, same code paths `ContourConnectorTabController`'s own
+// "Remove" button and `clearFragmentElevationOverrides` use) and --
+// "so as not to lose the agent's change" -- writes a brand-new
+// AgentQuestion carrying the exact same `data` and `reason` back into
+// AGENT_QUESTIONS_PATH (see convertPatchToQuestion), so it reappears as
+// an ordinary pending question for a real, deliberate Confirm/Reject
+// instead of just vanishing. Scope is intentionally the same two actions
+// this tab (and MinorBandsTabController) already know how to apply:
+// 'confirm-connection' (reuses ConfirmConnectionQuestionData as-is) and
+// 'confirm-minor-band' (mirrors MinorBandGroupAnswer's own `fragments`
+// shape) -- which, as of the same day, is now ALSO a real question type
+// a human can be asked directly (see the next paragraph), not just
+// something Undo produces.
+//
+// Two question types now: 'confirm-connection' (the original, "is this
+// suggested/already-applied contour connection correct?") and
+// 'confirm-minor-band' (added 2026-10-16, both as Undo's own "convert
+// back to a question" target AND as a first-class type an agent can post
+// directly -- "is this minor-band elevation grouping correct?", read-only
+// summary of the agent's own fragment/elevation choices, no per-fragment
+// re-editing UI here -- that's what the Minor Bands tab is for).
+//
+// **Archiving** (added 2026-10-16, same request as OK/Undo above): once
+// a question is answered (confirm/reject) or an applied-patch row is
+// resolved (OK/undo), it doesn't just sit there forever -- it shows a
+// brief "how it was resolved" placeholder, then animates away and stops
+// rendering in the MAIN list, decluttering this tab back down to just
+// what's still actually pending. See QA_ARCHIVE_DELAY_MS's own comment
+// and widget.html's `qa-archive-away` keyframes for the exact timeline (a
+// CSS `@keyframes animation`, not a `transition` -- this renderer does a
+// full innerHTML replace on every change, which a transition can't
+// survive but a self-contained keyframe animation can). "Archived" here
+// is a pure DERIVED status, not a separately-tracked flag -- a question
+// is archived precisely when it has an answer and isn't currently mid
+// -animation (`archivingQuestions`); an applied-patch row is archived
+// precisely when its durable record has a `resolution` ('ok' or 'undo')
+// and isn't currently mid-animation. Nothing needs separate bookkeeping
+// for "already archived," which also means a question/patch resolved
+// before this tab ever loaded (a prior session, or a different Desk
+// instance) is simply already archived from the first render -- no
+// animation plays, there's nothing live to show a placeholder for.
+//
+// **Archive drawer** (added the same day, directly requested right
+// after OK/Undo/archiving above): a collapsed-by-default panel pinned to
+// the bottom of this tab (`renderArchiveDrawer`) listing every archived
+// question/patch with a **Reset** button -- reverses whatever the
+// original decision did (same reversal logic Undo already uses, see
+// `reverseAppliedDecision`) and returns the item to the main section:
+// an answer gets removed so the question is pending again; an OK'd patch
+// loses its `resolution` so it reappears in the live "applied
+// automatically" list. Sortable by question age (`createdAt`) or answer
+// age (when it was resolved), default ascending-by-answer-age --
+// "ascending age" meaning the SMALLEST elapsed time first, i.e. the most
+// recently resolved item at the top, same "most recent first" convention
+// the main question list already uses. The drawer's own open/closed
+// toggle is handled via direct DOM manipulation in attachHandlers
+// (classList.toggle), NOT by calling onChanged() and letting a fresh
+// render() emit it already-open -- same "a transition needs an existing
+// node to animate FROM" reasoning as the archiving animation above,
+// except here the node genuinely isn't being recreated on toggle, so a
+// plain CSS `transition` (not a `@keyframes` animation) works correctly.
 //
 // A confirm/reject answer on a 'confirm-connection' question does
 // double duty: besides the generic AGENT_ANSWERS_PATH record above, it
@@ -80,7 +156,27 @@ const AGENT_QA_POLL_INTERVAL_MS = 4000;
 // uses (ContoursLayerController.highlightFragments's own call sites).
 const AGENT_QA_HIGHLIGHT_DURATION_MS = 3000;
 
-type AgentQuestionType = 'confirm-connection';
+const AGENT_PATCHES_PATH = '.desk_temp/samothrace-map-agent-patches.json';
+const AGENT_PATCHES_APPLIED_PATH = '.desk_temp/samothrace-map-agent-patches-applied.json';
+// How many of the most recently-applied patches render in the "applied
+// automatically" list -- purely a display cap. The ack file itself is
+// never trimmed; every patch ever applied stays in
+// AGENT_PATCHES_APPLIED_PATH for good, this just limits how much of the
+// sidebar a long session's worth of history would otherwise fill.
+const AGENT_PATCH_VISIBLE_HISTORY = 8;
+
+// Total lifetime of an archiving question/applied-patch row, start to
+// gone: 5000ms static placeholder + 3000ms fade + 500ms vertical
+// collapse. MUST stay in sync with widget.html's own `qa-archive-away`
+// @keyframes percentages (5/8.5 = 58.8%, 8/8.5 = 94.1%) -- this constant
+// drives WHEN the row actually stops rendering (via a plain setTimeout);
+// the keyframes drive what it visually looks like doing up to that
+// moment. Two independent things that happen to need the same number,
+// not something one could derive from the other automatically given this
+// is a hand-authored CSS block, not generated from this file.
+const QA_ARCHIVE_DELAY_MS = 8500;
+
+type AgentQuestionType = 'confirm-connection' | 'confirm-minor-band';
 
 interface ConfirmConnectionQuestionData {
   connectionId: string;
@@ -109,7 +205,12 @@ interface AgentQuestion {
   type: AgentQuestionType;
   prompt: string;
   createdAt: string;
-  data: ConfirmConnectionQuestionData;
+  // ConfirmMinorBandPatchData is declared further down (the "AgentPatch
+  // -Channel types" section) -- fine to reference here anyway, these are
+  // all global-script interfaces in one compiled program; declaration
+  // order only matters for the compiled JS of CONCRETE code, never for
+  // type-checking (see this widget's own AGENTS.md).
+  data: ConfirmConnectionQuestionData | ConfirmMinorBandPatchData;
 }
 
 interface AgentQuestionsFile {
@@ -126,6 +227,114 @@ interface AgentAnswer {
 
 interface AgentAnswersFile {
   answers: AgentAnswer[];
+}
+
+// ── AgentPatchChannel types -- see this file's own header comment's
+// second section for the full design. ──
+
+type AgentPatchType = 'confirm-connection' | 'confirm-minor-band';
+
+// Mirrors MinorBandGroupAnswer's own `fragments` shape (samothrace-map
+// -qa-panel.ts) rather than inventing a new one -- a confirm-minor-band
+// patch's (or question's) `data` becomes that exact answer shape, just
+// with `decision`/`answeredAt`/`appliedBy` filled in at apply time (see
+// applyMinorBandDecision). Also used, unchanged, as an AgentQuestion's
+// own `data` for this same type -- see AgentQuestion's own comment.
+interface ConfirmMinorBandPatchData {
+  groupId: string;
+  plan: QaPlan;
+  elevLow: number;
+  elevHigh: number;
+  fragments: MinorBandFragmentAnswer[];
+}
+
+interface AgentPatch {
+  id: string;
+  type: AgentPatchType;
+  // A short, human-readable note on WHY the agent is confident enough to
+  // apply this without asking first -- rendered in the "applied
+  // automatically" list so a human skimming it later can judge whether
+  // it was reasonable, not just see THAT something happened. Required,
+  // not optional: a patch with no reason defeats the legibility this
+  // whole channel exists to preserve (see the investigation doc's own
+  // "visibility/trust" open question).
+  reason: string;
+  createdAt: string;
+  data: ConfirmConnectionQuestionData | ConfirmMinorBandPatchData;
+}
+
+interface AgentPatchesFile {
+  patches: AgentPatch[];
+}
+
+type AgentPatchStatus = 'applied' | 'error';
+
+interface AppliedPatch {
+  patchId: string;
+  status: AgentPatchStatus;
+  appliedAt: string;
+  detail?: string; // set only when status === 'error' -- the caught error's own message
+  // Set once a human has clicked OK or Undo on this row (see
+  // resolvePatchOk/undoPatch) -- absent means it's still showing live in
+  // the "applied automatically" list with OK/Undo buttons. This field
+  // (not an in-memory flag) is what makes "is this patch archived"
+  // survive a reload -- see this file's own header comment's "Archiving"
+  // section. `resolution: 'undo'` rows are never re-shown anywhere as
+  // their own item again (see computeArchivedItems's own comment) --
+  // their lineage continues via the question convertPatchToQuestion
+  // wrote instead.
+  resolution?: 'ok' | 'undo';
+  resolvedAt?: string; // when `resolution` was set -- the "answer age" sort basis in the archive drawer
+}
+
+interface AppliedPatchesFile {
+  applied: AppliedPatch[];
+}
+
+// In-memory only, never itself written to disk -- derived fresh each
+// poll from an AppliedPatch (the durable record) plus whatever AgentPatch
+// data is still around to describe it, so render() has a ready-made
+// summary string without re-deriving one from `this.patches` every call.
+interface AppliedPatchDisplay {
+  patchId: string;
+  type: AgentPatchType;
+  summary: string;
+  reason: string;
+  status: AgentPatchStatus;
+  appliedAt: string;
+  createdAt: string; // the original AgentPatch's own createdAt -- "question age" basis in the archive drawer; falls back to appliedAt if the source patch is no longer available (see describeAppliedPatch)
+  resolution?: 'ok' | 'undo';
+  resolvedAt?: string;
+}
+
+type ArchiveSortBy = 'question-age' | 'answer-age';
+
+// One row in the archive drawer -- a question and an applied-patch row
+// have almost nothing in common shape-wise, so this is the unified,
+// display-only type renderArchiveDrawer actually sorts/renders, built
+// fresh each render() call by computeArchivedItems from whichever of
+// `this.questions`/`this.answers`/`this.archivedPatches` applies.
+interface ArchivedItemDisplay {
+  kind: 'question' | 'patch';
+  id: string; // questionId or patchId -- which one is implied by `kind`, used by the Reset button's own click handler to dispatch correctly
+  summary: string;
+  resolutionLabel: string; // "Confirmed" / "Rejected" / "OK'd"
+  createdAt: string;
+  resolvedAt: string;
+}
+
+// Shared by describeAppliedPatch (applied-patch rows) and
+// computeArchivedItems (archived questions) -- both need the exact same
+// "turn a confirm-connection/confirm-minor-band `data` payload into one
+// readable line" conversion, and they'd drift if each reimplemented it.
+function summarizeDecisionData(type: AgentPatchType, data: ConfirmConnectionQuestionData | ConfirmMinorBandPatchData): string {
+  if (type === 'confirm-connection') {
+    const d = data as ConfirmConnectionQuestionData;
+    const frags = d.aFragmentId !== null && d.bFragmentId !== null ? ` (#${d.aFragmentId}/#${d.bFragmentId})` : '';
+    return `${d.source} gap on ${QA_PLAN_LABEL[d.plan]}${frags}`;
+  }
+  const d = data as ConfirmMinorBandPatchData;
+  return `minor band ${d.groupId} on ${QA_PLAN_LABEL[d.plan]} (${d.fragments.length} fragment(s), ${d.elevLow}-${d.elevHigh}m)`;
 }
 
 class AgentQaTabController {
@@ -146,6 +355,48 @@ class AgentQaTabController {
   // rather than an animated pulse).
   private highlight: { aLon: number; aLat: number; bLon: number; bLat: number; clearTimer: number } | null = null;
 
+  // ── Archiving state -- see this file's own header comment's
+  // "Archiving" section for why "archived" itself is a DERIVED status,
+  // not tracked in a set below. Both maps hold a question/patch id
+  // ONLY while its placeholder is mid-animation; the value is which
+  // decision to show. Removed by the matching startArchiving timer once
+  // QA_ARCHIVE_DELAY_MS elapses (for a patch, that timer also fires the
+  // durable `resolution` write that actually makes "archived" true --
+  // see resolvePatchOk/undoPatch).
+  private archivingQuestions = new Map<string, AgentAnswerDecision>();
+  private archivingPatches = new Map<string, 'ok' | 'undo'>();
+
+  // One shared timer map for both of the above (keys never collide --
+  // caller passes the question's OR the patch's own id, each already
+  // globally unique within this tab) -- cleared wholesale in dispose()
+  // so a torn-down widget instance never fires a stray onChanged() later.
+  private archiveTimers = new Map<string, number>();
+
+  // ── Archive drawer state -- see this file's own header comment's
+  // "Archive drawer" section. Both are pure UI preferences, deliberately
+  // NOT persisted anywhere -- a fresh widget load reasonably starts
+  // collapsed/default-sorted, same as every other per-session UI default
+  // in this widget that isn't explicitly covered by the saved-UI-state
+  // mechanism (view/layers/selection only, see samothrace-map.ts's own
+  // saveUiState).
+  private archiveDrawerOpen = false;
+  private archiveSortBy: ArchiveSortBy = 'answer-age';
+
+  // ── AgentPatchChannel state ──
+  private patches: AgentPatch[] = [];
+  private recentApplied: AppliedPatchDisplay[] = []; // newest first, capped at AGENT_PATCH_VISIBLE_HISTORY, resynced from disk every poll -- UNRESOLVED patches only (see reload()'s own split)
+  private archivedPatches: AppliedPatchDisplay[] = []; // RESOLVED ('ok' only, see this field's own reload()-time comment) patches, for the archive drawer -- resynced the same way
+  // Guards against an overlapping poll tick double-applying: reload()'s
+  // own setInterval doesn't await the previous call, so if applying a
+  // patch (a few awaited file read/writes) ever took longer than
+  // AGENT_QA_POLL_INTERVAL_MS, the next tick could otherwise start a
+  // second pass over the same not-yet-acked patch. Each patch is ALSO
+  // deduped against the durable ack file itself inside
+  // appendAppliedPatch, so even a genuine double-call is harmless, just
+  // redundant work -- this flag is purely about skipping that redundant
+  // work, not a correctness requirement.
+  private applyingPatches = false;
+
   constructor(
     private readonly recording: RecordingController,
     private readonly onChanged: () => void,
@@ -160,6 +411,37 @@ class AgentQaTabController {
     // only after a reload. See samothrace-map-connector-tab.ts's own
     // applyExternalDecision for the other half of this.
     private readonly onConnectionDecision: (data: ConfirmConnectionQuestionData, decision: AgentAnswerDecision) => void,
+    // Called by BOTH a 'confirm-minor-band' patch's own auto-apply AND a
+    // 'confirm-minor-band' QUESTION's own Confirm click -- mirrors
+    // MinorBandsTabController's own constructor param of the same name/
+    // shape in samothrace-map-qa-panel.ts; samothrace-map.ts wires both
+    // to the same underlying
+    // ContoursLayerController.setFragmentElevationOverrides.
+    private readonly onBandConfirmed: (plan: QaPlan, overrides: Array<{ fragmentId: number; elevationM: number }>) => void,
+    // 'confirm-minor-band' question/patch "Show me" -- unlike a
+    // connection's gap (which has no existing geometry, see highlightGap
+    // below), a minor-band group IS a set of real fragments already on
+    // the map, so this reuses the exact same pan/zoom/highlight path
+    // every OTHER tab's own fragment-based "Show me" already uses
+    // (samothrace-map.ts's own showMeContourFragments), rather than
+    // reinventing a bounds calculation here.
+    private readonly onShowMeFragments: (plan: QaPlan, fragmentIds: number[]) => void,
+    // Undo-only (added 2026-10-16 alongside archiving/OK-Undo) -- reverts
+    // a 'confirm-connection' patch's applied connection. Wired to
+    // ContourConnectorTabController.removeConfirmedById, which shares
+    // this exact same removal path with that tab's own manual "Remove"
+    // button -- undoing an autonomous patch is as real as a human
+    // removing a connection themselves, same standard every other
+    // apply/undo path in this file already holds to.
+    private readonly onUndoConnection: (connectionId: string, plan: ContourPlan) => void,
+    // Undo-only, minor-band side -- reverts the session-local color
+    // override ContoursLayerController.setFragmentElevationOverrides
+    // applied. The durable MINOR_BAND_LOG_PATH entry itself is removed
+    // directly by this file (see removeMinorBandAnswer), not through a
+    // callback -- unlike the connection case, there's no OTHER
+    // controller's own "remove" method to delegate to; MinorBandsTabController
+    // has no undo UI of its own yet (see this widget's own TODO.md).
+    private readonly onBandUndo: (plan: QaPlan, fragmentIds: number[]) => void,
   ) {}
 
   async init(): Promise<void> {
@@ -176,6 +458,8 @@ class AgentQaTabController {
   dispose(): void {
     if (this.pollTimer !== null) clearInterval(this.pollTimer);
     this.pollTimer = null;
+    for (const t of this.archiveTimers.values()) clearTimeout(t);
+    this.archiveTimers.clear();
   }
 
   // Re-reads both files and swaps in-memory state wholesale -- simpler
@@ -183,18 +467,70 @@ class AgentQaTabController {
   // at this scale (a handful of open questions at a time, not hundreds)
   // to just do on every poll tick.
   private async reload(): Promise<void> {
-    const [questionsFile, answersFile] = [await this.loadJson<AgentQuestionsFile>(AGENT_QUESTIONS_PATH), await this.loadJson<AgentAnswersFile>(AGENT_ANSWERS_PATH)];
+    // Four separate awaited reads, not one Promise.all -- same
+    // heterogeneous-destructure gotcha this project's pinned tsc 3.8.3
+    // already has three other documented instances of (see this
+    // widget's own AGENTS.md).
+    const questionsFile = await this.loadJson<AgentQuestionsFile>(AGENT_QUESTIONS_PATH);
+    const answersFile = await this.loadJson<AgentAnswersFile>(AGENT_ANSWERS_PATH);
+    const patchesFile = await this.loadJson<AgentPatchesFile>(AGENT_PATCHES_PATH);
+    const appliedFile = await this.loadJson<AppliedPatchesFile>(AGENT_PATCHES_APPLIED_PATH);
+
     const nextQuestions = questionsFile?.questions ?? [];
     const nextAnswers = new Map<string, AgentAnswer>();
     for (const a of answersFile?.answers ?? []) nextAnswers.set(a.questionId, a);
+    const nextPatches = patchesFile?.patches ?? [];
+    const appliedMap = new Map<string, AppliedPatch>();
+    for (const a of appliedFile?.applied ?? []) appliedMap.set(a.patchId, a);
 
     const changed =
       nextQuestions.length !== this.questions.length ||
       nextAnswers.size !== this.answers.size ||
-      nextQuestions.some((q, i) => q.id !== this.questions[i]?.id);
+      nextQuestions.some((q, i) => q.id !== this.questions[i]?.id) ||
+      nextPatches.length !== this.patches.length;
     this.questions = nextQuestions;
     this.answers = nextAnswers;
-    if (changed && this.loaded) this.onChanged();
+    this.patches = nextPatches;
+
+    // Apply any patch not yet acked -- see `applyingPatches`'s own
+    // comment for why this is guarded.
+    let appliedSomething = false;
+    if (!this.applyingPatches) {
+      const toApply = nextPatches.filter((p) => !appliedMap.has(p.id));
+      if (toApply.length > 0) {
+        this.applyingPatches = true;
+        try {
+          for (const patch of toApply) {
+            const record = await this.applyPatch(patch);
+            appliedMap.set(record.patchId, record);
+            appliedSomething = true;
+          }
+        } finally {
+          this.applyingPatches = false;
+        }
+      }
+    }
+
+    // Always resynced wholesale from (the now possibly-just-updated)
+    // appliedMap, not incrementally appended -- so a patch acked (or
+    // resolved via OK/Undo/Reset) by a DIFFERENT widget instance between
+    // polls shows up here too, same "re-read rather than trust in-memory
+    // state alone" reasoning appendAnswer's own comment already
+    // documents for the question/answer side of this file. Split into
+    // two lists by `resolution`, not filtered in one shared list and
+    // branched at render time, so both reload() and render() stay simple
+    // -- live ('ok'-resolved and unresolved both still show live? no:
+    // ONLY unresolved) vs archived ('ok'-resolved) vs retired
+    // ('undo'-resolved, shown nowhere as its own item -- see this file's
+    // own header comment).
+    const described = Array.from(appliedMap.values()).map((a) => this.describeAppliedPatch(a, nextPatches));
+    this.recentApplied = described
+      .filter((a) => !a.resolution)
+      .sort((a, b) => b.appliedAt.localeCompare(a.appliedAt))
+      .slice(0, AGENT_PATCH_VISIBLE_HISTORY);
+    this.archivedPatches = described.filter((a) => a.resolution === 'ok');
+
+    if ((changed || appliedSomething) && this.loaded) this.onChanged();
   }
 
   private async loadJson<T>(path: string): Promise<T | null> {
@@ -210,44 +546,126 @@ class AgentQaTabController {
 
   // ── Sidebar ──
 
+  // A question is "resolved" once it has an answer -- used both to
+  // decide which list (main vs archive) it belongs in and, combined with
+  // `archivingQuestions`, exactly when the animated placeholder shows
+  // instead of either. See this file's own header comment's "Archiving"
+  // section for why there's no separately-tracked archived flag.
+  private isQuestionResolved(q: AgentQuestion): boolean {
+    return this.answers.has(q.id);
+  }
+
   summary(): string {
     if (!this.loaded) return 'Loading…';
-    const total = this.questions.length;
-    if (total === 0) return 'No open questions from the agent right now.';
-    const answered = this.questions.filter((q) => this.answers.has(q.id)).length;
-    return `${answered}/${total} answered.`;
+    const pending = this.questions.filter((q) => !this.isQuestionResolved(q) || this.archivingQuestions.has(q.id));
+    const total = pending.length;
+    const autoNote = this.recentApplied.length > 0 ? ` ${this.recentApplied.length} applied automatically.` : '';
+    if (total === 0) return `No open questions from the agent right now.${autoNote}`;
+    const answered = pending.filter((q) => this.answers.has(q.id)).length; // mid-archive-animation ones only, see `pending`'s own filter
+    return `${answered}/${total} answered.${autoNote}`;
+  }
+
+  // The "applied automatically" list -- see this file's own header
+  // comment's AgentPatchChannel section for why this exists at all
+  // (nothing here applies silently). Rendered above the question list
+  // regardless of whether any questions are pending, so it's never
+  // hidden behind an empty-state message. Each row is either mid-archive
+  // (a placeholder, see archivingPatches) or a normal summary row with
+  // OK/Undo buttons -- a row that failed to apply (status === 'error')
+  // gets neither, nothing to OK or undo for a change that never happened.
+  private renderAutoApplied(): string {
+    if (this.recentApplied.length === 0) return '';
+    const rows = this.recentApplied
+      .map((a) => {
+        const archivingKind = this.archivingPatches.get(a.patchId);
+        if (archivingKind) {
+          const message = archivingKind === 'ok' ? '⚡ OK’d — archiving…' : '↩ Undone — converted to a pending question.';
+          return `<div class="qa-auto-row qa-archiving" data-patch-id="${escapeHtml(a.patchId)}">
+            <div class="qa-archiving-message">${message}</div>
+          </div>`;
+        }
+        const ok = a.status === 'applied';
+        const time = new Date(a.appliedAt).toLocaleTimeString();
+        const actions = ok
+          ? `<div class="qa-actions">
+              <button type="button" class="qa-ok-button qa-patch-ok-button" data-patch-id="${escapeHtml(a.patchId)}">✓ OK</button>
+              <button type="button" class="qa-undo-button qa-patch-undo-button" data-patch-id="${escapeHtml(a.patchId)}">↩ Undo</button>
+            </div>`
+          : '';
+        return `<div class="qa-auto-row${ok ? '' : ' qa-auto-row-error'}" data-patch-id="${escapeHtml(a.patchId)}">
+          <div class="qa-auto-summary">${ok ? '⚡' : '⚠️'} ${escapeHtml(a.summary)}</div>
+          ${a.reason ? `<div class="qa-auto-reason">${escapeHtml(a.reason)}</div>` : ''}
+          <div class="qa-auto-time">${escapeHtml(time)}</div>
+          ${actions}
+        </div>`;
+      })
+      .join('');
+    return `<div class="qa-auto-applied-section">
+      <div class="qa-auto-applied-title">⚡ Applied automatically -- no confirmation needed</div>
+      ${rows}
+    </div>`;
   }
 
   render(): string {
     if (!this.loaded) return '';
-    if (this.questions.length === 0) {
-      return '<div class="qa-empty">No open questions from the agent right now -- one posted mid-conversation shows up here within a few seconds, no reload needed.</div>';
+    const autoSection = this.renderAutoApplied();
+    const pending = this.questions.filter((q) => !this.isQuestionResolved(q) || this.archivingQuestions.has(q.id));
+    const questionsSection =
+      pending.length === 0
+        ? '<div class="qa-empty">No open questions from the agent right now -- one posted mid-conversation shows up here within a few seconds, no reload needed.</div>'
+        : // Most recent first -- an agent asking a fresh question mid
+          // -session is more likely what you want to see than one from a
+          // while ago.
+          [...pending].reverse().map((q) => this.renderQuestionCard(q)).join('');
+    return autoSection + questionsSection + this.renderArchiveDrawer();
+  }
+
+  // One question card -- either the archiving placeholder (see
+  // archivingQuestions) or the real card body, branched per `q.type`
+  // (renderConnectionCardBody / renderMinorBandCardBody) since the two
+  // question types' own `data` shapes share almost nothing beyond
+  // `plan`.
+  private renderQuestionCard(q: AgentQuestion): string {
+    const archivingDecision = this.archivingQuestions.get(q.id);
+    if (archivingDecision) {
+      const message = archivingDecision === 'confirm' ? '✓ Confirmed — archiving…' : '✗ Rejected — archiving…';
+      return `<div class="qa-card qa-archiving" data-question-id="${escapeHtml(q.id)}">
+        <div class="qa-archiving-message">${message}</div>
+      </div>`;
     }
-    // Most recent first -- an agent asking a fresh question mid-session
-    // is more likely what you want to see than one from a while ago.
-    const ordered = [...this.questions].reverse();
-    return ordered
-      .map((q) => {
-        const answer = this.answers.get(q.id);
-        const answeredBadge = answer ? `<div class="qa-answered-badge">✓ ${answer.decision === 'confirm' ? 'Confirmed' : 'Rejected'}</div>` : '';
-        const busy = this.busyIds.has(q.id);
-        const gapLine =
-          q.data.distancePx !== null ? `${q.data.source} connection, ${q.data.distancePx.toFixed(1)}px gap` : `${q.data.source} connection`;
-        return `<div class="qa-card${answer ? ' answered' : ''}" data-question-id="${escapeHtml(q.id)}">
-          <div class="qa-card-header">
-            <span class="qa-plan-chip">${escapeHtml(QA_PLAN_LABEL[q.data.plan])}</span>
-            <button type="button" class="qa-show-me-button qa-agent-show-me-button" data-question-id="${escapeHtml(q.id)}">📍 Show me</button>
-          </div>
-          <div class="qa-reason-line">${escapeHtml(q.prompt)}</div>
-          <div class="qa-ocr-line">${escapeHtml(gapLine)}${q.data.elevationM !== null ? ` — ${q.data.elevationM}m` : ''}</div>
-          ${answeredBadge}
-          <div class="qa-actions">
-            <button type="button" class="qa-accept-button qa-agent-confirm-button" data-question-id="${escapeHtml(q.id)}" ${answer || busy ? 'disabled' : ''}>✅ Confirm</button>
-            <button type="button" class="qa-reject-button qa-agent-reject-button" data-question-id="${escapeHtml(q.id)}" ${answer || busy ? 'disabled' : ''}>❌ Reject</button>
-          </div>
-        </div>`;
-      })
-      .join('');
+    const answer = this.answers.get(q.id);
+    const answeredBadge = answer ? `<div class="qa-answered-badge">✓ ${answer.decision === 'confirm' ? 'Confirmed' : 'Rejected'}</div>` : '';
+    const busy = this.busyIds.has(q.id);
+    const body = q.type === 'confirm-connection' ? this.renderConnectionCardBody(q) : this.renderMinorBandCardBody(q);
+    return `<div class="qa-card${answer ? ' answered' : ''}" data-question-id="${escapeHtml(q.id)}">
+      <div class="qa-card-header">
+        <span class="qa-plan-chip">${escapeHtml(QA_PLAN_LABEL[q.data.plan])}</span>
+        <button type="button" class="qa-show-me-button qa-agent-show-me-button" data-question-id="${escapeHtml(q.id)}">📍 Show me</button>
+      </div>
+      ${body}
+      ${answeredBadge}
+      <div class="qa-actions">
+        <button type="button" class="qa-accept-button qa-agent-confirm-button" data-question-id="${escapeHtml(q.id)}" ${answer || busy ? 'disabled' : ''}>✅ Confirm</button>
+        <button type="button" class="qa-reject-button qa-agent-reject-button" data-question-id="${escapeHtml(q.id)}" ${answer || busy ? 'disabled' : ''}>❌ Reject</button>
+      </div>
+    </div>`;
+  }
+
+  private renderConnectionCardBody(q: AgentQuestion): string {
+    const data = q.data as ConfirmConnectionQuestionData;
+    const gapLine = data.distancePx !== null ? `${data.source} connection, ${data.distancePx.toFixed(1)}px gap` : `${data.source} connection`;
+    return `<div class="qa-reason-line">${escapeHtml(q.prompt)}</div>
+      <div class="qa-ocr-line">${escapeHtml(gapLine)}${data.elevationM !== null ? ` — ${data.elevationM}m` : ''}</div>`;
+  }
+
+  // Read-only summary of the agent's own fragment/elevation choices --
+  // confirming here accepts them as-is; re-editing individual fragment
+  // elevations is the Minor Bands tab's own job, not duplicated here.
+  private renderMinorBandCardBody(q: AgentQuestion): string {
+    const data = q.data as ConfirmMinorBandPatchData;
+    const fragLabels = data.fragments.map((f) => `#${f.fragmentId}${f.elevationM !== null ? ` (${f.elevationM}m)` : ''}`).join(', ');
+    return `<div class="qa-reason-line">${escapeHtml(q.prompt)}</div>
+      <div class="qa-ocr-line">Between ${data.elevLow}m and ${data.elevHigh}m — ${data.fragments.length} fragment(s): ${escapeHtml(fragLabels)}</div>`;
   }
 
   attachHandlers(container: HTMLElement): void {
@@ -255,14 +673,24 @@ class AgentQaTabController {
       btn.addEventListener('click', () => {
         const q = this.questions.find((x) => x.id === btn.dataset.questionId);
         if (!q) return;
-        this.recording.log('qa:agent', 'show-me', { questionId: q.id, connectionId: q.data.connectionId });
-        const west = Math.min(q.data.aLon, q.data.bLon);
-        const east = Math.max(q.data.aLon, q.data.bLon);
-        const south = Math.min(q.data.aLat, q.data.bLat);
-        const north = Math.max(q.data.aLat, q.data.bLat);
-        const fragmentIds = [q.data.aFragmentId, q.data.bFragmentId].filter((id): id is number => id !== null);
-        this.onShowMe(q.data.plan, { west, south, east, north }, fragmentIds);
-        this.highlightGap(q.data);
+        if (q.type === 'confirm-connection') {
+          const data = q.data as ConfirmConnectionQuestionData;
+          this.recording.log('qa:agent', 'show-me', { questionId: q.id, connectionId: data.connectionId });
+          const west = Math.min(data.aLon, data.bLon);
+          const east = Math.max(data.aLon, data.bLon);
+          const south = Math.min(data.aLat, data.bLat);
+          const north = Math.max(data.aLat, data.bLat);
+          const fragmentIds = [data.aFragmentId, data.bFragmentId].filter((id): id is number => id !== null);
+          this.onShowMe(data.plan, { west, south, east, north }, fragmentIds);
+          this.highlightGap(data);
+        } else {
+          const data = q.data as ConfirmMinorBandPatchData;
+          this.recording.log('qa:agent', 'show-me', { questionId: q.id, groupId: data.groupId });
+          this.onShowMeFragments(
+            data.plan,
+            data.fragments.map((f) => f.fragmentId),
+          );
+        }
       });
     });
     container.querySelectorAll<HTMLButtonElement>('.qa-agent-confirm-button').forEach((btn) => {
@@ -277,6 +705,44 @@ class AgentQaTabController {
         if (id) void this.answer(id, 'reject');
       });
     });
+    container.querySelectorAll<HTMLButtonElement>('.qa-patch-ok-button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.patchId;
+        if (id) void this.resolvePatchOk(id);
+      });
+    });
+    container.querySelectorAll<HTMLButtonElement>('.qa-patch-undo-button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.patchId;
+        if (id) void this.undoPatch(id);
+      });
+    });
+
+    // ── Archive drawer ──
+    const drawerBody = container.querySelector<HTMLElement>('.qa-archive-body');
+    const chevron = container.querySelector<HTMLElement>('.qa-archive-chevron');
+    container.querySelector<HTMLButtonElement>('.qa-archive-toggle')?.addEventListener('click', () => {
+      this.archiveDrawerOpen = !this.archiveDrawerOpen;
+      // Direct DOM manipulation, NOT this.onChanged() -- see this file's
+      // own header comment's "Archive drawer" section on why a plain CSS
+      // `transition` needs this element to stay the SAME node across the
+      // toggle, not be recreated by a fresh innerHTML replace.
+      drawerBody?.classList.toggle('open', this.archiveDrawerOpen);
+      chevron?.classList.toggle('open', this.archiveDrawerOpen);
+    });
+    container.querySelector<HTMLSelectElement>('.qa-archive-sort-select')?.addEventListener('change', (e) => {
+      const value = (e.currentTarget as HTMLSelectElement).value;
+      this.archiveSortBy = value === 'question-age' ? 'question-age' : 'answer-age';
+      this.onChanged();
+    });
+    container.querySelectorAll<HTMLButtonElement>('.qa-archive-reset-button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        if (!id) return;
+        if (btn.dataset.kind === 'question') void this.resetQuestion(id);
+        else void this.resetPatch(id);
+      });
+    });
   }
 
   private async answer(questionId: string, decision: AgentAnswerDecision): Promise<void> {
@@ -289,11 +755,290 @@ class AgentQaTabController {
       const ans: AgentAnswer = { questionId, decision, answeredAt: new Date().toISOString() };
       this.answers.set(questionId, ans);
       await this.appendAnswer(ans);
-      if (q.type === 'confirm-connection') await this.applyConfirmConnection(q.data, decision);
+      if (q.type === 'confirm-connection') await this.applyConfirmConnection(q.data as ConfirmConnectionQuestionData, decision);
+      else await this.applyMinorBandDecision(q.data as ConfirmMinorBandPatchData, decision);
+      this.startArchiving(questionId, this.archivingQuestions, decision);
     } finally {
       this.busyIds.delete(questionId);
       this.onChanged();
     }
+  }
+
+  // Shared by both archiving flavors (questions and applied-patch rows) --
+  // just the placeholder-timing mechanics (set the phase-map entry, show
+  // it, clear it again after QA_ARCHIVE_DELAY_MS). `value` is whatever
+  // the placeholder render needs to know (which decision, or 'ok'/'undo')
+  // to word itself correctly; this method itself doesn't interpret it.
+  // Does NOT itself make anything "archived" -- that's a derived status
+  // (see isQuestionResolved / AppliedPatch.resolution); the CALLER is
+  // responsible for whatever durable state change makes the derived
+  // status true BEFORE calling this (resolvePatchOk/undoPatch both write
+  // `resolution` first) or AS a side effect already completed (answer()
+  // already wrote the AgentAnswer before calling this).
+  private startArchiving<V>(id: string, phaseMap: Map<string, V>, value: V): void {
+    const existingTimer = this.archiveTimers.get(id);
+    if (existingTimer !== undefined) clearTimeout(existingTimer);
+    phaseMap.set(id, value);
+    this.onChanged();
+    const timer = (setTimeout(() => {
+      phaseMap.delete(id);
+      this.archiveTimers.delete(id);
+      this.onChanged();
+    }, QA_ARCHIVE_DELAY_MS) as unknown) as number;
+    this.archiveTimers.set(id, timer);
+  }
+
+  // Reverses whichever live change a confirm-connection/confirm-minor
+  // -band decision made -- shared by undoPatch (an applied-patch row's
+  // own Undo button) and resetQuestion (the archive drawer's own Reset
+  // button, for a question that was CONFIRMED -- a rejected one never
+  // applied anything, nothing to reverse). Delegates to the exact same
+  // callbacks/helper either caller would use directly: onUndoConnection
+  // (shares ContourConnectorTabController's own "Remove" path) or
+  // removeMinorBandAnswer + onBandUndo for the minor-band side.
+  private async reverseAppliedDecision(type: AgentPatchType, data: ConfirmConnectionQuestionData | ConfirmMinorBandPatchData): Promise<void> {
+    if (type === 'confirm-connection') {
+      const d = data as ConfirmConnectionQuestionData;
+      this.onUndoConnection(d.connectionId, d.plan);
+      return;
+    }
+    const d = data as ConfirmMinorBandPatchData;
+    await this.removeMinorBandAnswer(d.plan, d.groupId);
+    this.onBandUndo(
+      d.plan,
+      d.fragments.map((f) => f.fragmentId),
+    );
+  }
+
+  // Undo button on an applied-patch row -- reverses whichever live
+  // change that patch made (reverseAppliedDecision above), then converts
+  // it into a brand-new pending question carrying the original patch's
+  // own `data`/`reason` (see convertPatchToQuestion) so nothing the agent
+  // found is actually lost, just handed back for a real human decision.
+  // Best-effort end to end, same standard applyPatch already holds to --
+  // a failure here still archives the row (nothing worse than "stuck
+  // showing stale OK/Undo buttons forever" would come from NOT archiving
+  // it) rather than leaving the user staring at buttons that already
+  // tried and failed. `resolution: 'undo'` is written durably BEFORE the
+  // archive animation starts, not after, so a reload mid-animation still
+  // reflects the undo having happened -- see AppliedPatch.resolution's
+  // own comment.
+  private async undoPatch(patchId: string): Promise<void> {
+    if (this.archivingPatches.has(patchId)) return; // already resolving
+    const patch = this.patches.find((p) => p.id === patchId);
+    if (patch) {
+      try {
+        await this.reverseAppliedDecision(patch.type, patch.data);
+        await this.convertPatchToQuestion(patch);
+      } catch (err) {
+        console.warn('undoing agent patch failed (best-effort, archiving anyway):', err);
+      }
+    }
+    await this.writePatchResolution(patchId, 'undo');
+    this.startArchiving(patchId, this.archivingPatches, 'undo');
+  }
+
+  // OK button on an applied-patch row -- purely a dismiss, no live state
+  // to touch (unlike Undo). `resolution: 'ok'` written durably up front,
+  // same reload-safety reasoning as undoPatch's own comment.
+  private async resolvePatchOk(patchId: string): Promise<void> {
+    if (this.archivingPatches.has(patchId)) return;
+    await this.writePatchResolution(patchId, 'ok');
+    this.startArchiving(patchId, this.archivingPatches, 'ok');
+  }
+
+  // Read-modify-write, same pattern every other durable log/ack file in
+  // this widget uses. Finds the existing AppliedPatch record (written
+  // once, durably, by appendAppliedPatch back when the patch itself was
+  // first applied) and stamps `resolution`/`resolvedAt` onto it -- this
+  // is an UPDATE, not an append; if the record is somehow already gone
+  // (shouldn't happen, patches are never deleted from the ack file),
+  // this silently does nothing rather than fabricate a new record with
+  // no `status`/`appliedAt` of its own.
+  private async writePatchResolution(patchId: string, resolution: 'ok' | 'undo'): Promise<void> {
+    const desk = window.desk;
+    if (!desk) return;
+    const current = (await this.loadJson<AppliedPatchesFile>(AGENT_PATCHES_APPLIED_PATH)) ?? { applied: [] };
+    const existing = current.applied.find((a) => a.patchId === patchId);
+    if (!existing) return;
+    existing.resolution = resolution;
+    existing.resolvedAt = new Date().toISOString();
+    await desk.fs.writeFile(AGENT_PATCHES_APPLIED_PATH, JSON.stringify(current, null, 2));
+  }
+
+  // Archive drawer's own Reset button, patch side -- the exact inverse
+  // of resolvePatchOk: clears `resolution`/`resolvedAt` so the row goes
+  // back to being derived as "live" again (see reload()'s own
+  // recentApplied/archivedPatches split) and reappears in the "applied
+  // automatically" list with OK/Undo buttons. Only meaningful for an
+  // 'ok'-resolved row -- an 'undo'-resolved one is never shown in the
+  // archive drawer in the first place (see computeArchivedItems), so
+  // there's no Reset button that could call this for one.
+  private async resetPatch(patchId: string): Promise<void> {
+    const desk = window.desk;
+    if (!desk) return;
+    const current = (await this.loadJson<AppliedPatchesFile>(AGENT_PATCHES_APPLIED_PATH)) ?? { applied: [] };
+    const existing = current.applied.find((a) => a.patchId === patchId);
+    if (!existing) return;
+    delete existing.resolution;
+    delete existing.resolvedAt;
+    await desk.fs.writeFile(AGENT_PATCHES_APPLIED_PATH, JSON.stringify(current, null, 2));
+    this.onChanged();
+  }
+
+  // Archive drawer's own Reset button, question side -- undoes the
+  // original Confirm/Reject: reverses whatever got applied (only if the
+  // answer was 'confirm' -- a 'reject' never applied anything) via the
+  // same reverseAppliedDecision Undo uses, then removes the AgentAnswer
+  // entirely so the question is pending again, full stop -- no "convert
+  // to a question" step needed here (unlike undoPatch), since this
+  // question never stopped existing in AGENT_QUESTIONS_PATH in the first
+  // place, only its ANSWER is being retracted.
+  private async resetQuestion(questionId: string): Promise<void> {
+    const q = this.questions.find((x) => x.id === questionId);
+    const ans = this.answers.get(questionId);
+    if (!q || !ans) return;
+    try {
+      if (ans.decision === 'confirm') await this.reverseAppliedDecision(q.type, q.data);
+    } catch (err) {
+      console.warn('reversing answer during reset failed (best-effort, resetting anyway):', err);
+    }
+    this.answers.delete(questionId);
+    await this.removeAnswer(questionId);
+    this.onChanged();
+  }
+
+  private async removeAnswer(questionId: string): Promise<void> {
+    const desk = window.desk;
+    if (!desk) return;
+    const current = (await this.loadJson<AgentAnswersFile>(AGENT_ANSWERS_PATH)) ?? { answers: [] };
+    current.answers = current.answers.filter((a) => a.questionId !== questionId);
+    await desk.fs.writeFile(AGENT_ANSWERS_PATH, JSON.stringify(current, null, 2));
+  }
+
+  // ── Archive drawer ──
+
+  // Unifies archived questions and archived ('ok'-resolved) patches into
+  // one sortable list -- see ArchivedItemDisplay's own comment. An
+  // 'undo'-resolved patch is deliberately excluded (not just filtered at
+  // render time but never computed here at all) -- its lineage continues
+  // via the question convertPatchToQuestion wrote; showing the old
+  // applied-row too would just be a confusing duplicate of that new,
+  // separately-archivable question.
+  private computeArchivedItems(): ArchivedItemDisplay[] {
+    const items: ArchivedItemDisplay[] = [];
+    for (const q of this.questions) {
+      const ans = this.answers.get(q.id);
+      if (!ans || this.archivingQuestions.has(q.id)) continue;
+      items.push({
+        kind: 'question',
+        id: q.id,
+        summary: summarizeDecisionData(q.type, q.data),
+        resolutionLabel: ans.decision === 'confirm' ? 'Confirmed' : 'Rejected',
+        createdAt: q.createdAt,
+        resolvedAt: ans.answeredAt,
+      });
+    }
+    for (const p of this.archivedPatches) {
+      items.push({
+        kind: 'patch',
+        id: p.patchId,
+        summary: p.summary,
+        resolutionLabel: 'OK’d',
+        createdAt: p.createdAt,
+        resolvedAt: p.resolvedAt ?? p.appliedAt, // resolvedAt is always set for anything in archivedPatches (that's what the 'ok' filter means) -- the fallback is just to satisfy the type, never actually exercised
+      });
+    }
+    return items;
+  }
+
+  // "Ascending age" = smallest elapsed-time-since first -- i.e. the most
+  // RECENTLY created/resolved item sorts first, same "most recent first"
+  // convention the main question list's own ordering already uses.
+  // ISO-8601 timestamps sort correctly as plain strings (lexicographic
+  // order matches chronological order), so no Date parsing needed.
+  private sortArchivedItems(items: ArchivedItemDisplay[]): ArchivedItemDisplay[] {
+    const key: keyof Pick<ArchivedItemDisplay, 'createdAt' | 'resolvedAt'> = this.archiveSortBy === 'question-age' ? 'createdAt' : 'resolvedAt';
+    return [...items].sort((a, b) => b[key].localeCompare(a[key]));
+  }
+
+  // Always rendered (even with zero archived items -- a collapsed
+  // "Archive (0)" bar is simpler and more predictable than conditionally
+  // showing/hiding the whole drawer). Pinned toward the bottom of the
+  // tab via CSS (`margin-top: auto` inside the flex column, `position:
+  // sticky` so it stays visible while scrolling a long question list) --
+  // see widget.html's own `.qa-archive-drawer` rule.
+  private renderArchiveDrawer(): string {
+    const items = this.sortArchivedItems(this.computeArchivedItems());
+    const openClass = this.archiveDrawerOpen ? ' open' : '';
+    const rows =
+      items.length === 0
+        ? '<div class="qa-empty">Nothing archived yet.</div>'
+        : items
+            .map(
+              (it) => `<div class="qa-archive-row">
+                <div class="qa-archive-row-summary">${escapeHtml(it.resolutionLabel)} — ${escapeHtml(it.summary)}</div>
+                <div class="qa-archive-row-time">Asked ${escapeHtml(new Date(it.createdAt).toLocaleString())} · Resolved ${escapeHtml(new Date(it.resolvedAt).toLocaleString())}</div>
+                <button type="button" class="qa-reset-button qa-archive-reset-button" data-kind="${it.kind}" data-id="${escapeHtml(it.id)}">↺ Reset</button>
+              </div>`,
+            )
+            .join('');
+    return `<div class="qa-archive-drawer">
+      <button type="button" class="qa-archive-toggle">
+        <span>📦 Archive (${items.length})</span>
+        <span class="qa-archive-chevron${openClass}">▲</span>
+      </button>
+      <div class="qa-archive-body${openClass}">
+        <div class="qa-archive-controls">
+          Sort by
+          <select class="qa-archive-sort-select">
+            <option value="answer-age" ${this.archiveSortBy === 'answer-age' ? 'selected' : ''}>Answer age</option>
+            <option value="question-age" ${this.archiveSortBy === 'question-age' ? 'selected' : ''}>Question age</option>
+          </select>
+        </div>
+        ${rows}
+      </div>
+    </div>`;
+  }
+
+  // Removes one answer from MINOR_BAND_LOG_PATH by its `${plan}:${groupId}`
+  // key -- the minor-band side of Undo. No equivalent "remove" method to
+  // delegate to elsewhere (unlike the connection case's
+  // ContourConnectorTabController.removeConfirmedById) since
+  // MinorBandsTabController has no undo UI of its own yet -- this file
+  // already writes MINOR_BAND_LOG_PATH directly elsewhere
+  // (applyMinorBandDecision), same read-modify-write pattern here.
+  private async removeMinorBandAnswer(plan: QaPlan, groupId: string): Promise<void> {
+    const desk = window.desk;
+    if (!desk) return;
+    const current = (await this.loadJson<{ answers: MinorBandGroupAnswer[] }>(MINOR_BAND_LOG_PATH)) ?? { answers: [] };
+    const key = `${plan}:${groupId}`;
+    current.answers = current.answers.filter((a) => `${a.plan}:${a.groupId}` !== key);
+    await desk.fs.writeFile(MINOR_BAND_LOG_PATH, JSON.stringify(current, null, 2));
+  }
+
+  // The "so as not to lose the agent's change" half of Undo -- writes a
+  // fresh AgentQuestion (own uuid, so it can never collide with the
+  // original patch's own id even though that one's now fully resolved)
+  // carrying the SAME `data` and a prompt built from the SAME `reason`
+  // the patch originally had, into AGENT_QUESTIONS_PATH. The next poll
+  // (within AGENT_QA_POLL_INTERVAL_MS) picks it up the exact same way
+  // any other agent-authored question would -- no special-casing needed
+  // on the read side, it's indistinguishable from a question an agent
+  // asked directly in the first place.
+  private async convertPatchToQuestion(patch: AgentPatch): Promise<void> {
+    const desk = window.desk;
+    if (!desk) return;
+    const question: AgentQuestion = {
+      id: crypto.randomUUID(),
+      type: patch.type,
+      prompt: `Previously applied automatically — undone. Original reasoning: ${patch.reason}`,
+      createdAt: new Date().toISOString(),
+      data: patch.data,
+    };
+    const current = (await this.loadJson<AgentQuestionsFile>(AGENT_QUESTIONS_PATH)) ?? { questions: [] };
+    current.questions.push(question);
+    await desk.fs.writeFile(AGENT_QUESTIONS_PATH, JSON.stringify(current, null, 2));
   }
 
   private async appendAnswer(ans: AgentAnswer): Promise<void> {
@@ -337,7 +1082,12 @@ class AgentQaTabController {
     strokeCandyCane(ctx, [{ lon: h.aLon, lat: h.aLat }, { lon: h.bLon, lat: h.bLat }], toScreen, 4, HIGHLIGHT_COLOR);
   }
 
-  private async applyConfirmConnection(data: ConfirmConnectionQuestionData, decision: AgentAnswerDecision): Promise<void> {
+  // `appliedBy` is undefined for every call from the question/answer flow
+  // above (a real user clicked Confirm/Reject) -- only AgentPatchChannel's
+  // own applyPatch passes 'agent-autonomous', tagging the written
+  // LogConnection entry per that field's own provenance comment in
+  // samothrace-map-connector-tab.ts.
+  private async applyConfirmConnection(data: ConfirmConnectionQuestionData, decision: AgentAnswerDecision, appliedBy?: 'agent-autonomous'): Promise<void> {
     const desk = window.desk;
     if (!desk) return;
     const current = (await this.loadJson<{ connections: LogConnection[]; rejections: LogRejection[]; removed: string[] }>(CONNECTOR_LOG_PATH)) ?? {
@@ -357,6 +1107,7 @@ class AgentQaTabController {
           bLat: data.bLat,
           elevationM: data.elevationM,
           confirmedAt: new Date().toISOString(),
+          ...(appliedBy ? { appliedBy } : {}),
         });
       }
     } else if (!current.rejections.some((r) => r.connectionId === data.connectionId)) {
@@ -364,5 +1115,125 @@ class AgentQaTabController {
     }
     await desk.fs.writeFile(CONNECTOR_LOG_PATH, JSON.stringify(current, null, 2));
     this.onConnectionDecision(data, decision);
+  }
+
+  // ── AgentPatchChannel ──
+
+  // Applies one patch end to end: the type-specific durable write +
+  // live-apply callback, then an ack record (always written, success or
+  // failure -- a patch that fails once is never silently retried forever;
+  // an agent that wants to retry writes a NEW patch with a new id). Never
+  // throws -- same "best-effort, don't throw errors if something doesn't
+  // quite line up" standard this widget's own UI-state persistence
+  // already follows; a bad patch becomes a visible "⚠️ Failed to apply"
+  // row in renderAutoApplied, not a broken poll loop.
+  private async applyPatch(patch: AgentPatch): Promise<AppliedPatch> {
+    let status: AgentPatchStatus = 'applied';
+    let detail: string | undefined;
+    try {
+      if (patch.type === 'confirm-connection') {
+        const data = patch.data as ConfirmConnectionQuestionData;
+        await this.applyConfirmConnection(data, 'confirm', 'agent-autonomous');
+        this.highlightGap(data);
+      } else if (patch.type === 'confirm-minor-band') {
+        await this.applyMinorBandDecision(patch.data as ConfirmMinorBandPatchData, 'confirm', 'agent-autonomous');
+      } else {
+        status = 'error';
+        detail = `unknown patch type "${String((patch as { type: unknown }).type)}"`;
+      }
+    } catch (err) {
+      status = 'error';
+      detail = err instanceof Error ? err.message : String(err);
+    }
+    const record: AppliedPatch = { patchId: patch.id, status, appliedAt: new Date().toISOString(), ...(detail ? { detail } : {}) };
+    await this.appendAppliedPatch(record);
+    // Informational only, same as every other recording.log call in this
+    // file -- never gates whether the durable write above happened.
+    this.recording.log('qa:agent-patch', 'applied', { patchId: patch.id, type: patch.type, status, reason: patch.reason });
+    this.scheduleRedraw();
+    return record;
+  }
+
+  // A 'confirm-minor-band' question OR patch's own apply path -- shared
+  // by a real human Confirm/Reject click (answer(), `appliedBy`
+  // undefined) and AgentPatchChannel's own auto-apply (applyPatch,
+  // `appliedBy: 'agent-autonomous'`). Confirm writes the exact same
+  // MinorBandGroupAnswer shape MinorBandsTabController.submit() would,
+  // into the SAME MINOR_BAND_LOG_PATH (declared in samothrace-map-qa
+  // -panel.ts, visible here the same way every other global-script
+  // constant in this project is), then calls onBandConfirmed with the
+  // same minorBandOverridesFrom conversion applyOverridesFor itself
+  // uses, so ContoursLayerController's session-local color override goes
+  // live immediately. Reject writes a 'skipped' answer with every
+  // fragment's own elevationM nulled out -- same semantics
+  // MinorBandsTabController's own Skip button already has -- and applies
+  // nothing (there is nothing to visually undo, since nothing was ever
+  // shown as a contour).
+  private async applyMinorBandDecision(data: ConfirmMinorBandPatchData, decision: AgentAnswerDecision, appliedBy?: 'agent-autonomous'): Promise<void> {
+    const desk = window.desk;
+    if (!desk) return;
+    const current = (await this.loadJson<{ answers: MinorBandGroupAnswer[] }>(MINOR_BAND_LOG_PATH)) ?? { answers: [] };
+    const key = `${data.plan}:${data.groupId}`;
+    if (!current.answers.some((a) => `${a.plan}:${a.groupId}` === key)) {
+      const answer: MinorBandGroupAnswer = {
+        groupId: data.groupId,
+        plan: data.plan,
+        elevLow: data.elevLow,
+        elevHigh: data.elevHigh,
+        decision: decision === 'confirm' ? 'confirmed' : 'skipped',
+        fragments: decision === 'confirm' ? data.fragments : data.fragments.map((f) => ({ fragmentId: f.fragmentId, elevationM: null })),
+        answeredAt: new Date().toISOString(),
+        ...(appliedBy ? { appliedBy } : {}),
+      };
+      current.answers.push(answer);
+      await desk.fs.writeFile(MINOR_BAND_LOG_PATH, JSON.stringify(current, null, 2));
+    }
+    if (decision === 'confirm') {
+      const overrides = minorBandOverridesFrom(data.fragments);
+      if (overrides.length > 0) this.onBandConfirmed(data.plan, overrides);
+    }
+  }
+
+  // Read-modify-write, same pattern every other durable log/ack file in
+  // this widget uses -- re-reads from disk rather than trusting
+  // in-memory state, so an ack written by a DIFFERENT widget instance
+  // between this tab's last poll and now isn't clobbered.
+  private async appendAppliedPatch(record: AppliedPatch): Promise<void> {
+    const desk = window.desk;
+    if (!desk) return;
+    const current = (await this.loadJson<AppliedPatchesFile>(AGENT_PATCHES_APPLIED_PATH)) ?? { applied: [] };
+    if (!current.applied.some((a) => a.patchId === record.patchId)) current.applied.push(record);
+    await desk.fs.writeFile(AGENT_PATCHES_APPLIED_PATH, JSON.stringify(current, null, 2));
+  }
+
+  // Builds the display row renderAutoApplied() shows for one acked
+  // patch -- looks the source AgentPatch up in whatever patch list is
+  // handed in (the caller passes the freshly-reloaded list, not
+  // necessarily `this.patches`, so this works correctly mid-reload())
+  // to recover a human-readable summary; falls back gracefully if the
+  // patch itself is somehow no longer available (patches aren't expected
+  // to ever be deleted from AGENT_PATCHES_PATH, but nothing here assumes
+  // that holds forever).
+  private describeAppliedPatch(record: AppliedPatch, patches: AgentPatch[]): AppliedPatchDisplay {
+    const patch = patches.find((p) => p.id === record.patchId);
+    const type: AgentPatchType = patch?.type ?? 'confirm-connection';
+    const reason = patch?.reason ?? '';
+    let summary = 'Patch details no longer available.';
+    if (patch) {
+      const verb = patch.type === 'confirm-connection' ? 'Connected a' : 'Confirmed';
+      summary = `${verb} ${summarizeDecisionData(patch.type, patch.data)}`;
+    }
+    if (record.status === 'error') summary = `Failed to apply: ${record.detail ?? 'unknown error'}`;
+    return {
+      patchId: record.patchId,
+      type,
+      summary,
+      reason,
+      status: record.status,
+      appliedAt: record.appliedAt,
+      createdAt: patch?.createdAt ?? record.appliedAt,
+      resolution: record.resolution,
+      resolvedAt: record.resolvedAt,
+    };
   }
 }
