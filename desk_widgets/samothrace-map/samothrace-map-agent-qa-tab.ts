@@ -52,13 +52,25 @@
 // AgentQuestion carrying the exact same `data` and `reason` back into
 // AGENT_QUESTIONS_PATH (see convertPatchToQuestion), so it reappears as
 // an ordinary pending question for a real, deliberate Confirm/Reject
-// instead of just vanishing. Scope is intentionally the same two actions
-// this tab (and MinorBandsTabController) already know how to apply:
+// instead of just vanishing. Started scoped to the same two actions this
+// tab (and MinorBandsTabController) already knew how to apply:
 // 'confirm-connection' (reuses ConfirmConnectionQuestionData as-is) and
 // 'confirm-minor-band' (mirrors MinorBandGroupAnswer's own `fragments`
 // shape) -- which, as of the same day, is now ALSO a real question type
 // a human can be asked directly (see the next paragraph), not just
 // something Undo produces.
+//
+// A third patch type, 'retract-connection', followed within the hour --
+// not a hypothetical gap, a real one hit live: a user caught an
+// already-confirmed connection as wrong, the correcting
+// 'confirm-connection' patch landed fine, but the OLD wrong one had no
+// live retraction path (only Undo-of-a-just-applied-patch could remove a
+// confirmed connection, and that one predated this whole channel, so
+// there was no AppliedPatch record for it to Undo). 'retract-connection'
+// reuses ConfirmConnectionQuestionData too (kept whole, not trimmed to
+// just connectionId/plan, so Undo-of-a-retraction can re-confirm the
+// exact same connection symmetrically) and, on apply, calls the exact
+// same onUndoConnection callback Undo already used.
 //
 // Two question types now: 'confirm-connection' (the original, "is this
 // suggested/already-applied contour connection correct?") and
@@ -232,7 +244,21 @@ interface AgentAnswersFile {
 // ── AgentPatchChannel types -- see this file's own header comment's
 // second section for the full design. ──
 
-type AgentPatchType = 'confirm-connection' | 'confirm-minor-band';
+// 'retract-connection' added 2026-10-17: a real gap surfaced live, not
+// hypothetically -- a user caught an already-confirmed connection as
+// wrong (restored-auto-gap-309), the correcting 'confirm-connection'
+// patch landed fine, but there was no way to retract the OLD wrong one
+// short of a direct file edit + a full widget reload (the exact pattern
+// this whole channel exists to replace), because 'confirm-connection'
+// patches only ever ADD. This closes that: a 'retract-connection' patch
+// reuses ConfirmConnectionQuestionData as-is (same connectionId/plan a
+// human's own "Remove" button needs, kept whole rather than trimmed to
+// just those two fields so Undo-of-a-retraction can re-confirm the
+// EXACT same connection symmetrically -- see reverseAppliedDecision's
+// own 'retract-connection' branch) and, on apply, calls the exact same
+// onUndoConnection callback Undo already uses -- same removal path a
+// human's own "Remove" button in the Connector tab calls.
+type AgentPatchType = 'confirm-connection' | 'confirm-minor-band' | 'retract-connection';
 
 // Mirrors MinorBandGroupAnswer's own `fragments` shape (samothrace-map
 // -qa-panel.ts) rather than inventing a new one -- a confirm-minor-band
@@ -328,7 +354,7 @@ interface ArchivedItemDisplay {
 // "turn a confirm-connection/confirm-minor-band `data` payload into one
 // readable line" conversion, and they'd drift if each reimplemented it.
 function summarizeDecisionData(type: AgentPatchType, data: ConfirmConnectionQuestionData | ConfirmMinorBandPatchData): string {
-  if (type === 'confirm-connection') {
+  if (type === 'confirm-connection' || type === 'retract-connection') {
     const d = data as ConfirmConnectionQuestionData;
     const frags = d.aFragmentId !== null && d.bFragmentId !== null ? ` (#${d.aFragmentId}/#${d.bFragmentId})` : '';
     return `${d.source} gap on ${QA_PLAN_LABEL[d.plan]}${frags}`;
@@ -789,17 +815,27 @@ class AgentQaTabController {
   }
 
   // Reverses whichever live change a confirm-connection/confirm-minor
-  // -band decision made -- shared by undoPatch (an applied-patch row's
-  // own Undo button) and resetQuestion (the archive drawer's own Reset
-  // button, for a question that was CONFIRMED -- a rejected one never
-  // applied anything, nothing to reverse). Delegates to the exact same
-  // callbacks/helper either caller would use directly: onUndoConnection
-  // (shares ContourConnectorTabController's own "Remove" path) or
-  // removeMinorBandAnswer + onBandUndo for the minor-band side.
+  // -band/retract-connection decision made -- shared by undoPatch (an
+  // applied-patch row's own Undo button) and resetQuestion (the archive
+  // drawer's own Reset button, for a question that was CONFIRMED -- a
+  // rejected one never applied anything, nothing to reverse; questions
+  // are never 'retract-connection', only patches are, so resetQuestion
+  // only ever actually exercises the first two branches). Delegates to
+  // the exact same callbacks/methods either caller would use directly:
+  // onUndoConnection (shares ContourConnectorTabController's own
+  // "Remove" path) for confirm-connection, removeMinorBandAnswer +
+  // onBandUndo for confirm-minor-band, or a straight re-apply via
+  // applyConfirmConnection for retract-connection -- "reversing a
+  // retraction" IS a confirmation, the exact same one that was retracted,
+  // same `data` either way.
   private async reverseAppliedDecision(type: AgentPatchType, data: ConfirmConnectionQuestionData | ConfirmMinorBandPatchData): Promise<void> {
     if (type === 'confirm-connection') {
       const d = data as ConfirmConnectionQuestionData;
       this.onUndoConnection(d.connectionId, d.plan);
+      return;
+    }
+    if (type === 'retract-connection') {
+      await this.applyConfirmConnection(data as ConfirmConnectionQuestionData, 'confirm', 'agent-autonomous');
       return;
     }
     const d = data as ConfirmMinorBandPatchData;
@@ -1025,13 +1061,19 @@ class AgentQaTabController {
   // (within AGENT_QA_POLL_INTERVAL_MS) picks it up the exact same way
   // any other agent-authored question would -- no special-casing needed
   // on the read side, it's indistinguishable from a question an agent
-  // asked directly in the first place.
+  // asked directly in the first place. `'retract-connection'` maps to
+  // the `'confirm-connection'` QUESTION type -- there's no
+  // "retract-connection" question type (questions ask "should this be
+  // confirmed," never "should this be retracted"), and by the time this
+  // runs reverseAppliedDecision has already RE-CONFIRMED the connection
+  // (undoing the retraction), so "is this connection correct?" is
+  // exactly the right question to leave pending.
   private async convertPatchToQuestion(patch: AgentPatch): Promise<void> {
     const desk = window.desk;
     if (!desk) return;
     const question: AgentQuestion = {
       id: crypto.randomUUID(),
-      type: patch.type,
+      type: patch.type === 'retract-connection' ? 'confirm-connection' : patch.type,
       prompt: `Previously applied automatically — undone. Original reasoning: ${patch.reason}`,
       createdAt: new Date().toISOString(),
       data: patch.data,
@@ -1137,6 +1179,12 @@ class AgentQaTabController {
         this.highlightGap(data);
       } else if (patch.type === 'confirm-minor-band') {
         await this.applyMinorBandDecision(patch.data as ConfirmMinorBandPatchData, 'confirm', 'agent-autonomous');
+      } else if (patch.type === 'retract-connection') {
+        // Same removal path ContourConnectorTabController's own "Remove"
+        // button and Undo (of a confirm-connection patch) already use --
+        // see onUndoConnection's own constructor comment.
+        const data = patch.data as ConfirmConnectionQuestionData;
+        this.onUndoConnection(data.connectionId, data.plan);
       } else {
         status = 'error';
         detail = `unknown patch type "${String((patch as { type: unknown }).type)}"`;
@@ -1220,7 +1268,7 @@ class AgentQaTabController {
     const reason = patch?.reason ?? '';
     let summary = 'Patch details no longer available.';
     if (patch) {
-      const verb = patch.type === 'confirm-connection' ? 'Connected a' : 'Confirmed';
+      const verb = patch.type === 'confirm-connection' ? 'Connected a' : patch.type === 'retract-connection' ? 'Retracted a' : 'Confirmed';
       summary = `${verb} ${summarizeDecisionData(patch.type, patch.data)}`;
     }
     if (record.status === 'error') summary = `Failed to apply: ${record.detail ?? 'unknown error'}`;

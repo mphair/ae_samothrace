@@ -52,9 +52,44 @@ tracks specific open items worth picking up later.
     gap as the question/answer side of this file.
   - `investigations/session-local-override-not-live.md` (the thing this
     channel was flagged as amplifying) is now resolved — see that doc's
-    own §6 — so that particular risk is cleared, but this channel's own
-    applied-overrides still haven't been exercised with a real agent
-    -authored patch yet, only hand-tested.
+    own §6 — so that particular risk is cleared.
+  - **~~Exercised with a real agent-authored patch~~ — done 2026-10-16
+    night, via `rec-1792220036379-20fa`.** User flagged an already
+    -confirmed connection (`restored-auto-gap-309`, fragment #92↔#62) as
+    wrong — narration + hover correlation showed #92 should instead
+    connect to #72. The correct #92↔#72 connection went in live via a
+    real `'confirm-connection'` patch, confirmed end-to-end via a
+    screenshot of the resulting "⚡ Applied automatically" card.
+
+    This surfaced a real, concrete gap, not a hypothetical one — no patch
+    type existed for RETRACTING an already-confirmed connection, only for
+    adding one — and `restored-auto-gap-309` kept visibly branching off
+    fragment #92 (a direct file edit removed it from
+    `contour-connector-log.json` on disk, but `drawConfirmed()` draws
+    straight from the already-running widget's own in-memory `confirmed`
+    array, loaded at init, before that edit).
+
+    **~~Patch type gap~~ — closed minutes later, same session, directly
+    requested** ("Build a live retract-connection patch type now," picked
+    from an explicit choice between that and just reloading). A third
+    `AgentPatchType`, `'retract-connection'`, reuses
+    `ConfirmConnectionQuestionData` as-is (kept whole, not trimmed to
+    just `connectionId`/`plan`, so Undo-of-a-retraction can re-confirm
+    the exact same connection symmetrically via
+    `reverseAppliedDecision`'s new third branch) and calls the exact same
+    `onUndoConnection` callback Undo already used — no new callback, no
+    new wiring in `samothrace-map.ts` needed. `convertPatchToQuestion`
+    maps it to the `'confirm-connection'` QUESTION type (there's no
+    "should this be retracted" question, and by the time Undo runs the
+    connection's already been re-confirmed, so "is this correct?" is the
+    right follow-up). Real end-to-end gotcha hit applying the actual fix:
+    the code change that ADDS `'retract-connection'` support itself marks
+    the widget `[STALE]` — a `retract-connection` patch written before
+    the user clicks that badge gets processed by the still-running OLD
+    code, which doesn't recognize the type yet and logs it as an error
+    (harmless -- once acked, errored or not, it's done; retried via a
+    fresh patch with a new id after the reload, same "an agent that wants
+    to retry writes a new patch" design already documented above).
 
   **~~No undo UI for an autonomously-applied minor-band confirmation~~
   — fixed same day, folded in before anything above got committed.**

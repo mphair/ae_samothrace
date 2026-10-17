@@ -130,6 +130,18 @@ and get concatenated in that order; it does **not** matter for *type
    `investigations/agent-autonomous-corrections-channel.md` for the full
    design reasoning.
 
+   **A third patch type, `'retract-connection'`** (added 2026-10-17,
+   same day, directly requested after a real — not hypothetical — gap
+   showed up live: a user-caught wrong already-confirmed connection had
+   no live retraction path). Reuses `ConfirmConnectionQuestionData`
+   as-is and, on apply, calls the exact same `onUndoConnection` callback
+   Undo already uses — no new wiring needed. `reverseAppliedDecision`'s
+   own Undo-of-a-retraction branch re-confirms the same connection via
+   `applyConfirmConnection`; `convertPatchToQuestion` maps it to the
+   `'confirm-connection'` QUESTION type (there's no "should this be
+   retracted" question — by the time Undo runs, the connection is
+   already back).
+
    **Archiving** (same addition): once a question is answered or an
    applied-patch row is resolved (OK/Undo), it shows a brief placeholder
    ("✓ Confirmed — archiving…" etc.), then — via a CSS `@keyframes`

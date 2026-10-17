@@ -251,3 +251,38 @@ the resolution durably, and letting "archived" be DERIVED from it rather
 than tracked separately, fixed both problems at once and turned out
 simpler than the original (now-removed) in-memory-Set-based design from
 §6 -- see this widget's own `TODO.md` for the fuller before/after.
+
+## 8. A real `'retract-connection'` patch type (same day, same session, immediately after §7)
+
+Not planned -- forced by actually using the channel for real. Applying
+the §6/§7 work's own worked example (correcting
+`restored-auto-gap-309`, see this doc's own earlier updates) hit exactly
+the gap §3's "scope" bullet left open on paper: a `'confirm-connection'`
+patch can only ADD a confirmation, never retract one. The already
+-confirmed wrong connection had to be removed by a direct file edit --
+the exact pattern this whole channel exists to replace -- and then kept
+visibly branching off the map anyway, because `ContourConnectorTabController.
+drawConfirmed()` draws straight from the already-running widget's own
+in-memory `confirmed` array (loaded at init, before that edit), not from
+disk on every frame.
+
+Asked directly which way to go -- patch over it with a reload, or build
+the real fix -- the user chose to build it. `'retract-connection'`
+reuses `ConfirmConnectionQuestionData` unchanged and, on apply, calls
+the exact same `onUndoConnection` callback Undo already used (so
+"retract via a patch" and "Undo an applied connection-patch" are now
+LITERALLY the same removal call, just reached two different ways) --
+essentially free to add given everything §6 already built. The one real
+operational wrinkle: the code change that adds `'retract-connection'`
+support itself makes the widget `[STALE]`, so a patch of that type
+written before the user clicks the reload badge gets processed by the
+STILL-RUNNING old code, which doesn't recognize it and logs an error --
+harmless (an acked patch, errored or not, is done; a fresh patch with a
+new id after the reload is the retry path, same design this whole
+channel already had for any failed patch).
+
+This is the clearest evidence yet that the channel's own "start minimal,
+extend when a real gap shows up" scoping call (§3's own "Scope" bullet)
+was the right one -- `'retract-connection'` wasn't designed in the
+abstract, it was built in direct response to hitting its absence
+mid-correction, same hour.
