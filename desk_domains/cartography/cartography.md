@@ -9,11 +9,14 @@ is a convention or technique worth expecting on a *different* map,
 with the specific Samothrace evidence that surfaced it kept as a
 concrete example rather than the point itself.
 
-This directory (`desk_domains/`) is new and currently holds only this
-one file. It's meant to accumulate general subject-matter knowledge
-discovered in the course of project work, as opposed to
-project-specific implementation notes (which belong in the relevant
-widget's own doc, plan doc, or code comments instead).
+This directory (`desk_domains/`) is meant to accumulate general
+subject-matter knowledge discovered in the course of project work, as
+opposed to project-specific implementation notes (which belong in the
+relevant widget's own doc, plan doc, or code comments instead). This
+file covers digitizing hand-drafted *site plans*; its sibling
+`natural-earth-and-openstreetmap.md` covers a different domain —
+sourcing and combining public, world-scale vector GIS datasets — learned
+building this same project's regional basemap.
 
 ## Contour lines: index vs. minor, and why color is the wrong signal
 

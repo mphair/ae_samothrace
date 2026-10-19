@@ -42,11 +42,54 @@ Black Sea.
 | `ne_10m_rivers_lake_centerlines.geojson` | `ne_10m_rivers_lake_centerlines` | Rivers, as lines, mostly named (e.g. Danube, Evros, Strymonas, Büyük Menderes). |
 | `ne_10m_populated_places.geojson` | `ne_10m_populated_places` | Cities, filtered to population ≥ 50,000 or a national/regional capital (219 in this box — Istanbul, Athens, Ankara, Thessaloniki, ... down to small regional capitals). |
 | `ne_10m_geography_regions_polys.geojson` | `ne_10m_geography_regions_polys` | Named islands/island groups only (filtered from a much larger regions layer): Crete, Rhodes, Lesbos, Cyprus, Cyclades, Ionian Is., and Pelopónnisos (tagged "Island" by Natural Earth despite being a peninsula — kept as their own data, not corrected here). |
+| `ne_10m_geography_marine_polys.geojson` | `ne_10m_geography_marine_polys` | Sea/strait/channel names (11 in this box): Mediterranean Sea, Aegean Sea, Black Sea, Adriatic Sea, Ionian Sea, Sea of Crete, Sea of Marmara, Sea of Azov, Tyrrhenian Sea, Bosporus, Dardanelles. Unlike the island-naming gap below, this layer worked immediately — see "Seas: a success, unlike islands" below. |
 
 Each feature's `properties` only carries the fields actually kept by
 `clip_natural_earth.py` — every layer has ~25-170 attributes upstream
 (multi-language name columns, per-country viewpoint columns, etc.);
 see that script for the exact per-layer keep-list.
+
+## Seas: a success, unlike islands
+
+Asked directly: can the seas in this bbox be labeled the same way the
+islands were? Unlike the island-name search below, **Natural Earth
+answered this on the first try** — `ne_10m_geography_marine_polys` has
+a real `name` field and real polygon coverage of this region, no
+OpenStreetMap fallback needed.
+
+Two things worth knowing if this layer is reused elsewhere:
+
+- **Bbox pre-filtering alone isn't enough — a feature's raw bbox can
+  lie.** A naive "does this feature's bounding box overlap my bbox"
+  check keeps 12 candidates in this region, including "North Pacific
+  Ocean" — its real geometry wraps the antimeridian, so its *bbox*
+  spans the full -180°..180°, overlapping literally everywhere. Only
+  after actually intersecting each candidate's real geometry against
+  the bbox (which `clip_feature()` already did for every other layer
+  in this pipeline) does it correctly clip to empty and drop out,
+  leaving the 11 real matches. Worth remembering for any dataset with
+  antimeridian-spanning features — this project's own
+  `Data/naturalEarth/README.md`-documented bbox math never crosses
+  ±180° itself, but a *source* feature's own geometry still can.
+- **Seas nest, and that's real data, not a bug.** Mediterranean Sea's
+  polygon fully contains Aegean Sea's, which contains Sea of Crete's —
+  Natural Earth hands back every one of these as its own overlapping
+  polygon+name, the same way a real atlas shows the broad name at
+  small scale and the specific one once you zoom in. This script
+  doesn't try to pick a "winner"; the widget's own label-declutter
+  logic (skip a label that would overlap one already placed, biggest
+  features processed — well, in this case, whichever order they're
+  read in, not sorted by size, see its own code) decides what's
+  actually legible at a given zoom.
+
+This is also what motivated `process()`'s new `add_label_point` option
+(used for this layer and, retroactively, for
+`ne_10m_geography_regions_polys`): a label position computed as a
+plain bounds-midpoint can land outside a concave or bbox-sliced
+polygon entirely (on dry land, for a sea) — `add_label_point` instead
+stores shapely's `representative_point()` (guaranteed inside the real
+shape) as `label_lon`/`label_lat` properties, which the widget prefers
+over its own bounds-midpoint fallback.
 
 ## A real gap: Natural Earth doesn't name Samothrace, or most Aegean islands
 

@@ -71,6 +71,11 @@ DATASETS = [
     ("ne_10m_rivers_lake_centerlines", "10m_physical"),
     ("ne_10m_populated_places", "10m_cultural"),
     ("ne_10m_geography_regions_polys", "10m_physical"),
+    # Sea/strait/channel names (Aegean Sea, Black Sea, Dardanelles, ...) --
+    # unlike the island-name search above, this one worked on the first
+    # try: a real `name` field, real polygon coverage of this bbox. See
+    # Data/naturalEarth/README.md's own "Seas" section for what's in it.
+    ("ne_10m_geography_marine_polys", "10m_physical"),
 ]
 
 NATURAL_EARTH_CDN = "https://naturalearth.s3.amazonaws.com"

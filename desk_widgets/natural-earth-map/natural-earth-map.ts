@@ -840,7 +840,18 @@ class NaturalEarthMapElement extends HTMLElement {
       ctx.font = '600 11px Arial, Helvetica, sans-serif';
       ctx.textBaseline = 'middle';
       for (const feature of features) {
-        const center = geometryCenterLonLat(feature.geometry);
+        // Prefer a precomputed label point (clip_natural_earth.py's own
+        // `representative_point()`, guaranteed to fall inside the real
+        // polygon -- important for a large, irregular, bbox-clipped
+        // shape like "Mediterranean Sea" or "Aegean Sea," where a plain
+        // bounds-midpoint has a real chance of landing on dry land).
+        // Falls back to the bounds-midpoint approximation for a layer
+        // that doesn't supply one (e.g. an older cached response).
+        const labelLon = feature.properties['label_lon'];
+        const labelLat = feature.properties['label_lat'];
+        const center = typeof labelLon === 'number' && typeof labelLat === 'number'
+          ? { lon: labelLon, lat: labelLat }
+          : geometryCenterLonLat(feature.geometry);
         if (!center) continue;
         const name = meta.labelField ? (feature.properties[meta.labelField] as string | undefined) : undefined;
         if (!name) continue;

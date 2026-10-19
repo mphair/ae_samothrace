@@ -76,6 +76,18 @@
       "labelField": "name"
     },
     {
+      "id": "ne_10m_geography_marine_polys",
+      "url": "/data/ne_10m_geography_marine_polys.geojson",
+      "featureCount": 11,
+      "label": "Seas",
+      "group": "Seas",
+      "order": 4.2,
+      "defaultVisible": true,
+      "render": "centroid-label",
+      "color": "#6fc8e0",
+      "labelField": "name"
+    },
+    {
       "id": "ne_10m_populated_places",
       "url": "/data/ne_10m_populated_places.geojson",
       "featureCount": 219,

@@ -26,6 +26,22 @@ doesn't need, and writes small GeoJSON files to Data/naturalEarth/
   area (Crete, Rhodes, Lesbos, Cyprus, Cyclades, Ionian Is. all fall
   in the box). This is a curated, sparse "notable islands" list, not
   a gazetteer -- see the gap noted next.
+- `ne_10m_geography_marine_polys.geojson` -- sea/strait/channel names
+  (Aegean Sea, Black Sea, Mediterranean Sea, Adriatic Sea, Ionian Sea,
+  Sea of Crete, Sea of Marmara, Sea of Azov, Tyrrhenian Sea, Bosporus,
+  Dardanelles). Unlike the island-naming gap above, this one worked on
+  the first try -- a real `name` field, and real clipped polygon
+  coverage confirmed by actually intersecting each candidate against
+  the bbox (not just a bbox-vs-bbox pre-check): the one false positive
+  a bbox-only check would have kept, "North Pacific Ocean" (its raw
+  bbox spans the full -180..180 because its real geometry wraps the
+  antimeridian), correctly clips to an empty intersection and is
+  dropped. Seas nest (Mediterranean Sea's own polygon fully contains
+  Aegean Sea's, which contains Sea of Crete's) -- that's real Natural
+  Earth data, not a bug, and is left as-is; the widget's own label
+  -declutter logic (see that layer's own `render: "centroid-label"`)
+  is what actually decides which overlapping name wins a spot on
+  screen at a given zoom.
 
 ## A real gap, worth stating plainly rather than silently dropping
 
@@ -153,6 +169,15 @@ LAYER_STYLES = {
         "color": "#c9a9e0",
         "labelField": "name",
     },
+    "ne_10m_geography_marine_polys": {
+        "label": "Seas",
+        "group": "Seas",
+        "order": 4.2,
+        "defaultVisible": True,
+        "render": "centroid-label",
+        "color": "#6fc8e0",
+        "labelField": "name",
+    },
     "ne_10m_populated_places": {
         "label": "Cities",
         "group": "Cities",
@@ -205,7 +230,19 @@ def write_geojson(name, features):
     print(f"  wrote {out_path} ({len(features)} features)")
 
 
-def process(name, keep_fields, record_filter=None):
+def process(name, keep_fields, record_filter=None, add_label_point=False):
+    """`add_label_point`: for a `render: "centroid-label"` layer, add
+    `label_lon`/`label_lat` properties holding shapely's own
+    `representative_point()` -- a point GUARANTEED to fall inside the
+    (possibly concave, possibly multi-part, possibly clipped-to-a-sliver)
+    polygon, unlike a plain bounds-midpoint. Matters most for this
+    script's two biggest/most irregular clipped polygons
+    (ne_10m_geography_marine_polys' "Mediterranean Sea" and "Aegean
+    Sea" -- the whole bbox's own coastline cuts deep into both): a
+    bounds-midpoint for either would have a real chance of landing on
+    dry land. The widget's own `centroid-label` renderer prefers these
+    properties when present, falling back to its own bounds-midpoint
+    otherwise (see natural-earth-map.ts's own `geometryCenterLonLat`)."""
     print(f"{name}:")
     reader = shapefile.Reader(shp_path(name))
     features = []
@@ -219,6 +256,10 @@ def process(name, keep_fields, record_filter=None):
         if clipped is None:
             continue
         props = {k: rec.get(k) for k in keep_fields}
+        if add_label_point:
+            label_point = clipped.representative_point()
+            props["label_lon"] = label_point.x
+            props["label_lat"] = label_point.y
         features.append(
             {
                 "type": "Feature",
@@ -280,6 +321,12 @@ def main():
         "ne_10m_geography_regions_polys",
         keep_fields=["name", "featurecla"],
         record_filter=is_named_island_region,
+        add_label_point=True,
+    )
+    counts["ne_10m_geography_marine_polys"] = process(
+        "ne_10m_geography_marine_polys",
+        keep_fields=["name", "featurecla", "scalerank"],
+        add_label_point=True,
     )
     write_metadata(counts)
     print(f"\nDone. Stripped, clipped GeoJSON + metadata.json is under {OUT_DIR}/ (committed).")
