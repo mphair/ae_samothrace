@@ -38,6 +38,25 @@ const OVERLAY_PATHS: Record<'Actual' | 'Restored', string> = {
   Actual: 'Data/mapFeatures/SamoWeb_ActualStatePlan_Overlay.geojson',
   Restored: 'Data/mapFeatures/SamoWeb_RestoredStatePlan_Overlay.geojson',
 };
+
+// "Restored State -- Waterway" (2026-10-17) -- a colorized, number-free
+// derivative of the Restored plan's own "00 -- Raw ink mask" pipeline
+// -debug stage (see scripts/style_restored_waterway.py's own header
+// comment for the full story: why this is raster editing rather than a
+// geojson line, how the waterway's own ink is told apart from a
+// similarly-drawn stone path, and the known first-pass limitations).
+// Deliberately NOT a LayerMeta (no hmsvc tile layer backs it) and NOT a
+// StageLayersController row either (that mechanism is tightly coupled
+// to the fixed 7-stage debug pipeline, off-by-default diagnostic
+// content -- this is real, "Restored State"-grouped content instead,
+// same treatment Extracted Contours already gets). A flat, single
+// image pixel-for-pixel aligned with that same raw-ink mosaic, loaded
+// lazily via `readFileAsBlobUrl` (samothrace-map-stage-layers.ts, same
+// file this program already shares) and drawn at its own real-world
+// box exactly like StageLayersController.drawVisible already does.
+const WATERWAY_VIEW_LAYER_ID = 'restored-waterway-view';
+const WATERWAY_VIEW_PNG_PATH = 'Data/mapFeatures/SamoWeb_RestoredStatePlan_WaterwayView.png';
+const WATERWAY_VIEW_BOUNDS_PATH = 'Data/mapFeatures/SamoWeb_RestoredStatePlan_WaterwayView.bounds.json';
 // Which raster layer ids make a given plan's overlay "relevant" -- hover
 // and click hit-testing for that plan's monument polygons are only live
 // while at least one of its own layers is actually visible, so you can
@@ -363,6 +382,11 @@ class SamothraceMapElement extends HTMLElement {
   private layerMetas: LayerMeta[] = [];
   private keyLayers: KeyLayerMeta[] = [];
   private keyImageCache = new Map<string, TileEntry>();
+  // "Restored State -- Waterway" -- see WATERWAY_VIEW_LAYER_ID's own
+  // comment. `undefined` = not yet requested; `null` = requested but
+  // failed/not found (never retried); otherwise the loaded entry.
+  private waterwayViewEntry: StageImageEntry | null | undefined;
+  private waterwayViewBounds: { west: number; south: number; east: number; north: number } | null | undefined;
   private visibleLayers = new Set<string>();
   // Which layer-panel `<details>` groups are currently COLLAPSED (closed)
   // -- keyed by the same `hmsvc:<group>` / `stage:<group>` strings
@@ -437,10 +461,31 @@ class SamothraceMapElement extends HTMLElement {
   // The stroke currently being drawn (pointer down, not yet released) --
   // kept separate from annotationStrokes until pointerup so a stroke
   // that never moves (a plain click) can be discarded instead of adding
-  // a single-point no-op "line."
-  private annotationDrawState: { color: string; points: Array<{ x: number; y: number }> } | null = null;
+  // a single-point no-op "line." `lastLoggedAtMs` is purely for the
+  // ink-point logging throttle below (see onPointerMove's own comment),
+  // not read by drawAnnotations/rendering at all.
+  private annotationDrawState: { color: string; points: Array<{ x: number; y: number }>; lastLoggedAtMs: number } | null = null;
+  // How often (ms) a point gets logged DURING an active stroke -- see
+  // onPointerMove's own comment on why this is a separate, coarser
+  // throttle from the 2px-distance one that governs the drawn path
+  // itself. ~3-4 entries/sec is plenty to correlate against speech
+  // without flooding desk.log.
+  private static readonly INK_LOG_THROTTLE_MS = 300;
   private screenshotCountdownInterval: number | null = null;
   private screenshotCountdownTimer: number | null = null;
+  // The most recently STARTED recording's own id/started-at, kept one
+  // step stale relative to RecordingController's own fields -- updated
+  // every time recording.onChange fires with a non-null id. Needed
+  // because by the time that same callback later fires with `null`
+  // (the recording just stopped), RecordingController has ALREADY
+  // nulled its own copies of both (see its own stop-handling in
+  // samothrace-map-recording.ts) -- this widget still needs them for
+  // one more thing after that point: the "screenshot before clearing
+  // the ink" capture below, which has to be stamped with the recording
+  // that was JUST active, not the one that's active now (there may not
+  // be one at all).
+  private lastRecordingId: string | null = null;
+  private lastRecordingStartedAtMs: number | null = null;
 
   connectedCallback(): void {
     const template = document.getElementById('samothrace-map-template');
@@ -510,12 +555,25 @@ class SamothraceMapElement extends HTMLElement {
       // comment) -- there's nothing left for a reload to need to
       // restore.
       if (recordingId === null) {
+        // One more thing worth keeping before the slate gets wiped --
+        // added 2026-10-18, directly requested as a safety net on top of
+        // the real fix below ("just in case it is useful"): if there was
+        // actually something inked, grab a screenshot of it first. Uses
+        // lastRecordingId/lastRecordingStartedAtMs (this class's own
+        // field comment explains why -- RecordingController has already
+        // nulled its own copies by the time this callback runs).
+        if ((this.annotationStrokes.length > 0 || this.annotationDrawState) && this.lastRecordingId !== null && this.lastRecordingStartedAtMs !== null) {
+          void this.captureScreenshotFor(this.lastRecordingId, Date.now() - this.lastRecordingStartedAtMs);
+        }
         this.annotationStrokes = [];
         this.annotationDrawState = null;
         this.annotationLayerOn = false;
         this.canvas?.classList.remove('annotating');
         this.annotateToggleButtonEl?.classList.remove('active');
         this.scheduleRedraw();
+      } else {
+        this.lastRecordingId = recordingId;
+        this.lastRecordingStartedAtMs = this.recording.recordingStartedAtMs;
       }
       this.syncAnnotatePaletteVisibility();
       // A recording's own narration can't be assumed to mention which
@@ -768,6 +826,7 @@ class SamothraceMapElement extends HTMLElement {
     if (this.stageLayers.allLayerRows().some((r) => r.id === id)) return true;
     if (id === this.connectorTab.rowFor().id) return true;
     if (this.keyLayers.some((k) => k.id === id)) return true;
+    if (id === WATERWAY_VIEW_LAYER_ID) return true;
     return false;
   }
 
@@ -913,6 +972,16 @@ class SamothraceMapElement extends HTMLElement {
       if (group === 'restored') {
         const row = this.contoursLayer.rowFor(group);
         pushRow(row.id, row.label, false);
+      }
+      // "Restored State -- Waterway" (2026-10-17, directly requested
+      // after the user zoomed into "00 -- Raw ink mask" and liked the
+      // waterway/platform detail there) -- same reasoning as Extracted
+      // Contours just above: real, session-confirmed map content joins
+      // THIS group rather than the diagnostic pipeline-stage section.
+      // Not a LayerMeta/hmsvc layer and not a StageLayersController row
+      // either -- see WATERWAY_VIEW_LAYER_ID's own comment.
+      if (group === 'restored') {
+        pushRow(WATERWAY_VIEW_LAYER_ID, 'Restored State — Waterway', false);
       }
       closeGroup();
 
@@ -1318,7 +1387,24 @@ class SamothraceMapElement extends HTMLElement {
     if (this.annotationLayerOn) {
       const rect = this.canvas?.getBoundingClientRect();
       if (rect) {
-        this.annotationDrawState = { color: this.activeAnnotationColor, points: [{ x: e.clientX - rect.left, y: e.clientY - rect.top }] };
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        this.annotationDrawState = { color: this.activeAnnotationColor, points: [{ x, y }], lastLoggedAtMs: Date.now() };
+        // The whole point of this feature (2026-10-18, directly): "a way
+        // for me to more precisely indicate things to you in a timecoded
+        // way... recorded, not just in pixels, but as a timecoded stream
+        // of points." A screenshot only captures the FINAL result, and
+        // (per the previous, real incident) only if one gets taken
+        // before the canvas clears -- this is durable regardless, and
+        // lets a later read of this log reconstruct exactly where the
+        // pointer was at each moment, correlated against the transcript
+        // the same way every other recording.log call in this widget
+        // already is. `view` is included here (once per stroke, not per
+        // point) so the screen-px points below can be converted back to
+        // real lon/lat later -- safe to log just once since pan/zoom is
+        // deliberately locked for as long as annotating is possible at
+        // all (see this class's own "Annotation layer" section comment).
+        this.recording.log('annotation', 'ink-start', { color: this.activeAnnotationColor, x, y, view: { ...this.view } });
         this.scheduleRedraw();
       }
       return;
@@ -1355,6 +1441,17 @@ class SamothraceMapElement extends HTMLElement {
         const last = this.annotationDrawState.points[this.annotationDrawState.points.length - 1]!;
         if (Math.abs(x - last.x) >= 2 || Math.abs(y - last.y) >= 2) {
           this.annotationDrawState.points.push({ x, y });
+          // Coarser, TIME-based throttle for the durable log entry --
+          // deliberately separate from the 2px-distance one just above,
+          // which governs the drawn path's own visual smoothness and
+          // would otherwise fire several times a second during a fast
+          // stroke. See onPointerDown's own 'ink-start' comment for why
+          // this stream exists at all.
+          const now = Date.now();
+          if (now - this.annotationDrawState.lastLoggedAtMs >= SamothraceMapElement.INK_LOG_THROTTLE_MS) {
+            this.annotationDrawState.lastLoggedAtMs = now;
+            this.recording.log('annotation', 'ink-point', { x, y });
+          }
           this.scheduleRedraw();
         }
       }
@@ -1421,6 +1518,8 @@ class SamothraceMapElement extends HTMLElement {
       // the stroke list with invisible entries. No scheduleSaveUiState()
       // here (removed 2026-10-17) -- annotations are no longer persisted
       // past the current recording, see saveUiState's own comment.
+      const last = this.annotationDrawState.points[this.annotationDrawState.points.length - 1]!;
+      this.recording.log('annotation', 'ink-end', { x: last.x, y: last.y, pointCount: this.annotationDrawState.points.length });
       if (this.annotationDrawState.points.length >= 2) {
         this.annotationStrokes.push(this.annotationDrawState);
       }
@@ -1783,6 +1882,7 @@ class SamothraceMapElement extends HTMLElement {
 
   private clearAnnotations(): void {
     if (this.annotationStrokes.length === 0 && !this.annotationDrawState) return;
+    this.recording.log('annotation', 'ink-clear', { strokeCount: this.annotationStrokes.length });
     this.annotationStrokes = [];
     this.annotationDrawState = null;
     this.scheduleRedraw();
@@ -1844,8 +1944,6 @@ class SamothraceMapElement extends HTMLElement {
   // canvas-drawn) would NOT appear here if visible -- narrow, rare
   // overlap, not worth solving now.
   private async captureScreenshot(): Promise<void> {
-    const desk = window.desk;
-    if (!desk || !this.canvas) return;
     const recordingId = this.recording.recordingId;
     const startedAtMs = this.recording.recordingStartedAtMs;
     // Both should always be set together whenever this is reachable at
@@ -1853,7 +1951,22 @@ class SamothraceMapElement extends HTMLElement {
     // rather than assumed, consistent with this widget's general
     // "best-effort, never throw into a click handler" standard.
     if (recordingId === null || startedAtMs === null) return;
-    const elapsedMs = Date.now() - startedAtMs;
+    await this.captureScreenshotFor(recordingId, Date.now() - startedAtMs);
+  }
+
+  // Split out from captureScreenshot (2026-10-18) so the "screenshot
+  // before clearing the ink" path (recording.onChange, above) can supply
+  // the JUST-stopped recording's own id/elapsed directly -- by the time
+  // that callback runs, RecordingController has already nulled its own
+  // copies, so this.recording.recordingId/recordingStartedAtMs are no
+  // longer usable for that call site (see lastRecordingId's own field
+  // comment). Note this.recording.log(...) itself is a silent no-op by
+  // then too (same reason) -- that specific call site's own screenshot
+  // gets saved to disk normally, it just doesn't get a matching log
+  // entry, which is fine: the file's own existence is the record.
+  private async captureScreenshotFor(recordingId: string, elapsedMs: number): Promise<void> {
+    const desk = window.desk;
+    if (!desk || !this.canvas) return;
     const { file, display } = formatTimecode(elapsedMs);
     let dataUrl: string;
     try {
@@ -1954,6 +2067,11 @@ class SamothraceMapElement extends HTMLElement {
     // comment for why its bounds lookup must stay synchronous here
     // rather than resolving a promise mid-draw.
     this.stageLayers.drawVisible(ctx, this.visibleLayers, toScreen);
+    // Same "between base raster and monument overlays" slot as
+    // stageLayers.drawVisible just above -- real "Restored State" map
+    // content, same stacking position Extracted Contours/monument
+    // overlays occupy relative to the raw tile layers underneath.
+    this.drawWaterwayView(ctx, toScreen);
 
     this.drawOverlays(ctx, toScreen);
     // Drawn last/on top -- a monument's own selection highlight is only
@@ -2068,6 +2186,60 @@ class SamothraceMapElement extends HTMLElement {
       ctx.restore();
       bottom += h + 10;
     }
+  }
+
+  // Lazily loads (once) + draws "Restored State -- Waterway" at its own
+  // real-world box -- same `readFileAsBlobUrl`/bounds-box approach
+  // StageLayersController.drawVisible already uses for every pipeline
+  // -stage PNG (same-origin blob: URL, never at risk of the
+  // crossOrigin/canvas-tainting issue tile images needed, see getTile's
+  // own comment). `void` on both loader calls -- they set
+  // waterwayViewEntry/Bounds and call scheduleRedraw themselves once
+  // done; this method just skips drawing until then.
+  private drawWaterwayView(ctx: CanvasRenderingContext2D, toScreen: (lon: number, lat: number) => { x: number; y: number }): void {
+    if (!this.visibleLayers.has(WATERWAY_VIEW_LAYER_ID)) return;
+    if (this.waterwayViewEntry === undefined) {
+      this.waterwayViewEntry = { img: new Image(), status: 'loading' };
+      void this.loadWaterwayViewImage();
+    }
+    if (this.waterwayViewBounds === undefined) {
+      this.waterwayViewBounds = null;
+      void this.loadWaterwayViewBounds();
+    }
+    if (!this.waterwayViewEntry || this.waterwayViewEntry.status !== 'loaded' || !this.waterwayViewBounds) return;
+    const b = this.waterwayViewBounds;
+    const nw = toScreen(b.west, b.north);
+    const se = toScreen(b.east, b.south);
+    ctx.drawImage(this.waterwayViewEntry.img, nw.x, nw.y, se.x - nw.x, se.y - nw.y);
+  }
+
+  private async loadWaterwayViewImage(): Promise<void> {
+    try {
+      const url = await readFileAsBlobUrl(WATERWAY_VIEW_PNG_PATH);
+      const img = new Image();
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('decode failed'));
+        img.src = url;
+      });
+      this.waterwayViewEntry = { img, status: 'loaded' };
+    } catch (err) {
+      console.warn('loading Restored State -- Waterway image failed:', err);
+      this.waterwayViewEntry = null;
+    }
+    this.scheduleRedraw();
+  }
+
+  private async loadWaterwayViewBounds(): Promise<void> {
+    const desk = window.desk;
+    if (!desk) return;
+    try {
+      const { contents } = await desk.fs.readFile(WATERWAY_VIEW_BOUNDS_PATH);
+      this.waterwayViewBounds = JSON.parse(contents) as { west: number; south: number; east: number; north: number };
+    } catch (err) {
+      console.warn('loading Restored State -- Waterway bounds failed:', err);
+    }
+    this.scheduleRedraw();
   }
 
   // Debug aid: every hit-test this session (hover and click) plotted as a

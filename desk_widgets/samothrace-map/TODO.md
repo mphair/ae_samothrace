@@ -3,6 +3,339 @@
 See `AGENTS.md` for the full picture of this widget; this file just
 tracks specific open items worth picking up later.
 
+- **New "Restored State — Waterway" layer — a colorized, number-free
+  derivative of the Restored plan's own "00 — Raw ink mask" pipeline
+  -debug stage (2026-10-17, requested live: the user zoomed into that
+  debug layer and liked "the detail... this sort of platform with
+  these bridges that go over the waterways... the kind of lining
+  that's along the waterways," asked for a real, permanent, named view
+  built from it — numbers cleared out, waterway filled in blue, a
+  "slightly faded blue... when it's going underneath a platform").**
+
+  **Raster editing, not vector-line extraction** — the channel's own
+  boundary ink is used to FLOOD-FILL the water area itself with a solid
+  color (see `scripts/style_restored_waterway.py`'s own header comment
+  for the full story), preserving the authentic hand-drawn "lining"
+  texture — the fill's own edges land right where the real boundary ink
+  was — a plain geojson line would lose. The Restored plan's own scan
+  has ZERO
+  saturated-blue ink anywhere (confirmed: its own `00_blue-mask.png` is
+  100% white — the river was "cleared, bordered, and in places built
+  over" in this interpretation, never printed in color) — asked the
+  user whether to borrow Actual's own already-extracted stream path
+  instead; they said no, the waterway's own linework is already clearly
+  visible in Restored's own raw ink, use the Initial Map photo's own
+  painted river only as a style/color reference and rough positional
+  guide.
+
+  **How the waterway's own ink is told apart from a similarly-drawn
+  stone path** (confirmed directly: the channel's distinctive double
+  -line-with-ticks "ladder" motif is ALSO used for paths elsewhere in
+  the same drawing — not safely automatable by shape alone): the
+  Initial Map photo is warped into the Restored mosaic's own pixel
+  space (reusing `map-import-from-photo`'s own `corner_to_world`
+  homography math, reimplemented rather than imported — same reasoning
+  that job's own header comment gives), its blue pixels detected and
+  dilated into a corridor, intersected with a THIN-STROKE-ONLY ink mask
+  (`extract_vector_layers.py`'s own `classify_ink` — the same thin/
+  thick split that pipeline already uses to keep contour lines separate
+  from structure walls, reused here to keep building outlines from
+  being swept in even where the corridor brushes against one).
+
+  **Number-label erasure, a real, accepted compromise (no longer
+  applied to the shipped output as of the same-day fix below — see
+  that entry's own last paragraph)**: a building-ID
+  digit and a decorative wall-ornament dot turn out to have nearly
+  identical connected-component statistics in this raw scan (confirmed
+  directly — building "20"'s own digit and a dot from building 29's own
+  wall ornamentation differ by only a few px). Told apart instead by
+  ISOLATION: a decorative dot is one of several similarly-sized
+  components in a tight repeating row; a label is comparatively alone.
+  Not perfect — some real numbers sitting close to another real number
+  survive uncleaned, confirmed in spot checks (e.g. "9", "20", "28",
+  "16", "14", "13", "25" all still visible in the shipped first pass).
+
+  **Fixed, same day — the first version colored the ink, not the
+  water.** The user tried it and came back: "I was looking to fill in
+  the waterway itself, not color the ink blue... you're filling in the
+  water rather than the boundaries of the water" — the shipped-first
+  version had just recolored the channel's own boundary ink (the "rail"
+  lines), leaving the water's own interior untouched. Fixed with a
+  morphological CLOSING of the boundary-ink mask (`ndimage.
+  binary_closing`, iterated 3×3 — `WATER_FILL_CLOSE_ITERATIONS`) that
+  bridges the real gap between the channel's two rails (and across its
+  own periodic tick marks) into one solid filled band — a deliberately
+  different technique from a seeded flood-fill, which would leak
+  straight through the many genuine gaps in this hand-drawn boundary
+  ink with no guaranteed-closed outline to contain it. Capped back to
+  the blue-paint corridor, with every known structure FOOTPRINT
+  subtracted out (not just that structure's own wall ink — an empty
+  room reachable through a narrow gap was bleeding fill into it during
+  testing, confirmed directly in buildings 7 and 32's own small rooms,
+  both just downhill of the main channel, before this was added).
+  Originally also dropped the first version's "fainter blue going
+  underneath a platform" distinction as a direct consequence — once
+  every structure footprint had to be subtracted (to stop the
+  interior-bleed above), the same geometric test could no longer tell
+  "genuinely passing under a real bridge" apart from "merely adjacent to
+  a building the closing step bridged past." **Restored 2026-10-18,
+  directly requested again**: "I think include the water under the
+  bridge, but in a much lighter shade so it is clear what is going on."
+  Tried two different automatic ways to tell a real bridge apart from a
+  merely-adjacent building first — overlap fraction (bridge area ÷ the
+  structure's OWN total footprint) and a graph-connectivity test (does
+  excluding this one structure split the water into more pieces) — and
+  BOTH mis-classified a real, visually obvious bridge: building 26
+  (Propylon of Ptolemy II), confirmed directly by eye (the channel
+  enters one corner and exits the opposite one), scored low on both
+  metrics because the crossing is a thin diagonal sliver of a large
+  rectangular footprint, not a dead-center pass-through. Landed on a
+  hand-maintained set instead (`BRIDGE_LABELS`, currently just `{"26"}`,
+  confirmed by direct visual inspection) rather than keep chasing a
+  classifier that doesn't actually work — expected to grow once the
+  user's own green-circled bridge annotations (from their "circle
+  generally around the bridges in green" pass) land as a real point
+  stream. Structures in that set stay IN the fill (not subtracted at
+  all) and get recolored at `WATER_ALPHA_UNDER_BRIDGE` (90, vs. 235 in
+  the open) instead. The user also said they still don't see the numbers
+  cleared and want to reconsider that approach separately — left
+  completely alone this round (`find_label_regions` is still computed,
+  just not applied to the output), not a regression, a deliberate "fix
+  the water now, numbers later" split per their own request.
+
+  **A real workflow gap, discovered 2026-10-18, fixed the same day**:
+  the user came back with extensive, detailed annotation-tool markup
+  (purple strokes on spots that should be filled, red circles on spots
+  that shouldn't) and a long verbal walkthrough of each one — but by the
+  time that recording stopped and this agent could look, the
+  annotations were already gone. This was a direct, real consequence of
+  the earlier "scope annotations to the recording's lifetime" fix
+  (`recording.onChange` clears every stroke the instant `recordingId`
+  goes back to `null`) colliding with a genuinely different use case
+  than the one that fix was written for: marking something up *for the
+  agent to look at afterward* needs the markup to survive at least long
+  enough to be captured, which "cleared the instant the recording ends"
+  didn't allow for.
+
+  **The real fix, directly requested**: "those interactions should be
+  recorded, not just in pixels, but as a timecoded stream of points" —
+  the actual goal of this whole tool was always to let the user point
+  at things precisely WHILE narrating, the same "what was said, while
+  pointing at what" correlation `RecordingController`'s own header
+  comment has described since phase 1. The gap was that drawing a
+  stroke never called `recording.log(...)` at all — purely an in-memory/
+  on-canvas thing until now. Fixed: `onPointerDown`'s own annotation
+  branch logs `'ink-start'` (`color`, `x`, `y`, and the current `view` —
+  once per stroke, not per point, since pan/zoom is locked for as long
+  as annotating is possible at all, so one view snapshot covers the
+  whole stroke and lets a later read of this log convert its screen-px
+  points back to real lon/lat); `onPointerMove`'s own branch logs
+  `'ink-point'` entries on a SEPARATE, coarser time-based throttle
+  (`INK_LOG_THROTTLE_MS`, 300ms — deliberately coarser than the
+  existing 2px-distance throttle that governs the drawn path's own
+  visual smoothness, which would otherwise fire several times a second);
+  `onPointerUp` logs `'ink-end'`; `clearAnnotations` logs `'ink-clear'`.
+  Together these make a real, durable, timecoded point stream that
+  survives regardless of whether the canvas itself ever gets
+  screenshotted — `desk_query_widget_log` against this widget's own log,
+  time-ranged against the transcript, now reconstructs exactly where the
+  pointer was at each moment, the same way every other interaction this
+  widget logs already does.
+
+  **Also added, as a belt-and-suspenders safety net** ("just in case it
+  is useful, take a screenshot immediately before clearing the ink"):
+  `recording.onChange`'s own stop-handling now grabs one screenshot
+  first, IF there was actually something inked, before wiping the
+  slate — using two new fields, `lastRecordingId`/
+  `lastRecordingStartedAtMs`, kept one step stale relative to
+  `RecordingController`'s own copies specifically because
+  `RecordingController` has already nulled ITS OWN copies by the time
+  this callback runs (confirmed directly in its own stop-event
+  handling) — this callback would otherwise have nothing to stamp the
+  screenshot's filename/timecode with. `captureScreenshot` was split
+  into a thin public wrapper (reads current state, used by the toolbar
+  button) and `captureScreenshotFor(recordingId, elapsedMs)` (the actual
+  work, callable with explicit values from either call site). Known,
+  accepted quirk: `recording.log('screenshot', 'captured', ...)` inside
+  that shared helper is ALSO a silent no-op for this specific call site
+  (same already-nulled-state reason) — the screenshot file itself still
+  gets written correctly, it just has no matching log entry; not worth
+  fixing, the file's own existence is the record.
+
+  **Improved anyway, same day, from a careful by-hand re-comparison**
+  against the same Initial-Map-warped-onto-the-ink-mask reference image
+  used to build the corridor in the first place (since the user's own
+  markup wasn't recoverable, re-examining that reference critically was
+  the best available substitute): found two concrete, fixable problems.
+  (1) `WATER_FILL_CLOSE_ITERATIONS` of 10 left real, visible gaps WITHIN
+  what should have been one continuous filled band (confirmed directly,
+  zoomed in) — raised to 20, and the fill is no longer re-intersected
+  with the corridor afterward (that re-intersection was itself
+  reintroducing the corridor's own small internal gaps as holes in the
+  output). (2) A small, fully-isolated blob near the "Chronology" legend
+  area turned out to be a real, confirmed false positive — the warped
+  Initial Map photo still carries its own legend swatches off to the
+  side of the real river, and one of their colors occasionally trips the
+  same blue-ink detector used to build the corridor. Fixed with a new
+  `MIN_WATER_COMPONENT_PX` connected-component-size filter: a real
+  channel segment is always part of one long connected run, so anything
+  below 6000px that ends up fully disconnected from the main channel
+  gets dropped. This likely accounts for at least some of what the user
+  circled in red ("these three blobs... are not in the waterway") —
+  without their own markup to check against directly, this can't be
+  fully confirmed, which is exactly what the workflow-gap note above is
+  about.
+
+  **Known limitation**: one stretch of the left/western branch (south
+  of the theater, near building 12) uses a different, single-row-of
+  -dots ink convention instead of the "ladder" pattern used everywhere
+  else — the flood-fill still reaches it (the closing step helps here
+  too) but a bit more unevenly/blockier than the rest of the channel.
+
+  **First real annotation pass actually captured end-to-end, 2026-10-18**
+  (`rec-1792376622614-0883`) — third attempt at this; the first two were
+  lost (feature didn't exist yet, then the widget hadn't reloaded to pick
+  it up — see the workflow-gap entry above). This time `desk_query_widget_log`
+  returned the full ink-point stream, so corrections came from the user's
+  own precise markup instead of a guess. Converting the logged screen-px
+  points into this script's own mosaic-pixel space meant reimplementing
+  `samothrace-map.ts`'s exact `toScreen`/`projectWorld`/`unprojectWorld`
+  math in reverse, with the canvas's CSS viewport size recovered from the
+  pre-clear screenshot's own pixel size ÷ devicePixelRatio (2) — then
+  SELF-VERIFIED (not just assumed correct) by projecting the green circle
+  around structure 26 through the whole pipeline and checking it landed
+  within ~30px of that structure's own independently-rasterized Overlay
+  footprint. Four concrete fixes came out of it, all in
+  `scripts/style_restored_waterway.py`: two hand-drawn RED loops force-
+  excluded outright (water that was "just not correct... way off path",
+  near structures 22/23 and structure 7); two ORANGE loops "tightened"
+  against the user's own nearby PURPLE reference marks (fill kept only
+  within `TIGHTEN_RADIUS_PX` of the true line inside each loop, dropped
+  elsewhere in the loop); three GREEN-circled bridge crossings added as
+  `MANUAL_BRIDGE_LOOPS_PX` (confirmed by cropping the raw ink mask at
+  each one and finding the dotted-line-between-two-end-caps convention
+  the user separately described — none of the three sits inside a mapped
+  structure footprint, so they're free-standing hand-traced polygons, not
+  `BRIDGE_LABELS` entries); and `BRIDGE_LABELS` itself reverted to empty
+  — the user looked at structure 26 again and corrected themselves ("I
+  think actually on that one there's no dotted line there... leave that
+  one as a break"), confirmed directly against a crop showing no such
+  convention there, unlike the three new manual bridges' own crops.
+  A fourth green circle (between structures 13/14) was deliberately left
+  unresolved — the user flagged their own uncertainty about it in the
+  same breath as circling it, so it stays a plain break rather than being
+  guessed at. See `style_restored_waterway.py`'s own header comment for
+  the full calibration story and its "Known limitations" section for what
+  this pass does and doesn't cover (the underlying corridor-tracing logic
+  itself is unchanged — these are point corrections, not a general fix,
+  so the same class of error can still show up anywhere not yet
+  annotated).
+
+  **Separately noticed while investigating this pass, not yet fixed**:
+  `recording.onChange`'s stop-handling clears `annotationStrokes` directly
+  (see the workflow-gap entry above) without going through
+  `clearAnnotations()`, so no `'ink-clear'` log entry is ever written when
+  a recording simply stops with ink still on screen (only the explicit
+  "Clear" button path logs one). Harmless this round — the pre-clear
+  screenshot plus the ink-point stream's own last `'ink-end'` timestamp
+  were enough to reconstruct everything — but worth fixing for symmetry:
+  a reader of this log currently can't tell "stroke ended" apart from
+  "stroke ended AND the recording stopped right after" without also
+  cross-referencing the recording's own stop time.
+
+  **Second real annotation pass, same day** (`rec-1792386103334-1fcc`) —
+  this time zoomed in much closer (the log's own `view.zoom` was 20, not
+  18 — confirmed the screen↔mosaic conversion has to read zoom fresh per
+  `ink-start` rather than assume the first pass's value). Found near
+  structures 14/15: a stretch where the pipeline had filled the WRONG
+  line entirely (almost certainly a nearby elevation contour caught by
+  the blue-paint corridor) while the real channel, running right
+  alongside it, was never filled at all — a different failure mode than
+  anything the first pass surfaced. The user traced the real line
+  directly in PURPLE across five paused-and-resumed strokes, circled the
+  wrong line in RED, and circled a run of small boundary-marker dots
+  flanking their own trace in YELLOW (confirms the trace is right,
+  informational only — not acted on programmatically). Two fixes in
+  `scripts/style_restored_waterway.py`: three more `EXCLUDE_LOOPS_PX`
+  entries (the wrong line's own loop plus a small isolated blob next to
+  it), and a brand new `FORCE_INCLUDE_SEGMENTS` mechanism — unlike every
+  earlier correction, which corrects existing fill, there was nothing to
+  correct here, just a gap to add, so the purple trace is unioned in
+  directly as a buffered line (`FORCE_INCLUDE_HALF_WIDTH_PX`, picked from
+  the existing channel's own measured typical half-width via
+  `ndimage.distance_transform_edt`, not guessed). Two small leftover
+  specks survived the first pass of this fix, both sitting at a concave
+  pinch in the user's own hand-drawn loop boundary — the user had
+  directly anticipated this ("I missed some corners and edges and
+  things, but like, that's outside") — closed with two small
+  supplementary rectangles rather than re-tracing the whole loop. Full
+  story, including why this failure mode (filling a contour instead of
+  the channel) is worth specifically checking for elsewhere, is in
+  `style_restored_waterway.py`'s own header and "Known limitations".
+
+  **Third pass, same day, a completely different technique** (`rec-1792387641944-c56b`)
+  — instead of marking up what the pipeline got wrong again, the user
+  turned the waterway layer off, looked at just the raw ink mask, and
+  said: "put some spots, and in those spots you should be able to do a
+  normal flood fill... move out from that blue spot... and keep growing
+  that until it hits a line, or some other color besides white." A
+  literal seeded flood fill, sidestepping the whole hard problem the
+  corridor pipeline existed to solve (telling the channel's "ladder"
+  convention apart from the same convention used for stone paths
+  elsewhere, with no automatable shape signal). Directly requested as a
+  **real, reusable installed job**, not a one-off script change: "please
+  write something that can do that... build it into the installed job...
+  call it painting technique." Built `desk-installed-jobs/
+  painting-technique/main.py` — generalized over any line-art image +
+  seed points, not hardcoded to Samothrace or to water (same "generalized
+  over `<slug>`" convention `map-import-from-photo` already follows).
+  Algorithm: `scipy.ndimage.label` on the INVERSE of the ink mask
+  partitions the open area into connected components in one pass; a
+  seed's fill is just "every pixel sharing that seed's component id" —
+  equivalent to a real paint-bucket fill, computed without a hand-rolled
+  pixel BFS. An optional closing pre-pass (off by default) bridges real
+  gaps in hand-drawn boundary ink, same idea the old corridor pipeline's
+  own closing step used.
+
+  **Tested head-to-head against the old pipeline's hand-corrected output
+  before adopting it, not assumed better**: raw (no closing) leaked
+  catastrophically — 2.6M px filled, ~44% of the entire canvas — directly
+  confirming why the original design avoided a seeded flood fill in the
+  first place. Closing=1 barely helped (2.3M px); closing=2 fell off a
+  cliff to ~101K px; 3 and 4 landed within a few hundred px of 2,
+  confirming it wasn't a fragile right-at-the-edge value. Landed on 3.
+  Visually re-verified against the EXACT trouble spots the old pipeline's
+  hand corrections existed for (structures 22/23's wrong blob, structure
+  7's wrong rooms, structures 14/15's missing-channel/wrong-contour
+  error) — the new technique gets every one right, with ZERO hand
+  -maintained corrections. Result: **rewrote `style_restored_waterway.py`
+  wholesale** — `warp_initial_map_into_restored_px`/`detect_blue`/the
+  whole corridor concept, plus every `EXCLUDE_LOOPS_PX`/`TIGHTEN_ZONES`/
+  `FORCE_INCLUDE_SEGMENTS` hand correction from the two passes just
+  above, are gone from the code entirely (kept only as history in this
+  file and the script's own header). `SEED_POINTS_PX` holds the user's 7
+  converted seed points; `BRIDGE_LABELS`/`MANUAL_BRIDGE_LOOPS_PX` carry
+  over unchanged (a confirmed bridge is still a hard break by default
+  under the new technique too — the flood fill can't cross a structure's
+  own wall ink either — so the same "add the bridge region back in,
+  recolor fainter" fix still applies, now unioned in explicitly rather
+  than relying on a corridor-era closing step that happened to bridge
+  the gap incidentally). Full story, including exactly why bridges behave
+  differently now, is in the script's own header.
+
+  Wired into `samothrace-map.ts` as a flat, lazily-loaded image (reusing
+  `readFileAsBlobUrl`, same `desk.documents`-backed, same-origin-safe
+  approach `StageLayersController` already uses for every pipeline
+  -stage PNG — never at risk of the crossOrigin/canvas-tainting issue
+  tile images needed `crossOrigin` for), drawn at its own real-world box
+  exactly like `StageLayersController.drawVisible` already does.
+  Deliberately NOT a `LayerMeta` (no hmsvc tile layer backs it) and NOT
+  a `StageLayersController` row either (that mechanism is tightly
+  coupled to the fixed 7-stage debug pipeline, off-by-default
+  diagnostic content) — joins the "Restored State" layer-panel group
+  instead, same injection pattern Extracted Contours already uses, same
+  "real, session-confirmed map content" reasoning.
+
 - **New "Keys" layer-panel category — the "Initial Map" photo's own
   printed Chronology legend, extracted (2026-10-17, requested live while
   trying out the new annotation tool: drew a purple box around it, "this

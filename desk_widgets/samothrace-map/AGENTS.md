@@ -225,6 +225,25 @@ and get concatenated in that order; it does **not** matter for *type
    the instant a recording stops (corrected 2026-10-17, see `TODO.md`'s
    own entry for the first version this replaced).
 
+   **Ink is now a real, timecoded `recording.log` stream, not just
+   on-canvas pixels** (2026-10-18, directly requested: "those
+   interactions should be recorded... as a timecoded stream of points"
+   — the actual point of this tool all along, same "what was said while
+   pointing at what" correlation every other `recording.log` call in
+   this widget already supports). `onPointerDown`'s annotation branch
+   logs `'ink-start'` (color/x/y/view, once per stroke); `onPointerMove`
+   logs `'ink-point'` on its own ~300ms throttle (`INK_LOG_THROTTLE_MS`
+   — deliberately coarser than the 2px-distance throttle governing the
+   drawn path's own smoothness); `onPointerUp`/`clearAnnotations` log
+   `'ink-end'`/`'ink-clear'`. Also: `recording.onChange`'s own stop
+   -handling now grabs one screenshot FIRST, if anything was inked,
+   before wiping the slate — needs `lastRecordingId`/
+   `lastRecordingStartedAtMs` (this class's own field comments explain
+   why: `RecordingController` has already nulled its own copies of both
+   by the time that callback runs). See `TODO.md`'s own entry for the
+   real incident (user's detailed annotation markup was lost before this
+   agent could see it) that prompted both of these.
+
    **"Keys" layer-panel group** (2026-10-17, same day). A genuinely new
    layer KIND — not geo-projected/tiled like every other layer here,
    since a printed legend has no real-world lon/lat of its own. Drawn at
@@ -240,6 +259,33 @@ and get concatenated in that order; it does **not** matter for *type
    (`desk-installed-jobs/map-import-from-photo/`'s new `extract_keys()`)
    and a real operational lesson (don't `kill` a running hmsvc process
    hoping for an auto-restart).
+
+   **"Restored State — Waterway"** (2026-10-17, same day). A real
+   `.png` (`Data/mapFeatures/SamoWeb_RestoredStatePlan_WaterwayView.png`
+   + `.bounds.json`), generated OFFLINE by `scripts/
+   style_restored_waterway.py` (raster-edits the Restored plan's own
+   raw ink mask — numbers erased, the waterway recolored blue — see
+   that script's own header comment and `TODO.md`'s entry for the full
+   story), not computed by this widget or any hmsvc endpoint at
+   request time. Loaded lazily (`drawWaterwayView`) via
+   `readFileAsBlobUrl` (same same-origin-safe approach
+   `StageLayersController` already uses for every pipeline-stage PNG)
+   and drawn at its own real-world box, same stacking position as
+   `stageLayers.drawVisible` relative to the base raster layers. Joins
+   the "Restored State" layer-panel group (`WATERWAY_VIEW_LAYER_ID`),
+   same injection pattern Extracted Contours already uses — deliberately
+   NOT a `LayerMeta` or a `StageLayersController` row (see that entry's
+   own reasoning, same as "Keys" just above). **Rewritten 2026-10-18**
+   from corridor-detection (warp the Initial Map photo in, detect its
+   blue pixels, dilate into a corridor) to a seeded flood fill — the
+   user placed BLUE seed points directly in the real channel and asked
+   for a literal paint-bucket fill bounded by ink, built as a real,
+   reusable installed job (`desk-installed-jobs/painting-technique/`, not
+   specific to this widget or to water) per their own direct request.
+   See that script's own header and `TODO.md`'s entry for the full
+   before/after story — the new technique reproduces everything several
+   rounds of hand-traced corrections had fixed, with none of those
+   corrections still in the code.
 
 `widget.html` holds the template markup + all CSS (one `<style>` block
 inside the `<template>`); `widget.json` the manifest (keyword,
@@ -284,6 +330,7 @@ find nothing for `actual` and show Restored-only data.
 | `Data/mapSources/<slug>/transform.json`'s own `keys` list | read | `extract_keys()`'s own input (a separate process, not this widget) — axis-aligned crop boxes, in the photo's own unwarped pixel space |
 | `Data/mapSources/<slug>/keys/<id>.png` | write (job), read (hmsvc) | `extract_keys()`'s own output — never read directly by this widget, which only ever reaches it via `<serviceUrl>/key/<slug>/<id>.png` |
 | `<serviceUrl>/key/<slug>/<id>.png` (hmsvc HTTP, not `desk.fs`) | read | The "Keys" layer-panel group's own canvas-drawn image source (`getKeyImage`/`drawKeyLayers`) — same reasoning `/source/<slug>` already documents for `/tiles/...` |
+| `Data/mapFeatures/SamoWeb_RestoredStatePlan_WaterwayView.png` + `.bounds.json` | write (script), read (`desk.documents`/`desk.fs`) | `scripts/style_restored_waterway.py`'s own output (a separate, offline process — run by hand, not triggered by this widget) — "Restored State — Waterway"'s own image source (`loadWaterwayViewImage`/`loadWaterwayViewBounds`/`drawWaterwayView`) |
 
 ## Key conventions — follow these, don't reinvent them
 
