@@ -1,0 +1,745 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.1451285,
+          34.9823018
+        ]
+      },
+      "properties": {
+        "name": "Cyprus",
+        "name_source": "osm_search_seed_administrative",
+        "area_km2": 9280.9,
+        "osm_type": "relation",
+        "osm_id": 307787,
+        "osm_place_type": "administrative",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.4633423,
+          35.3084952
+        ]
+      },
+      "properties": {
+        "name": "Crete",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 8280.5,
+        "osm_type": "relation",
+        "osm_id": 453129,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.9110844,
+          38.4941724
+        ]
+      },
+      "properties": {
+        "name": "Euboea",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 3661.1,
+        "osm_type": "relation",
+        "osm_id": 3301815,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.9989135,
+          39.1758419
+        ]
+      },
+      "properties": {
+        "name": "Lesbos",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 1636.6,
+        "osm_type": "relation",
+        "osm_id": 6830778,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.9194815,
+          36.1724049
+        ]
+      },
+      "properties": {
+        "name": "Rhodes",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 1428.8,
+        "osm_type": "relation",
+        "osm_id": 452614,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.0646552,
+          38.3758132
+        ]
+      },
+      "properties": {
+        "name": "Chios",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 862.9,
+        "osm_type": "relation",
+        "osm_id": 3188280,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.5373903,
+          38.2660322
+        ]
+      },
+      "properties": {
+        "name": "Cephalonia",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 760.5,
+        "osm_type": "relation",
+        "osm_id": 957828,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.8596189,
+          39.591337
+        ]
+      },
+      "properties": {
+        "name": "Corfu",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 598.9,
+        "osm_type": "relation",
+        "osm_id": 966358,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.1499608,
+          39.9088688
+        ]
+      },
+      "properties": {
+        "name": "Lemnos",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 481.2,
+        "osm_type": "relation",
+        "osm_id": 537221,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.8192919,
+          37.7246162
+        ]
+      },
+      "properties": {
+        "name": "Samos",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 480.1,
+        "osm_type": "relation",
+        "osm_id": 452381,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.4707567,
+          37.0600105
+        ]
+      },
+      "properties": {
+        "name": "Naxos",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 424.8,
+        "osm_type": "relation",
+        "osm_id": 453091,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.7900896,
+          37.7891384
+        ]
+      },
+      "properties": {
+        "name": "Zakynthos",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 416.7,
+        "osm_type": "relation",
+        "osm_id": 543822,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.6512064,
+          40.6844479
+        ]
+      },
+      "properties": {
+        "name": "Thasos",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 395.6,
+        "osm_type": "relation",
+        "osm_id": 537593,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.6548451,
+          43.3239449
+        ]
+      },
+      "properties": {
+        "name": "Brač",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 384.5,
+        "osm_type": "relation",
+        "osm_id": 6114709,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.8623824,
+          37.8408347
+        ]
+      },
+      "properties": {
+        "name": "Andros",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 378.8,
+        "osm_type": "relation",
+        "osm_id": 531101,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.6416779,
+          38.7065734
+        ]
+      },
+      "properties": {
+        "name": "Lefkada",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 303.6,
+        "osm_type": "relation",
+        "osm_id": 3984639,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.1192567,
+          35.6136611
+        ]
+      },
+      "properties": {
+        "name": "Karpathos",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 303.1,
+        "osm_type": "relation",
+        "osm_id": 452619,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.0848266,
+          36.7936933
+        ]
+      },
+      "properties": {
+        "name": "Kos",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 293.8,
+        "osm_type": "relation",
+        "osm_id": 536480,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.8314338,
+          40.1658537
+        ]
+      },
+      "properties": {
+        "name": "İmbros",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 290.7,
+        "osm_type": "relation",
+        "osm_id": 1815263,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.5565161,
+          43.1739411
+        ]
+      },
+      "properties": {
+        "name": "Hvar",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 276.4,
+        "osm_type": "relation",
+        "osm_id": 6114691,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.0024352,
+          36.2580288
+        ]
+      },
+      "properties": {
+        "name": "Kythira",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 276.4,
+        "osm_type": "relation",
+        "osm_id": 957728,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.1516894,
+          37.5999295
+        ]
+      },
+      "properties": {
+        "name": "Icaria",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 263.6,
+        "osm_type": "relation",
+        "osm_id": 3304440,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.9134763,
+          42.9437813
+        ]
+      },
+      "properties": {
+        "name": "Korčula",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 258.7,
+        "osm_type": "relation",
+        "osm_id": 6114785,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.5244774,
+          38.8730436
+        ]
+      },
+      "properties": {
+        "name": "Skyros",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 208.6,
+        "osm_type": "relation",
+        "osm_id": 965446,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.1540218,
+          37.6017133
+        ]
+      },
+      "properties": {
+        "name": "Tinos",
+        "name_source": "osm_search_admin_derived_island",
+        "area_km2": 198.4,
+        "osm_type": "relation",
+        "osm_id": 531102,
+        "osm_place_type": "island",
+        "country": "Greece",
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.198097897265633,
+          37.066005763500044
+        ]
+      },
+      "properties": {
+        "name": "Paros",
+        "name_source": "osm_administrative_fallback",
+        "area_km2": 193.2,
+        "osm_type": "relation",
+        "osm_id": 5321416,
+        "osm_place_type": "municipality",
+        "country": "Greece",
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.5856572,
+          40.4511544
+        ]
+      },
+      "properties": {
+        "name": "Samothraki",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 184.1,
+        "osm_type": "relation",
+        "osm_id": 537592,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.5068338,
+          36.7093441
+        ]
+      },
+      "properties": {
+        "name": "Milos",
+        "name_source": "osm_search_admin_derived_island",
+        "area_km2": 161.8,
+        "osm_type": "relation",
+        "osm_id": 531969,
+        "osm_place_type": "island",
+        "country": "Greece",
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.898487,
+          36.8525242
+        ]
+      },
+      "properties": {
+        "name": "Amorgos",
+        "name_source": "osm_search_admin_derived_island",
+        "area_km2": 120.8,
+        "osm_type": "relation",
+        "osm_id": 530748,
+        "osm_place_type": "island",
+        "country": "Greece",
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.3274958,
+          37.6048603
+        ]
+      },
+      "properties": {
+        "name": "Kea",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 120.3,
+        "osm_type": "relation",
+        "osm_id": 531990,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.9923072,
+          37.0025735
+        ]
+      },
+      "properties": {
+        "name": "Kalymnos",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 111.1,
+        "osm_type": "relation",
+        "osm_id": 541100,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.6184464,
+          40.6212433
+        ]
+      },
+      "properties": {
+        "name": "Marmara Island",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 108.2,
+        "osm_type": "node",
+        "osm_id": 1483289263,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.3331121,
+          36.7173241
+        ]
+      },
+      "properties": {
+        "name": "Ios",
+        "name_source": "osm_search_admin_derived_island",
+        "area_km2": 106.0,
+        "osm_type": "relation",
+        "osm_id": 542011,
+        "osm_place_type": "island",
+        "country": "Greece",
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.4260276,
+          37.3912235
+        ]
+      },
+      "properties": {
+        "name": "Kythnos",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 98.5,
+        "osm_type": "relation",
+        "osm_id": 531997,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.5083736,
+          37.9383706
+        ]
+      },
+      "properties": {
+        "name": "Salamis",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 97.9,
+        "osm_type": "relation",
+        "osm_id": 957707,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.3029291,
+          36.5760811
+        ]
+      },
+      "properties": {
+        "name": "Astypalea",
+        "name_source": "osm_search_admin_derived_island",
+        "area_km2": 94.5,
+        "osm_type": "relation",
+        "osm_id": 531294,
+        "osm_place_type": "island",
+        "country": "Greece",
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.681376,
+          39.1401737
+        ]
+      },
+      "properties": {
+        "name": "Skopelos",
+        "name_source": "osm_search_seed_island",
+        "area_km2": 93.5,
+        "osm_type": "relation",
+        "osm_id": 548215,
+        "osm_place_type": "island",
+        "country": null,
+        "natural_earth_source": "ne_10m_land.geojson"
+      }
+    }
+  ]
+}

@@ -107,6 +107,14 @@ citation and license — don't expect a future re-run of this same
 pipeline, against any Natural Earth layer, with a different filter to
 find them; they're not in the source data at all.
 
+**Follow-up, done:** `Data/OpenStreetMap-geocoding/` does exactly this
+for every island in the region not much smaller than Samothrace itself
+(~92 km²+) — see that directory's own README for the method, including
+the direct finding that even Natural Earth's *political* layers
+(`admin_0_countries`, `admin_0_map_subunits`, `admin_1_states_provinces`)
+don't split Greece's islands out by name either, which is what actually
+motivated going to OpenStreetMap in the first place.
+
 ## License and attribution
 
 Natural Earth is public domain. No permission, fee, or attribution is

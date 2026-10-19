@@ -87,6 +87,16 @@ interface LayerMeta {
   weight?: number;
   radius?: number;
   labelField?: string;
+  // Optional second hover-bar line, generic over any numeric property --
+  // e.g. `{extraField: "pop_max", extraLabel: "pop."}` for cities,
+  // `{extraField: "area_km2", extraLabel: "km²"}` for the OpenStreetMap
+  // named-islands layer. Replaces an earlier version of this file that
+  // hardcoded `meta.id === 'ne_10m_populated_places'` here -- a second
+  // numeric-property layer (added without any widget-side change, since
+  // this whole widget is metadata-driven) would have needed its own
+  // hardcoded id check without this.
+  extraField?: string;
+  extraLabel?: string;
   featureCount: number;
 }
 
@@ -668,8 +678,9 @@ class NaturalEarthMapElement extends HTMLElement {
       for (const feature of features) {
         if (this.featureHit(feature, meta, screenX, screenY)) {
           const name = meta.labelField ? (feature.properties[meta.labelField] as string | undefined) ?? null : null;
-          const extra = meta.id === 'ne_10m_populated_places' && typeof feature.properties.pop_max === 'number'
-            ? `pop. ${(feature.properties.pop_max as number).toLocaleString()}`
+          const extraValue = meta.extraField ? feature.properties[meta.extraField] : undefined;
+          const extra = typeof extraValue === 'number'
+            ? `${extraValue.toLocaleString()}${meta.extraLabel ? ` ${meta.extraLabel}` : ''}`
             : null;
           return { layerLabel: meta.label, name, extra };
         }

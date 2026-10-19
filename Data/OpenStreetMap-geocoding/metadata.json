@@ -1,0 +1,19 @@
+{
+  "layers": [
+    {
+      "id": "osm_island_names",
+      "label": "Named Islands (OpenStreetMap, large)",
+      "group": "Named Islands",
+      "order": 4.5,
+      "defaultVisible": true,
+      "render": "dot-label",
+      "color": "#5fd4a0",
+      "radius": 2.5,
+      "labelField": "name",
+      "extraField": "area_km2",
+      "extraLabel": "km\u00b2",
+      "url": "/data/osm_island_names.geojson",
+      "featureCount": 37
+    }
+  ]
+}

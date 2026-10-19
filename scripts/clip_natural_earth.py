@@ -162,6 +162,8 @@ LAYER_STYLES = {
         "color": "#f2b134",
         "radius": 3,
         "labelField": "name",
+        "extraField": "pop_max",
+        "extraLabel": "population",
     },
 }
 

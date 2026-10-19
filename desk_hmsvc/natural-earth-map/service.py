@@ -16,11 +16,20 @@ there's no tiling scheme for this hmsvc to agree with the widget on.
 
 Self-discovering, same convention desk_hmsvc/samothrace-tiles/
 service.py's own `_discover_keys` already uses: `/layers` is read
-straight from Data/naturalEarth/metadata.json (written by
-clip_natural_earth.py, right next to the .geojson files it describes)
-rather than a second, hand-maintained list of layer ids/styles living
-in this file. Re-running that script with a different bbox, filter, or
-style is picked up here with no code change -- just re-fetch /layers.
+straight from each of DATA_DIRS' own metadata.json (one written by
+scripts/clip_natural_earth.py for Data/naturalEarth/, a second written
+by Data/OpenStreetMap-geocoding/fetch_island_names.py for its own
+directory) rather than a second, hand-maintained list of layer
+ids/styles living in this file. Re-running either script -- a different
+bbox/filter/style for the first, a different size threshold for the
+second -- is picked up here with no code change, just a fresh
+`/layers` response built by merging every metadata.json found across
+DATA_DIRS. A layer id is assumed unique across every source directory
+(true today; `/data/<id>.geojson` resolves the first directory whose
+own metadata claims that id, so a future collision would silently
+prefer whichever directory's metadata.json is read first rather than
+erroring -- worth revisiting only if a second source directory is ever
+added with its own id-naming scheme).
 
 Kept deliberately parallel to desk_hmsvc/samothrace-tiles/ in the
 pieces that *are* shared shape (the `_project_dir()` pattern, CORS
@@ -49,15 +58,22 @@ def _project_dir() -> Path:
 
 
 PROJECT_DIR = _project_dir()
-DATA_DIR = PROJECT_DIR / "Data" / "naturalEarth"
-METADATA_PATH = DATA_DIR / "metadata.json"
 
-# Layer ids are filenames with no extension, written by
-# clip_natural_earth.py as plain `ne_<scale>_<name>` strings -- this
-# pattern is just a defensive check before touching the filesystem with
-# a request-supplied value, not a meaningful allowlist of its own (the
-# real allowlist is "is this id present in metadata.json's own layers
-# list right now," checked in `tile` below).
+# Every directory this service pulls a metadata.json + sibling
+# .geojson files from. Each entry's own generating script is
+# responsible for keeping its metadata.json in sync with what's
+# actually on disk next to it -- this service only merges what it
+# finds, it never writes anything.
+DATA_DIRS = [
+    PROJECT_DIR / "Data" / "naturalEarth",
+    PROJECT_DIR / "Data" / "OpenStreetMap-geocoding",
+]
+
+# Layer ids are filenames with no extension -- this pattern is just a
+# defensive check before touching the filesystem with a
+# request-supplied value, not a meaningful allowlist of its own (the
+# real allowlist is "is this id present in some metadata.json's own
+# layers list right now," checked in `data` below).
 VALID_LAYER_ID = re.compile(r"^[a-zA-Z0-9_]+$")
 
 app = FastAPI()
@@ -78,35 +94,62 @@ app.add_middleware(
 GEOJSON_HEADERS = {"Cache-Control": "public, max-age=60"}
 
 
-def _read_metadata() -> dict | None:
-    """Re-read on every call -- cheap (one small JSON file) and means a
-    fresh `clip_natural_earth.py` run is picked up immediately, same
-    reasoning as samothrace-tiles' own `_discover_keys` (no caching)."""
-    if not METADATA_PATH.is_file():
+def _read_json(path: Path) -> dict | None:
+    if not path.is_file():
         return None
     try:
-        return json.loads(METADATA_PATH.read_text())
+        return json.loads(path.read_text())
     except (OSError, ValueError):
         return None
 
 
+def _merged_metadata() -> dict:
+    """Re-read every DATA_DIRS' own metadata.json on every call -- cheap
+    (a handful of small JSON files) and means a fresh generating-script
+    run (either one) is picked up immediately, same reasoning as
+    samothrace-tiles' own `_discover_keys` (no caching). `bounds`/
+    `center` come from the first directory that has them (today, that's
+    always Data/naturalEarth/ -- the regional bbox is defined once,
+    there; a layer-only directory like OpenStreetMap-geocoding/ doesn't
+    need to repeat it)."""
+    layers: list[dict] = []
+    bounds = None
+    center = None
+    for data_dir in DATA_DIRS:
+        metadata = _read_json(data_dir / "metadata.json")
+        if metadata is None:
+            continue
+        layers.extend(metadata.get("layers", []))
+        if bounds is None and metadata.get("bounds") is not None:
+            bounds = metadata["bounds"]
+        if center is None and metadata.get("center") is not None:
+            center = metadata["center"]
+    return {"layers": layers, "bounds": bounds, "center": center}
+
+
+def _resolve_layer_path(layer_id: str) -> Path | None:
+    """The first DATA_DIRS entry whose own metadata.json claims
+    `layer_id` -- see this module's own header comment for the (today,
+    purely theoretical) cross-directory id-collision caveat."""
+    for data_dir in DATA_DIRS:
+        metadata = _read_json(data_dir / "metadata.json")
+        if metadata is None:
+            continue
+        if any(entry["id"] == layer_id for entry in metadata.get("layers", [])):
+            return data_dir / f"{layer_id}.geojson"
+    return None
+
+
 @app.get("/layers")
 def layers():
-    metadata = _read_metadata()
-    if metadata is None:
-        return {"layers": [], "bounds": None, "center": None}
-    return metadata
+    return _merged_metadata()
 
 
 @app.get("/data/{layer_id}.geojson")
 def data(layer_id: str):
     if not VALID_LAYER_ID.match(layer_id):
         return Response(status_code=404)
-    metadata = _read_metadata()
-    known_ids = {entry["id"] for entry in (metadata or {}).get("layers", [])}
-    if layer_id not in known_ids:
-        return Response(status_code=404)
-    path = DATA_DIR / f"{layer_id}.geojson"
-    if not path.is_file():
+    path = _resolve_layer_path(layer_id)
+    if path is None or not path.is_file():
         return Response(status_code=404)
     return Response(content=path.read_bytes(), media_type="application/geo+json", headers=GEOJSON_HEADERS)
