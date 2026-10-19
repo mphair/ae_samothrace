@@ -269,6 +269,28 @@ Worth defaulting to on a similar "serve several small, independently
   held: confirmed directly twice on this project (the OpenStreetMap
   island-name layer, then the Natural Earth seas layer) — both showed
   up correctly with zero widget-specific code added for either.
+- **A widget that depends on an hmsvc at startup has a real race to
+  design for, not just a hypothetical one**: the hmsvc is a separate
+  process Desk starts independently, so the widget's own page can
+  finish loading and ask `desk.state` for that service's URL before the
+  service has actually published it — confirmed directly on this
+  project, across all three of its hmsvc-dependent widgets. A single
+  startup attempt that gives up permanently on first failure means a
+  plain Desk restart can intermittently and silently fail to show real
+  data, for a condition that resolves itself within seconds. Isolate
+  the retriable part (service-URL discovery through first successful
+  render) into its own function, separate from genuine one-time setup
+  (event subscriptions, independent sub-controllers with their own
+  unrelated data sources) that doesn't need retrying and shouldn't be
+  repeated on every attempt. Back off rather than retrying at a fixed
+  interval (this project settled on 1s/5s/10s/60s/300s, then give up) —
+  fast enough to recover near-instantly from the common case (the
+  service was just slow to start), patient enough not to hammer a
+  service that's genuinely still down. Always pair the automatic
+  schedule with a manual retry affordance that keeps working even after
+  the schedule gives up — a human who just started the missing service
+  themselves shouldn't have to wait out (or reload the whole widget
+  past) a 300-second final backoff to find out it worked.
 
 ## 5. Building a gazetteer: merging and deduping independently-sourced named-entity layers
 

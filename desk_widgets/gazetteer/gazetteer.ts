@@ -108,6 +108,110 @@ function extraInfo(entry: GazetteerEntry): string | null {
   return null;
 }
 
+// ── Startup load retry --
+//
+// Byte-for-byte the same class as desk_widgets/natural-earth-map/
+// natural-earth-map.ts's own RetryingLoader (see that file's header
+// comment for the full "why": the gazetteer hmsvc is a separate
+// process Desk starts independently, and this widget's own page can
+// finish loading and ask desk.state for its URL before that service
+// has actually published it). Duplicated rather than shared, matching
+// this pair's own established convention (the two widgets already
+// duplicate the URL-discovery-via-desk.state pattern itself rather
+// than importing from one another) -- genuinely two independent
+// widgets that happen to need the identical retry shape, not one
+// widget's code reused by the other.
+const RETRY_BACKOFF_SEC = [1, 5, 10, 60, 300];
+
+class RetryingLoader {
+  private attemptIndex = 0;
+  private countdownTimer: number | null = null;
+  private remainingSec = 0;
+  private gaveUp = false;
+  private running = false;
+
+  constructor(private readonly container: HTMLElement, private readonly attempt: () => Promise<void>) {}
+
+  start(): void {
+    void this.runAttempt();
+  }
+
+  setMessage(text: string): void {
+    if (!this.running) return;
+    this.container.innerHTML = `<div class="retry-box"><div class="retry-message">${escapeHtml(text)}</div></div>`;
+    this.container.style.display = 'flex';
+  }
+
+  retryNow(): void {
+    this.clearCountdown();
+    if (this.gaveUp) {
+      this.attemptIndex = 0;
+      this.gaveUp = false;
+    }
+    void this.runAttempt();
+  }
+
+  private clearCountdown(): void {
+    if (this.countdownTimer !== null) {
+      window.clearInterval(this.countdownTimer);
+      this.countdownTimer = null;
+    }
+  }
+
+  private async runAttempt(): Promise<void> {
+    if (this.running) return;
+    this.running = true;
+    this.clearCountdown();
+    this.setMessage('Loading…');
+    try {
+      await this.attempt();
+      this.attemptIndex = 0;
+      this.gaveUp = false;
+      this.container.style.display = 'none';
+    } catch (err) {
+      this.scheduleRetry(err);
+    } finally {
+      this.running = false;
+    }
+  }
+
+  private scheduleRetry(err: unknown): void {
+    const message = err instanceof Error ? err.message : String(err);
+    if (this.attemptIndex >= RETRY_BACKOFF_SEC.length) {
+      this.gaveUp = true;
+      this.render(message, null);
+      return;
+    }
+    const delaySec = RETRY_BACKOFF_SEC[this.attemptIndex]!;
+    this.attemptIndex++;
+    this.remainingSec = delaySec;
+    this.render(message, this.remainingSec);
+    this.countdownTimer = window.setInterval(() => {
+      this.remainingSec--;
+      if (this.remainingSec <= 0) {
+        this.clearCountdown();
+        void this.runAttempt();
+      } else {
+        this.render(message, this.remainingSec);
+      }
+    }, 1000);
+  }
+
+  private render(message: string, countdownSec: number | null): void {
+    const countdownHtml = countdownSec !== null
+      ? `<div class="retry-countdown">Retrying in ${countdownSec}s…</div>`
+      : `<div class="retry-countdown">Giving up after repeated failures.</div>`;
+    this.container.innerHTML =
+      `<div class="retry-box">` +
+      `<div class="retry-message">${escapeHtml(message)}</div>` +
+      countdownHtml +
+      `<button type="button" class="retry-button">Retry now</button>` +
+      `</div>`;
+    this.container.style.display = 'flex';
+    this.container.querySelector('.retry-button')?.addEventListener('click', () => this.retryNow());
+  }
+}
+
 // ── Element ──
 
 class GazetteerElement extends HTMLElement {
@@ -117,6 +221,7 @@ class GazetteerElement extends HTMLElement {
   private statusRowEl: HTMLElement | null = null;
   private listAreaEl: HTMLElement | null = null;
   private statusEl: HTMLElement | null = null;
+  private loader: RetryingLoader | null = null;
 
   private serviceUrl: string | null = null;
   private allEntries: GazetteerEntry[] = [];
@@ -158,16 +263,6 @@ class GazetteerElement extends HTMLElement {
     void this.init();
   }
 
-  private setStatus(text: string | null): void {
-    if (!this.statusEl) return;
-    if (text) {
-      this.statusEl.textContent = text;
-      (this.statusEl as HTMLElement).style.display = 'flex';
-    } else {
-      (this.statusEl as HTMLElement).style.display = 'none';
-    }
-  }
-
   private syncSortButtons(): void {
     this.sortButtons?.forEach((button) => {
       button.classList.toggle('active', button.dataset.sort === this.sortMode);
@@ -177,46 +272,54 @@ class GazetteerElement extends HTMLElement {
   // ── Startup ──
 
   private async init(): Promise<void> {
+    // Not part of the retried attempt below -- one-time subscriptions,
+    // not a dependency that can be "not ready yet" the way the hmsvc
+    // itself can.
+    this.watchServiceState().catch((err) => {
+      console.warn('watching gazetteer service state failed to start:', err);
+    });
+    this.checkMapWidgetPlaced().catch((err) => {
+      console.warn('checking for a placed Natural Earth Map widget failed (best-effort):', err);
+    });
+
+    if (!this.statusEl) return;
+    // See RetryingLoader's own header comment for the full "why."
+    this.loader = new RetryingLoader(this.statusEl, () => this.attemptLoad());
+    this.loader.start();
+  }
+
+  // Everything that can fail because the hmsvc isn't up yet, isolated
+  // so RetryingLoader can retry it as one unit -- see that class's own
+  // comment and attemptLoad's counterpart in natural-earth-map.ts.
+  private async attemptLoad(): Promise<void> {
     const desk = window.desk;
-    try {
-      if (!desk) throw new Error('Desk bridge unavailable');
+    if (!desk) throw new Error('Desk bridge unavailable');
 
-      this.watchServiceState().catch((err) => {
-        console.warn('watching gazetteer service state failed to start:', err);
-      });
-      this.checkMapWidgetPlaced().catch((err) => {
-        console.warn('checking for a placed Natural Earth Map widget failed (best-effort):', err);
-      });
-
-      const serviceState = await desk.state.get(SERVICE_STATE_KEY);
-      const serviceValue = serviceState.value as { status: string; url: string | null } | null;
-      if (!serviceValue || !serviceValue.url) {
-        throw new Error(`${SERVICE_NAME} service is not running -- start it from the Microservices widget`);
-      }
-      this.serviceUrl = serviceValue.url.replace(/\/+$/, '');
-
-      this.setStatus('Loading gazetteer…');
-      await this.loadEntries();
-
-      try {
-        const { data: localData } = await desk.self.getLocalStorage();
-        if (typeof localData.searchText === 'string') {
-          this.searchText = localData.searchText;
-          if (this.searchInput) this.searchInput.value = this.searchText;
-        }
-        if (localData.sortMode === 'name' || localData.sortMode === 'type') {
-          this.sortMode = localData.sortMode;
-          this.syncSortButtons();
-        }
-      } catch (err) {
-        console.warn('restoring saved UI state failed (best-effort, using defaults):', err);
-      }
-
-      this.setStatus(null);
-      this.renderList();
-    } catch (err) {
-      this.setStatus(`Failed to load gazetteer: ${err instanceof Error ? err.message : String(err)}`);
+    const serviceState = await desk.state.get(SERVICE_STATE_KEY);
+    const serviceValue = serviceState.value as { status: string; url: string | null } | null;
+    if (!serviceValue || !serviceValue.url) {
+      throw new Error(`${SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
     }
+    this.serviceUrl = serviceValue.url.replace(/\/+$/, '');
+
+    this.loader?.setMessage('Loading gazetteer…');
+    await this.loadEntries();
+
+    try {
+      const { data: localData } = await desk.self.getLocalStorage();
+      if (typeof localData.searchText === 'string') {
+        this.searchText = localData.searchText;
+        if (this.searchInput) this.searchInput.value = this.searchText;
+      }
+      if (localData.sortMode === 'name' || localData.sortMode === 'type') {
+        this.sortMode = localData.sortMode;
+        this.syncSortButtons();
+      }
+    } catch (err) {
+      console.warn('restoring saved UI state failed (best-effort, using defaults):', err);
+    }
+
+    this.renderList();
   }
 
   private async loadEntries(): Promise<void> {

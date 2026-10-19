@@ -290,6 +290,126 @@ function minDistToLines(px: number, py: number, lines: { x: number; y: number }[
   return best;
 }
 
+// ── Startup load retry ──
+//
+// The hmsvc this widget depends on is a separate process Desk starts
+// independently -- there's a real, not-hypothetical race where this
+// widget's own page finishes loading and asks `desk.state` for the
+// service's URL before that service has actually started and
+// published it (confirmed directly: seen in practice on this project).
+// RetryingLoader wraps a single async "attempt" callback with a
+// backing-off auto-retry schedule (1s, 5s, 10s, 60s, 300s, then give
+// up) plus a manual "Retry now" button that always works, whether an
+// auto-retry is currently pending or the schedule has already been
+// exhausted -- rendering its own status/countdown/button markup
+// directly into a container element the widget already has on screen
+// (here, `.status-overlay`), so no second overlay element is needed.
+//
+// Generic over what "attempt" actually does -- this class knows
+// nothing about hmsvc URLs, layers, or GeoJSON, only "run this async
+// function; if it throws, show the error and retry on a schedule." A
+// future consumer with a different startup dependency could reuse this
+// unchanged.
+const RETRY_BACKOFF_SEC = [1, 5, 10, 60, 300];
+
+class RetryingLoader {
+  private attemptIndex = 0;
+  private countdownTimer: number | null = null;
+  private remainingSec = 0;
+  private gaveUp = false;
+  private running = false;
+
+  constructor(private readonly container: HTMLElement, private readonly attempt: () => Promise<void>) {}
+
+  start(): void {
+    void this.runAttempt();
+  }
+
+  // Lets the wrapped `attempt` callback report progress ("Loading
+  // layers…", then "Loading map data…") while it's still in flight --
+  // a no-op if called outside an active attempt (e.g. stale timing
+  // from a previous attempt), so callers don't need to guard every call
+  // site themselves.
+  setMessage(text: string): void {
+    if (!this.running) return;
+    this.container.innerHTML = `<div class="retry-box"><div class="retry-message">${escapeHtml(text)}</div></div>`;
+    this.container.style.display = 'flex';
+  }
+
+  // The manual "Retry now" button's own handler -- also safe to call
+  // from outside this class entirely (nothing currently does, but nor
+  // does anything prevent it) since it fully resets whatever retry
+  // state was pending first.
+  retryNow(): void {
+    this.clearCountdown();
+    if (this.gaveUp) {
+      this.attemptIndex = 0;
+      this.gaveUp = false;
+    }
+    void this.runAttempt();
+  }
+
+  private clearCountdown(): void {
+    if (this.countdownTimer !== null) {
+      window.clearInterval(this.countdownTimer);
+      this.countdownTimer = null;
+    }
+  }
+
+  private async runAttempt(): Promise<void> {
+    if (this.running) return; // a manual Retry click while an attempt is already in flight -- ignore, it'll resolve on its own
+    this.running = true;
+    this.clearCountdown();
+    this.setMessage('Loading…');
+    try {
+      await this.attempt();
+      this.attemptIndex = 0;
+      this.gaveUp = false;
+      this.container.style.display = 'none';
+    } catch (err) {
+      this.scheduleRetry(err);
+    } finally {
+      this.running = false;
+    }
+  }
+
+  private scheduleRetry(err: unknown): void {
+    const message = err instanceof Error ? err.message : String(err);
+    if (this.attemptIndex >= RETRY_BACKOFF_SEC.length) {
+      this.gaveUp = true;
+      this.render(message, null);
+      return;
+    }
+    const delaySec = RETRY_BACKOFF_SEC[this.attemptIndex]!;
+    this.attemptIndex++;
+    this.remainingSec = delaySec;
+    this.render(message, this.remainingSec);
+    this.countdownTimer = window.setInterval(() => {
+      this.remainingSec--;
+      if (this.remainingSec <= 0) {
+        this.clearCountdown();
+        void this.runAttempt();
+      } else {
+        this.render(message, this.remainingSec);
+      }
+    }, 1000);
+  }
+
+  private render(message: string, countdownSec: number | null): void {
+    const countdownHtml = countdownSec !== null
+      ? `<div class="retry-countdown">Retrying in ${countdownSec}s…</div>`
+      : `<div class="retry-countdown">Giving up after repeated failures.</div>`;
+    this.container.innerHTML =
+      `<div class="retry-box">` +
+      `<div class="retry-message">${escapeHtml(message)}</div>` +
+      countdownHtml +
+      `<button type="button" class="retry-button">Retry now</button>` +
+      `</div>`;
+    this.container.style.display = 'flex';
+    this.container.querySelector('.retry-button')?.addEventListener('click', () => this.retryNow());
+  }
+}
+
 // ── Element ──
 
 interface HoverInfo {
@@ -305,6 +425,7 @@ class NaturalEarthMapElement extends HTMLElement {
   private hoverBarEl: HTMLElement | null = null;
   private zoomLabelEl: HTMLElement | null = null;
   private statusEl: HTMLElement | null = null;
+  private loader: RetryingLoader | null = null;
   private resizeObserver: ResizeObserver | null = null;
 
   private serviceUrl: string | null = null;
@@ -378,76 +499,82 @@ class NaturalEarthMapElement extends HTMLElement {
     this.resizeObserver?.disconnect();
   }
 
-  private setStatus(text: string | null): void {
-    if (!this.statusEl) return;
-    if (text) {
-      this.statusEl.textContent = text;
-      (this.statusEl as HTMLElement).style.display = 'flex';
-    } else {
-      (this.statusEl as HTMLElement).style.display = 'none';
-    }
-  }
 
   // ── Startup ──
 
   private async init(): Promise<void> {
+    // Best-effort, same "never block/fail the map on a restart-watch
+    // setup failure" treatment samothrace-map.ts's own
+    // watchTileServiceState call site uses. Not part of the retried
+    // attempt below -- this is a one-time subscription, not a
+    // dependency that can be "not ready yet."
+    this.watchServiceState().catch((err) => {
+      console.warn('watching natural-earth-map service state failed to start:', err);
+    });
+
+    if (!this.statusEl) return;
+    // See RetryingLoader's own header comment for the full "why" --
+    // short version: the natural-earth-map hmsvc is a separate process
+    // Desk starts independently, and this widget's own page can finish
+    // loading and ask desk.state for its URL before that service has
+    // actually published it. Backs off 1s/5s/10s/60s/300s, then gives
+    // up with a manual Retry button that keeps working indefinitely.
+    this.loader = new RetryingLoader(this.statusEl, () => this.attemptLoad());
+    this.loader.start();
+  }
+
+  // The actual "try to get the map loaded" attempt -- everything in
+  // here either succeeds completely or throws, so RetryingLoader can
+  // retry the whole thing uniformly on failure. Safe to re-run: every
+  // step either overwrites its own previous result (serviceUrl,
+  // layerMetas, featureCache) or is naturally idempotent (restoring the
+  // same saved localStorage state a second time changes nothing).
+  private async attemptLoad(): Promise<void> {
     const desk = window.desk;
-    try {
-      if (!desk) throw new Error('Desk bridge unavailable');
+    if (!desk) throw new Error('Desk bridge unavailable');
 
-      // Best-effort, same "never block/fail the map on a restart-watch
-      // setup failure" treatment samothrace-map.ts's own
-      // watchTileServiceState call site uses.
-      this.watchServiceState().catch((err) => {
-        console.warn('watching natural-earth-map service state failed to start:', err);
-      });
-
-      const serviceState = await desk.state.get(SERVICE_STATE_KEY);
-      const serviceValue = serviceState.value as { status: string; url: string | null } | null;
-      if (!serviceValue || !serviceValue.url) {
-        throw new Error(`${SERVICE_NAME} service is not running -- start it from the Microservices widget`);
-      }
-      this.serviceUrl = serviceValue.url.replace(/\/+$/, '');
-
-      this.setStatus('Loading layers…');
-      await this.loadLayerMeta();
-      this.buildLayersPanel();
-
-      this.setStatus('Loading map data…');
-      await this.loadAllFeatures();
-
-      let restoredView = false;
-      try {
-        const { data: localData } = await desk.self.getLocalStorage();
-        const savedLayers = Array.isArray(localData.visibleLayers) ? (localData.visibleLayers as string[]) : null;
-        if (savedLayers) {
-          const known = new Set(this.layerMetas.map((m) => m.id));
-          this.visibleLayers = new Set(savedLayers.filter((id) => known.has(id)));
-          this.syncLayerCheckboxes();
-        }
-        const rawView = localData.view;
-        if (rawView && typeof rawView === 'object') {
-          const v = rawView as { lon?: unknown; lat?: unknown; zoom?: unknown };
-          if (
-            typeof v.lon === 'number' && Number.isFinite(v.lon) &&
-            typeof v.lat === 'number' && Number.isFinite(v.lat) &&
-            typeof v.zoom === 'number' && Number.isFinite(v.zoom)
-          ) {
-            this.view = { lon: v.lon, lat: v.lat, zoom: Math.min(Math.max(v.zoom, MIN_ZOOM), MAX_ZOOM) };
-            restoredView = true;
-          }
-        }
-      } catch (err) {
-        console.warn('restoring saved UI state failed (best-effort, using defaults):', err);
-      }
-
-      if (!restoredView && this.bounds) this.fitToBounds(this.bounds, 0.06);
-
-      this.setStatus(null);
-      this.scheduleRedraw();
-    } catch (err) {
-      this.setStatus(`Failed to load map: ${err instanceof Error ? err.message : String(err)}`);
+    const serviceState = await desk.state.get(SERVICE_STATE_KEY);
+    const serviceValue = serviceState.value as { status: string; url: string | null } | null;
+    if (!serviceValue || !serviceValue.url) {
+      throw new Error(`${SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
     }
+    this.serviceUrl = serviceValue.url.replace(/\/+$/, '');
+
+    this.loader?.setMessage('Loading layers…');
+    await this.loadLayerMeta();
+    this.buildLayersPanel();
+
+    this.loader?.setMessage('Loading map data…');
+    await this.loadAllFeatures();
+
+    let restoredView = false;
+    try {
+      const { data: localData } = await desk.self.getLocalStorage();
+      const savedLayers = Array.isArray(localData.visibleLayers) ? (localData.visibleLayers as string[]) : null;
+      if (savedLayers) {
+        const known = new Set(this.layerMetas.map((m) => m.id));
+        this.visibleLayers = new Set(savedLayers.filter((id) => known.has(id)));
+        this.syncLayerCheckboxes();
+      }
+      const rawView = localData.view;
+      if (rawView && typeof rawView === 'object') {
+        const v = rawView as { lon?: unknown; lat?: unknown; zoom?: unknown };
+        if (
+          typeof v.lon === 'number' && Number.isFinite(v.lon) &&
+          typeof v.lat === 'number' && Number.isFinite(v.lat) &&
+          typeof v.zoom === 'number' && Number.isFinite(v.zoom)
+        ) {
+          this.view = { lon: v.lon, lat: v.lat, zoom: Math.min(Math.max(v.zoom, MIN_ZOOM), MAX_ZOOM) };
+          restoredView = true;
+        }
+      }
+    } catch (err) {
+      console.warn('restoring saved UI state failed (best-effort, using defaults):', err);
+    }
+
+    if (!restoredView && this.bounds) this.fitToBounds(this.bounds, 0.06);
+
+    this.scheduleRedraw();
   }
 
   private async loadLayerMeta(): Promise<void> {

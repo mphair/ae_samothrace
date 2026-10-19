@@ -260,6 +260,19 @@ and get concatenated in that order; it does **not** matter for *type
    and a real operational lesson (don't `kill` a running hmsvc process
    hoping for an auto-restart).
 
+   **A second extraction source, `scripts/extract_restored_keys.py`**
+   (2026-10-19) — the Restored plan's own printed compass indicator and
+   scale bar, under a NEW `Data/mapSources/restored-plan/` slug whose own
+   `transform.json` has nothing but a `keys` list (no homography/photo
+   fields — nothing ever bakes this slug into tiles). Confirms
+   `_discover_keys()`'s own "fully self-discovering" design claim is
+   real, not aspirational: this needed ZERO changes to hmsvc or this
+   widget, verified live against a running hmsvc instance's own
+   `/layers` response. Crops directly from the Restored mosaic's own
+   `00_raw-ink.png` (no photo/homography involved, unlike
+   `extract_keys()`) — see that script's own header for the full story.
+
+
    **"Restored State — Waterway"** (2026-10-17, same day). A real
    `.png` (`Data/mapFeatures/SamoWeb_RestoredStatePlan_WaterwayView.png`
    + `.bounds.json`), generated OFFLINE by `scripts/
@@ -305,6 +318,29 @@ and get concatenated in that order; it does **not** matter for *type
    correct on paper). Drawn in `redraw()` just before `drawWaterwayView`
    — underneath the Waterway's own more opaque blue wherever the two
    would otherwise overlap.
+
+   **Startup load retry, `RetryingLoader`** (2026-10-19). `init()` used
+   to try the `samothrace-tiles` hmsvc exactly once and give up with a
+   plain error on any failure — a real race, not hypothetical: this
+   widget's own page can finish loading and ask `desk.state` for that
+   service's URL before the (separately, independently started) service
+   has actually published it. `init()` is now just one-time setup (the
+   five controllers' own `.init()` calls, `watchTileServiceState`); the
+   actual service-discovery-through-first-successful-draw sequence moved
+   into a new `attemptLoad()`, wrapped by `RetryingLoader` — backs off
+   1s/5s/10s/60s/300s, then gives up with a manual "Retry now" button
+   that keeps working indefinitely (fires the pending attempt early if
+   one's still scheduled; starts a fresh 1s/5s/10s/60s/300s cycle if the
+   schedule already ran out). Byte-for-byte the same class in all three
+   of this project's widgets that depend on an hmsvc at startup
+   (`desk_widgets/natural-earth-map/natural-earth-map.ts`,
+   `desk_widgets/gazetteer/gazetteer.ts`) — duplicated, not shared,
+   matching this trio's own established convention of each independently
+   reimplementing the URL-discovery-via-`desk.state` pattern rather than
+   importing from one another. See
+   `desk_domains/cartography/natural-earth-and-openstreetmap.md` for
+   where this is written up as general, project-independent domain
+   knowledge, not just a Samothrace-specific fix.
 
 `widget.html` holds the template markup + all CSS (one `<style>` block
 inside the `<template>`); `widget.json` the manifest (keyword,

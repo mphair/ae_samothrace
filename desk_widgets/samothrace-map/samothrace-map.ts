@@ -276,6 +276,109 @@ interface OverlayPath {
   path: Path2D;
 }
 
+// ── Startup load retry --
+//
+// Byte-for-byte the same class as desk_widgets/natural-earth-map/
+// natural-earth-map.ts's and desk_widgets/gazetteer/gazetteer.ts's own
+// RetryingLoader (see either file's header comment for the full
+// "why": the samothrace-tiles hmsvc is a separate process Desk starts
+// independently, and this widget's own page can finish loading and
+// ask desk.state for its URL before that service has actually
+// published it). Duplicated rather than shared, matching the
+// established convention across all three of these widgets (each
+// already duplicates the URL-discovery-via-desk.state pattern itself
+// rather than importing from the others).
+const RETRY_BACKOFF_SEC = [1, 5, 10, 60, 300];
+
+class RetryingLoader {
+  private attemptIndex = 0;
+  private countdownTimer: number | null = null;
+  private remainingSec = 0;
+  private gaveUp = false;
+  private running = false;
+
+  constructor(private readonly container: HTMLElement, private readonly attempt: () => Promise<void>) {}
+
+  start(): void {
+    void this.runAttempt();
+  }
+
+  setMessage(text: string): void {
+    if (!this.running) return;
+    this.container.innerHTML = `<div class="retry-box"><div class="retry-message">${escapeHtml(text)}</div></div>`;
+    this.container.style.display = 'flex';
+  }
+
+  retryNow(): void {
+    this.clearCountdown();
+    if (this.gaveUp) {
+      this.attemptIndex = 0;
+      this.gaveUp = false;
+    }
+    void this.runAttempt();
+  }
+
+  private clearCountdown(): void {
+    if (this.countdownTimer !== null) {
+      window.clearInterval(this.countdownTimer);
+      this.countdownTimer = null;
+    }
+  }
+
+  private async runAttempt(): Promise<void> {
+    if (this.running) return;
+    this.running = true;
+    this.clearCountdown();
+    this.setMessage('Loading…');
+    try {
+      await this.attempt();
+      this.attemptIndex = 0;
+      this.gaveUp = false;
+      this.container.style.display = 'none';
+    } catch (err) {
+      this.scheduleRetry(err);
+    } finally {
+      this.running = false;
+    }
+  }
+
+  private scheduleRetry(err: unknown): void {
+    const message = err instanceof Error ? err.message : String(err);
+    if (this.attemptIndex >= RETRY_BACKOFF_SEC.length) {
+      this.gaveUp = true;
+      this.render(message, null);
+      return;
+    }
+    const delaySec = RETRY_BACKOFF_SEC[this.attemptIndex]!;
+    this.attemptIndex++;
+    this.remainingSec = delaySec;
+    this.render(message, this.remainingSec);
+    this.countdownTimer = window.setInterval(() => {
+      this.remainingSec--;
+      if (this.remainingSec <= 0) {
+        this.clearCountdown();
+        void this.runAttempt();
+      } else {
+        this.render(message, this.remainingSec);
+      }
+    }, 1000);
+  }
+
+  private render(message: string, countdownSec: number | null): void {
+    const countdownHtml = countdownSec !== null
+      ? `<div class="retry-countdown">Retrying in ${countdownSec}s…</div>`
+      : `<div class="retry-countdown">Giving up after repeated failures.</div>`;
+    this.container.innerHTML =
+      `<div class="retry-box">` +
+      `<div class="retry-message">${escapeHtml(message)}</div>` +
+      countdownHtml +
+      `<button type="button" class="retry-button">Retry now</button>` +
+      `</div>`;
+    this.container.style.display = 'flex';
+    this.container.querySelector('.retry-button')?.addEventListener('click', () => this.retryNow());
+  }
+}
+
 // ── Element ──
 
 class SamothraceMapElement extends HTMLElement {
@@ -284,6 +387,7 @@ class SamothraceMapElement extends HTMLElement {
   private selectEl: HTMLSelectElement | null = null;
   private homeButtonEl: HTMLElement | null = null;
   private statusEl: HTMLElement | null = null;
+  private loader: RetryingLoader | null = null;
   private layersPanelEl: HTMLElement | null = null;
   private zoomLabelEl: HTMLElement | null = null;
   private debugHitTraceToggleEl: HTMLInputElement | null = null;
@@ -667,166 +771,173 @@ class SamothraceMapElement extends HTMLElement {
     if (this.screenshotCountdownInterval !== null) clearInterval(this.screenshotCountdownInterval);
   }
 
-  private setStatus(text: string | null): void {
-    if (!this.statusEl) return;
-    if (text) {
-      this.statusEl.textContent = text;
-      (this.statusEl as HTMLElement).style.display = 'flex';
-    } else {
-      (this.statusEl as HTMLElement).style.display = 'none';
-    }
-  }
-
   // ── Startup ──
 
   private async init(): Promise<void> {
+    // Recording plumbing is a nice-to-have alongside the map, never a
+    // reason to fail loading it -- its own errors (missing capability,
+    // a Bridge call failing) are swallowed here rather than propagating
+    // into attemptLoad's own try/catch below. None of these five
+    // depend on the tile service, so they're one-time setup, not part
+    // of the retried attempt -- a failed or slow samothrace-tiles
+    // startup has no bearing on whether these succeed.
+    this.recording.init().catch((err) => {
+      console.warn('recording plumbing failed to start:', err);
+    });
+    // Same "never block the map on this" treatment -- the Q&A panel
+    // loads its own queue files independently of everything else here.
+    this.labelReviewTab.init().catch((err) => {
+      console.warn('label review tab failed to load:', err);
+    });
+    this.minorBandsTab.init().catch((err) => {
+      console.warn('minor bands tab failed to load:', err);
+    });
+    this.connectorTab.init().catch((err) => {
+      console.warn('contour connector tab failed to load:', err);
+    });
+    this.agentQaTab.init().catch((err) => {
+      console.warn('agent Q&A tab failed to load:', err);
+    });
+    // Same "never block/fail the map on this" treatment -- if this
+    // fails to even subscribe, the widget just won't notice a future
+    // hmsvc restart (falls back to today's "stays on the old, now-dead
+    // URL until a human reloads the widget" behavior), not a reason to
+    // fail loading the map that's working right now.
+    this.watchTileServiceState().catch((err) => {
+      console.warn('watching tile service state failed to start:', err);
+    });
+
+    if (!this.statusEl) return;
+    // See RetryingLoader's own header comment for the full "why" --
+    // short version: samothrace-tiles is a separate process Desk
+    // starts independently, and this widget's own page can finish
+    // loading and ask desk.state for its URL before that service has
+    // actually published it. Backs off 1s/5s/10s/60s/300s, then gives
+    // up with a manual Retry button that keeps working indefinitely.
+    this.loader = new RetryingLoader(this.statusEl, () => this.attemptLoad());
+    this.loader.start();
+  }
+
+  // The actual "try to get the map loaded" attempt -- everything in
+  // here either succeeds completely or throws, so RetryingLoader can
+  // retry the whole thing uniformly on failure. Safe to re-run: every
+  // step either overwrites its own previous result (serviceUrl,
+  // layerMetas, actualFeatures/restoredFeatures) or is naturally
+  // idempotent (restoring the same saved localStorage/shared state a
+  // second time changes nothing).
+  private async attemptLoad(): Promise<void> {
     const desk = window.desk;
-    try {
-      if (!desk) throw new Error('Desk bridge unavailable');
+    if (!desk) throw new Error('Desk bridge unavailable');
 
-      // Recording plumbing is a nice-to-have alongside the map, never a
-      // reason to fail loading it -- its own errors (missing capability,
-      // a Bridge call failing) are swallowed here rather than propagating
-      // into this function's own try/catch below.
-      this.recording.init().catch((err) => {
-        console.warn('recording plumbing failed to start:', err);
-      });
-      // Same "never block the map on this" treatment -- the Q&A panel
-      // loads its own queue files independently of everything else here.
-      this.labelReviewTab.init().catch((err) => {
-        console.warn('label review tab failed to load:', err);
-      });
-      this.minorBandsTab.init().catch((err) => {
-        console.warn('minor bands tab failed to load:', err);
-      });
-      this.connectorTab.init().catch((err) => {
-        console.warn('contour connector tab failed to load:', err);
-      });
-      this.agentQaTab.init().catch((err) => {
-        console.warn('agent Q&A tab failed to load:', err);
-      });
-      // Same "never block/fail the map on this" treatment -- if this
-      // fails to even subscribe, the widget just won't notice a future
-      // hmsvc restart (falls back to today's "stays on the old, now-dead
-      // URL until a human reloads the widget" behavior), not a reason to
-      // fail loading the map that's working right now.
-      this.watchTileServiceState().catch((err) => {
-        console.warn('watching tile service state failed to start:', err);
-      });
-
-      const tileService = await desk.state.get(TILE_SERVICE_STATE_KEY);
-      const tileServiceValue = tileService.value as { status: string; url: string | null } | null;
-      if (!tileServiceValue || !tileServiceValue.url) {
-        throw new Error(
-          `${TILE_SERVICE_NAME} tile service is not running -- start it from the Microservices widget`
-        );
-      }
-      this.serviceUrl = tileServiceValue.url.replace(/\/+$/, '');
-
-      this.setStatus('Loading layers…');
-      await this.loadLayerMeta();
-      this.buildLayersPanel();
-
-      this.setStatus('Loading monument data…');
-      await this.loadOverlays();
-      this.buildDropdown();
-      this.combinedBounds = unionBounds([...this.actualFeatures, ...this.restoredFeatures].map(featureBounds));
-
-      // Restoring saved UI state (view/layers/selection) is entirely
-      // best-effort: a saved layer id that no longer exists, a webCode
-      // for a monument that's gone, or a malformed/partial `view` left
-      // over from an older version of this code must never block
-      // startup -- caught broadly, falling through to today's existing
-      // defaults (shared-state selection, then full overview) on any
-      // failure.
-      let restoredSelection = false;
-      let restoredView = false;
-      try {
-        const { data: localData } = await desk.self.getLocalStorage();
-
-        const savedLayers = Array.isArray(localData.visibleLayers) ? (localData.visibleLayers as string[]) : null;
-        if (savedLayers) {
-          // isKnownLayerId, not just `this.layerMetas.some(...)` -- the
-          // latter only ever matches hmsvc-provided layers (aerial/
-          // topographic/structures/monuments), silently dropping any
-          // saved contours-layer or pipeline-stage-layer id every single
-          // time, since neither comes from layerMetas at all.
-          this.visibleLayers = new Set(savedLayers.filter((id) => this.isKnownLayerId(id)));
-          this.syncLayerCheckboxes();
-        }
-
-        // No per-id validity check needed here the way savedLayers'
-        // isKnownLayerId filter has -- a stale group key from a
-        // now-removed/renamed group just means that key is never
-        // referenced by any rendered <details data-group-key>, so
-        // syncGroupCollapse's own per-element lookup simply finds
-        // nothing to apply it to. Harmless either way, same "best-effort,
-        // a saved value that doesn't quite line up with current data is
-        // silently skipped" standard as everything else in this block.
-        const savedCollapsed = Array.isArray(localData.collapsedGroups)
-          ? (localData.collapsedGroups as unknown[]).filter((x): x is string => typeof x === 'string')
-          : null;
-        if (savedCollapsed) {
-          this.collapsedGroups = new Set(savedCollapsed);
-          this.syncGroupCollapse();
-        }
-
-        const savedWebCode = typeof localData.selectedWebCode === 'string' ? localData.selectedWebCode : null;
-        if (savedWebCode && savedWebCode !== INTRO_WEBCODE && this.findAllMatching(savedWebCode).length > 0) {
-          this.selectFeature(savedWebCode, false);
-          restoredSelection = true;
-        }
-
-        // Applied AFTER selectFeature above (which already moved the
-        // camera to that selection's own bounds) so a saved pan/zoom
-        // that's drifted away from the selected monument wins for the
-        // camera, while the selection itself (dropdown, shared state for
-        // the Description widget) still restores correctly either way.
-        const rawView = localData.view;
-        if (rawView && typeof rawView === 'object') {
-          const v = rawView as { lon?: unknown; lat?: unknown; zoom?: unknown };
-          if (
-            typeof v.lon === 'number' && Number.isFinite(v.lon) &&
-            typeof v.lat === 'number' && Number.isFinite(v.lat) &&
-            typeof v.zoom === 'number' && Number.isFinite(v.zoom)
-          ) {
-            this.view = { lon: v.lon, lat: v.lat, zoom: Math.min(Math.max(v.zoom, this.minZoom), this.maxZoom) };
-            restoredView = true;
-          }
-        }
-
-        // No annotation-layer restore here (removed 2026-10-17) -- it's
-        // no longer saved at all, see saveUiState's own comment. A fresh
-        // page load always starts with the layer off/empty, which is
-        // already true of annotationLayerOn/annotationStrokes' own field
-        // defaults -- nothing to do.
-      } catch (err) {
-        console.warn('restoring saved UI state failed (best-effort, using defaults):', err);
-      }
-
-      if (!restoredSelection && !restoredView) {
-        // Nothing locally saved for THIS widget instance yet -- fall
-        // back to the project-wide shared "last selected monument"
-        // (existing behavior, unchanged), or the full overview.
-        try {
-          const existing = await desk.state.get(STATE_KEY);
-          const value = existing.value as SelectedMonument | null;
-          if (value && value.webCode && value.webCode !== INTRO_WEBCODE && this.findAllMatching(value.webCode).length > 0) {
-            this.selectFeature(value.webCode, false);
-          } else if (this.combinedBounds) {
-            this.fitToBounds(this.combinedBounds, 0.08);
-          }
-        } catch (err) {
-          console.warn('restoring shared last-selected-monument state failed (best-effort, using defaults):', err);
-          if (this.combinedBounds) this.fitToBounds(this.combinedBounds, 0.08);
-        }
-      }
-
-      this.setStatus(null);
-      this.scheduleRedraw();
-    } catch (err) {
-      this.setStatus(`Failed to load map: ${err instanceof Error ? err.message : String(err)}`);
+    const tileService = await desk.state.get(TILE_SERVICE_STATE_KEY);
+    const tileServiceValue = tileService.value as { status: string; url: string | null } | null;
+    if (!tileServiceValue || !tileServiceValue.url) {
+      throw new Error(
+        `${TILE_SERVICE_NAME} tile service is not running yet -- start it from the Microservices widget if this persists`
+      );
     }
+    this.serviceUrl = tileServiceValue.url.replace(/\/+$/, '');
+
+    this.loader?.setMessage('Loading layers…');
+    await this.loadLayerMeta();
+    this.buildLayersPanel();
+
+    this.loader?.setMessage('Loading monument data…');
+    await this.loadOverlays();
+    this.buildDropdown();
+    this.combinedBounds = unionBounds([...this.actualFeatures, ...this.restoredFeatures].map(featureBounds));
+
+    // Restoring saved UI state (view/layers/selection) is entirely
+    // best-effort: a saved layer id that no longer exists, a webCode
+    // for a monument that's gone, or a malformed/partial `view` left
+    // over from an older version of this code must never block
+    // startup -- caught broadly, falling through to today's existing
+    // defaults (shared-state selection, then full overview) on any
+    // failure.
+    let restoredSelection = false;
+    let restoredView = false;
+    try {
+      const { data: localData } = await desk.self.getLocalStorage();
+
+      const savedLayers = Array.isArray(localData.visibleLayers) ? (localData.visibleLayers as string[]) : null;
+      if (savedLayers) {
+        // isKnownLayerId, not just `this.layerMetas.some(...)` -- the
+        // latter only ever matches hmsvc-provided layers (aerial/
+        // topographic/structures/monuments), silently dropping any
+        // saved contours-layer or pipeline-stage-layer id every single
+        // time, since neither comes from layerMetas at all.
+        this.visibleLayers = new Set(savedLayers.filter((id) => this.isKnownLayerId(id)));
+        this.syncLayerCheckboxes();
+      }
+
+      // No per-id validity check needed here the way savedLayers'
+      // isKnownLayerId filter has -- a stale group key from a
+      // now-removed/renamed group just means that key is never
+      // referenced by any rendered <details data-group-key>, so
+      // syncGroupCollapse's own per-element lookup simply finds
+      // nothing to apply it to. Harmless either way, same "best-effort,
+      // a saved value that doesn't quite line up with current data is
+      // silently skipped" standard as everything else in this block.
+      const savedCollapsed = Array.isArray(localData.collapsedGroups)
+        ? (localData.collapsedGroups as unknown[]).filter((x): x is string => typeof x === 'string')
+        : null;
+      if (savedCollapsed) {
+        this.collapsedGroups = new Set(savedCollapsed);
+        this.syncGroupCollapse();
+      }
+
+      const savedWebCode = typeof localData.selectedWebCode === 'string' ? localData.selectedWebCode : null;
+      if (savedWebCode && savedWebCode !== INTRO_WEBCODE && this.findAllMatching(savedWebCode).length > 0) {
+        this.selectFeature(savedWebCode, false);
+        restoredSelection = true;
+      }
+
+      // Applied AFTER selectFeature above (which already moved the
+      // camera to that selection's own bounds) so a saved pan/zoom
+      // that's drifted away from the selected monument wins for the
+      // camera, while the selection itself (dropdown, shared state for
+      // the Description widget) still restores correctly either way.
+      const rawView = localData.view;
+      if (rawView && typeof rawView === 'object') {
+        const v = rawView as { lon?: unknown; lat?: unknown; zoom?: unknown };
+        if (
+          typeof v.lon === 'number' && Number.isFinite(v.lon) &&
+          typeof v.lat === 'number' && Number.isFinite(v.lat) &&
+          typeof v.zoom === 'number' && Number.isFinite(v.zoom)
+        ) {
+          this.view = { lon: v.lon, lat: v.lat, zoom: Math.min(Math.max(v.zoom, this.minZoom), this.maxZoom) };
+          restoredView = true;
+        }
+      }
+
+      // No annotation-layer restore here (removed 2026-10-17) -- it's
+      // no longer saved at all, see saveUiState's own comment. A fresh
+      // page load always starts with the layer off/empty, which is
+      // already true of annotationLayerOn/annotationStrokes' own field
+      // defaults -- nothing to do.
+    } catch (err) {
+      console.warn('restoring saved UI state failed (best-effort, using defaults):', err);
+    }
+
+    if (!restoredSelection && !restoredView) {
+      // Nothing locally saved for THIS widget instance yet -- fall
+      // back to the project-wide shared "last selected monument"
+      // (existing behavior, unchanged), or the full overview.
+      try {
+        const existing = await desk.state.get(STATE_KEY);
+        const value = existing.value as SelectedMonument | null;
+        if (value && value.webCode && value.webCode !== INTRO_WEBCODE && this.findAllMatching(value.webCode).length > 0) {
+          this.selectFeature(value.webCode, false);
+        } else if (this.combinedBounds) {
+          this.fitToBounds(this.combinedBounds, 0.08);
+        }
+      } catch (err) {
+        console.warn('restoring shared last-selected-monument state failed (best-effort, using defaults):', err);
+        if (this.combinedBounds) this.fitToBounds(this.combinedBounds, 0.08);
+      }
+    }
+
+    this.scheduleRedraw();
   }
 
   private async loadLayerMeta(): Promise<void> {
