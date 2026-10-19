@@ -68,10 +68,43 @@ the table — not Samothrace, Lemnos, Thasos, Samos, Imbros/Gökçeada, or
 most other individual Aegean islands. `ne_10m_populated_places` was
 also checked directly for a "Samothraki" entry (the town sharing the
 island's name) — it isn't there; too small a population for this
-dataset. **If named small-island labels are needed later, they'll have
-to come from a different, non-Natural-Earth source** (e.g.
-OpenStreetMap), with its own separate citation and license — don't
-expect a future re-run of this same pipeline with a different filter to
+dataset.
+
+**This isn't a "minor island" size-tier gap** — Samothrace (~178 km²) is
+well above the size Natural Earth's own "minor islands" layer covers,
+and is in fact part of `ne_10m_land` (the mainland-scale layer), not
+`ne_10m_minor_islands`. So it's reasonable to wonder whether a
+*political* layer — one step up from the purely physical layers above —
+splits a country out by individual landmass and names each one. Checked
+directly, using Samothrace plus three comparably-sized/notable
+neighbors (Thasos, Lemnos, Imbros/Gökçeada) as a control group:
+
+- `ne_10m_admin_0_countries` and `ne_10m_admin_0_map_subunits` (the
+  latter specifically exists to split a sovereign state into separate
+  records for disjoint territories — French Guiana as its own record
+  from mainland France, for example) **both still return a single
+  `NAME: "Greece"` record** covering all four test points — Greece's
+  many islands are not split out as separate map-subunit records the
+  way some countries' overseas territories are.
+- `ne_10m_admin_1_states_provinces` (regional/state-level government
+  units) returns a real, named region for each point — "East Macedonia
+  and Thrace" for Samothrace and Thasos, "North Aegean" for Lemnos,
+  "Çanakkale" for Imbros/Gökçeada — but that's the name of the
+  *administrative region*, not the island. Several islands routinely
+  share one region's name (as Samothrace and Thasos do here).
+
+So the honest conclusion: Natural Earth, at this scale, simply has no
+layer — physical or political — that names individual Aegean islands in
+Samothrace's size class. The only per-island names available anywhere
+in this data are the curated "famous enough to label on a small-scale
+atlas" list in `ne_10m_geography_regions_polys` (Crete, Rhodes, Lesbos,
+Cyprus, ...), which is closer to a notability cut than a size cut —
+Lesbos made it, while Samothrace, Thasos, Lemnos, and Imbros/Gökçeada,
+none obviously smaller or less real, did not. **If named small-island
+labels are needed later, they'll have to come from a different,
+non-Natural-Earth source** (e.g. OpenStreetMap), with its own separate
+citation and license — don't expect a future re-run of this same
+pipeline, against any Natural Earth layer, with a different filter to
 find them; they're not in the source data at all.
 
 ## License and attribution
