@@ -57,6 +57,31 @@ const OVERLAY_PATHS: Record<'Actual' | 'Restored', string> = {
 const WATERWAY_VIEW_LAYER_ID = 'restored-waterway-view';
 const WATERWAY_VIEW_PNG_PATH = 'Data/mapFeatures/SamoWeb_RestoredStatePlan_WaterwayView.png';
 const WATERWAY_VIEW_BOUNDS_PATH = 'Data/mapFeatures/SamoWeb_RestoredStatePlan_WaterwayView.bounds.json';
+
+// "Regios" (2026-10-19, directly requested via recording -- "let's add
+// some more layers. This next layer is the regio... there's a few
+// regios on here that we're concerned with") -- translucent sanctuary
+// -zone tints, each a flat PNG generated offline by
+// scripts/style_restored_regio.py (same raster-overlay approach as
+// WATERWAY_VIEW_* just above: a seeded flood fill bounded by a hand
+// -traced line plus the Restored Waterway's own shape -- see that
+// script's own header for the full story). A real array (not one flat
+// constant like WATERWAY_VIEW_*) since the user named this a category
+// they expect to grow -- Regio I is just the first member.
+interface RegioLayerMeta {
+  id: string;
+  label: string;
+  pngPath: string;
+  boundsPath: string;
+}
+const REGIO_LAYERS: RegioLayerMeta[] = [
+  {
+    id: 'regio-1',
+    label: 'Regio I',
+    pngPath: 'Data/mapFeatures/SamoWeb_RestoredStatePlan_Regio1.png',
+    boundsPath: 'Data/mapFeatures/SamoWeb_RestoredStatePlan_Regio1.bounds.json',
+  },
+];
 // Which raster layer ids make a given plan's overlay "relevant" -- hover
 // and click hit-testing for that plan's monument polygons are only live
 // while at least one of its own layers is actually visible, so you can
@@ -387,6 +412,12 @@ class SamothraceMapElement extends HTMLElement {
   // failed/not found (never retried); otherwise the loaded entry.
   private waterwayViewEntry: StageImageEntry | null | undefined;
   private waterwayViewBounds: { west: number; south: number; east: number; north: number } | null | undefined;
+  // "Regios" -- see REGIO_LAYERS' own comment. Keyed by RegioLayerMeta.id
+  // rather than one field per layer (like waterwayViewEntry/Bounds above)
+  // since this list is expected to grow; same undefined/null/loaded
+  // states as waterwayViewEntry, per entry.
+  private regioEntries = new Map<string, StageImageEntry | null | undefined>();
+  private regioBounds = new Map<string, { west: number; south: number; east: number; north: number } | null | undefined>();
   private visibleLayers = new Set<string>();
   // Which layer-panel `<details>` groups are currently COLLAPSED (closed)
   // -- keyed by the same `hmsvc:<group>` / `stage:<group>` strings
@@ -827,6 +858,7 @@ class SamothraceMapElement extends HTMLElement {
     if (id === this.connectorTab.rowFor().id) return true;
     if (this.keyLayers.some((k) => k.id === id)) return true;
     if (id === WATERWAY_VIEW_LAYER_ID) return true;
+    if (REGIO_LAYERS.some((r) => r.id === id)) return true;
     return false;
   }
 
@@ -1020,6 +1052,17 @@ class SamothraceMapElement extends HTMLElement {
     if (this.keyLayers.length > 0) {
       openGroup('keys', 'Keys');
       for (const key of this.keyLayers) pushRow(key.id, key.label, false);
+      closeGroup();
+    }
+
+    // "Regios" (2026-10-19, directly requested, including the group's
+    // own name) -- same "not an hmsvc group, so it can't fall out of the
+    // main groups loop" reasoning as Keys just above. Always rendered
+    // (REGIO_LAYERS starts non-empty, unlike keyLayers which depends on
+    // what a given project's own transform.json happens to extract).
+    if (REGIO_LAYERS.length > 0) {
+      openGroup('regios', 'Regios');
+      for (const regio of REGIO_LAYERS) pushRow(regio.id, regio.label, false);
       closeGroup();
     }
 
@@ -2067,6 +2110,11 @@ class SamothraceMapElement extends HTMLElement {
     // comment for why its bounds lookup must stay synchronous here
     // rather than resolving a promise mid-draw.
     this.stageLayers.drawVisible(ctx, this.visibleLayers, toScreen);
+    // Drawn before the Waterway below -- a Regio tint is a translucent
+    // wash over the base map, not specific detail, so it sits
+    // underneath the Waterway's own (more opaque, more specific) blue
+    // wherever the two would otherwise overlap.
+    this.drawRegioLayers(ctx, toScreen);
     // Same "between base raster and monument overlays" slot as
     // stageLayers.drawVisible just above -- real "Restored State" map
     // content, same stacking position Extracted Contours/monument
@@ -2238,6 +2286,58 @@ class SamothraceMapElement extends HTMLElement {
       this.waterwayViewBounds = JSON.parse(contents) as { west: number; south: number; east: number; north: number };
     } catch (err) {
       console.warn('loading Restored State -- Waterway bounds failed:', err);
+    }
+    this.scheduleRedraw();
+  }
+
+  // Same lazy-load-then-draw pattern as drawWaterwayView just above,
+  // generalized over REGIO_LAYERS instead of one flat constant -- see
+  // that array's own comment for why.
+  private drawRegioLayers(ctx: CanvasRenderingContext2D, toScreen: (lon: number, lat: number) => { x: number; y: number }): void {
+    for (const regio of REGIO_LAYERS) {
+      if (!this.visibleLayers.has(regio.id)) continue;
+      if (this.regioEntries.get(regio.id) === undefined) {
+        this.regioEntries.set(regio.id, { img: new Image(), status: 'loading' });
+        void this.loadRegioImage(regio);
+      }
+      if (this.regioBounds.get(regio.id) === undefined) {
+        this.regioBounds.set(regio.id, null);
+        void this.loadRegioBounds(regio);
+      }
+      const entry = this.regioEntries.get(regio.id);
+      const bounds = this.regioBounds.get(regio.id);
+      if (!entry || entry.status !== 'loaded' || !bounds) continue;
+      const nw = toScreen(bounds.west, bounds.north);
+      const se = toScreen(bounds.east, bounds.south);
+      ctx.drawImage(entry.img, nw.x, nw.y, se.x - nw.x, se.y - nw.y);
+    }
+  }
+
+  private async loadRegioImage(regio: RegioLayerMeta): Promise<void> {
+    try {
+      const url = await readFileAsBlobUrl(regio.pngPath);
+      const img = new Image();
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('decode failed'));
+        img.src = url;
+      });
+      this.regioEntries.set(regio.id, { img, status: 'loaded' });
+    } catch (err) {
+      console.warn(`loading Regio image failed (${regio.label}):`, err);
+      this.regioEntries.set(regio.id, null);
+    }
+    this.scheduleRedraw();
+  }
+
+  private async loadRegioBounds(regio: RegioLayerMeta): Promise<void> {
+    const desk = window.desk;
+    if (!desk) return;
+    try {
+      const { contents } = await desk.fs.readFile(regio.boundsPath);
+      this.regioBounds.set(regio.id, JSON.parse(contents) as { west: number; south: number; east: number; north: number });
+    } catch (err) {
+      console.warn(`loading Regio bounds failed (${regio.label}):`, err);
     }
     this.scheduleRedraw();
   }

@@ -336,6 +336,105 @@ tracks specific open items worth picking up later.
   instead, same injection pattern Extracted Contours already uses, same
   "real, session-confirmed map content" reasoning.
 
+- **New "Regios" layer-panel category — translucent sanctuary-zone
+  tints, starting with "Regio I" (2026-10-19, requested directly via
+  recording, including the category's own name: "let's add some more
+  layers. This next layer is the regio... there's a few regios on here
+  that we're concerned with. For now, let's just talk about the first
+  level main regio").** The underlying term had actually already
+  surfaced once before, unrelated to this feature: fixing the
+  Chronology-mask over-clip (see that entry above) found a "regio"
+  arrow+label printed on the Initial Map photo, in the margin next to
+  the legend — noticed then, acted on now.
+
+  **How the boundary was built**: the user turned the Waterway layer OFF
+  and looked at just the raw ink mask, then drew ONE long purple
+  polyline tracing the Restored mosaic's own top, left, and bottom edges
+  (and partway up the right edge) — explicitly NOT a closed loop by
+  itself: "this purple line here, is the boundary of the first regio...
+  the other boundaries... going up to the waterway there." A few GREEN
+  marks confirmed different stretches of the Waterway as the remaining
+  (northeast) edge; a handful of short purple "hash mark" strokes across
+  the interior confirmed which side is "in" (not used programmatically,
+  same confirmation-only role yellow dots played in an earlier Waterway
+  annotation pass). "I would like it to smooth out that purple line so
+  it's not so jagged" — the raw points are resampled to even arc-length
+  spacing, then Gaussian-smoothed.
+
+  **New script, `scripts/style_restored_regio.py`** — reuses
+  `seeded_flood_fill` (same technique, same installed job,
+  `desk-installed-jobs/painting-technique/`, as the Waterway layer's own
+  2026-10-18 rewrite) with the barrier being the smoothed purple line
+  UNIONED with the Waterway's own already-generated output PNG, flood
+  -filled from one interior seed point. Sounds sealed; wasn't, three
+  times, each found by actually running it and looking at the result
+  rather than trusting the logic on paper:
+  1. The polyline's own two ends don't touch the water (confirmed: ~22
+     -32px short) — unclosed, 97% of the canvas filled on the first run.
+     Fixed by snapping each endpoint to its exact nearest water pixel
+     (`ndimage.distance_transform_edt`'s own `return_indices`).
+  2. The Waterway isn't one connected shape — 4 separate components,
+     split by both a genuine hard break and simple un-seeded stretches
+     between two of the Waterway's own seed points. A first attempt
+     plugged this with the FULL ink mask instead — technically sealed,
+     but fragmented the interior into disconnected pockets a single seed
+     couldn't reach (confirmed: several whole building clusters the
+     user's own hash marks crossed came out unfilled). Replaced with a
+     targeted bridge between water components under a measured distance
+     threshold (a real gap in the clustering, not a guess: ~164-205px for
+     genuine same-river gaps vs. ~778-946px for unrelated stretches).
+  3. Nearest-pixel snapping doesn't always pick the RIGHT piece of water
+     — the polyline's own start point snapped to a nearby branch (32px
+     away) instead of the actual main channel (159px away, but what the
+     user was standing next to when they started drawing). Confirmed
+     directly: the main channel was never connected to anything, and the
+     flood slipped around behind it, filling the entire northeast half
+     of the map instead of just the southwest. Fixed by checking every
+     water component against the WHOLE polyline, not just its two
+     endpoints.
+
+  Final visual check (not just a plausible pixel count) confirmed a
+  clean southwest tint stopping exactly at the main channel, with
+  structures 20/22/23/24/25/26/30 and the northeast terrain correctly
+  excluded. Rendered at `REGIO_ALPHA` (64/255, "three-quarters
+  transparent") in the purple the user actually drew with. Full story in
+  that script's own header.
+
+  Wired into `samothrace-map.ts` as `REGIO_LAYERS` — a real array, not
+  one flat constant the way `WATERWAY_VIEW_*` is, since the user named
+  this a category they expect to grow (`drawRegioLayers`/
+  `loadRegioImage`/`loadRegioBounds`, keyed by id in
+  `regioEntries`/`regioBounds` maps). Drawn in `redraw()` just before
+  `drawWaterwayView` — underneath the Waterway's own more opaque blue
+  wherever the two would otherwise overlap. Joins its own new "Regios"
+  layer-panel group (not an hmsvc group, same "can't fall out of the
+  main groups loop" treatment "Keys" already gets).
+
+  **Known limitation**: the boundary line and bridge logic are specific
+  to Regio I's own geometry (its polyline, its one interior seed) — a
+  future Regio 2+ will need its own polyline/seed captured the same way,
+  not a parameter on this one.
+
+  **Corrected same day, a recording later** (`rec-1792398286794-268c`):
+  "the regio also includes the area between the two rivers, the two
+  waterways... [the branch past structures 20/22/23/24/25/26] is the
+  actual eastern border of the regio" — the "clean stop at the main
+  channel" above was itself wrong. The user drew BLUE approximately where
+  the main channel and the branch connect, and YELLOW directly on the
+  branch (confirming THAT one, not the main channel, is the real eastern
+  edge). Root cause: `bridge_water_components`/
+  `bridge_components_to_polyline` treated every water component as
+  potential boundary material, including the main channel — exactly how
+  it got sealed into the outer loop as a boundary in the first place.
+  Fixed by excluding the main channel's own component (found by LABEL at
+  a known reference point, `MAIN_CHANNEL_REFERENCE_PX`, not a hardcoded
+  component number) from both bridging functions — with nothing sealing
+  it anymore, the flood naturally wraps around both its ends into the
+  between-rivers area, stopping only at the branch. Confirmed by a second
+  visual check: structures 20/22/23/24/25/30 now correctly inside the
+  tint, structure 26 and the terrain past the branch still correctly
+  outside. Full story in the script's own header.
+
 - **New "Keys" layer-panel category — the "Initial Map" photo's own
   printed Chronology legend, extracted (2026-10-17, requested live while
   trying out the new annotation tool: drew a purple box around it, "this
