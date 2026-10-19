@@ -61,7 +61,7 @@
       "x": -1663.7590777920157,
       "y": -312.4873868350608,
       "width": 674.0,
-      "height": 1046.6159210252476,
+      "height": 1205.7027579052137,
       "state": {
         "model": "claude-sonnet-5",
         "permission_mode": "auto"
@@ -92,19 +92,18 @@
       "state": {
         "recordingLogId": "079dad9b",
         "visibleLayers": [
-          "initial-map"
+          "blank",
+          "stage:restored:0",
+          "restored-waterway-view"
         ],
         "view": {
-          "lon": 25.53083700003873,
-          "lat": 40.500390966042715,
+          "lon": 25.530289924228157,
+          "lat": 40.50057807421091,
           "zoom": 18
         },
         "selectedWebCode": null,
         "collapsedGroups": [
-          "hmsvc:pipeline-topographic",
-          "user-changes",
-          "stage:restored",
-          "stage:actual"
+          "stage:restored"
         ],
         "annotationLayerOn": true,
         "annotationStrokes": [
@@ -840,7 +839,7 @@
         ]
       },
       "locked": false,
-      "placed_content_hash": "d45c44714b6c"
+      "placed_content_hash": "096a37f78650"
     },
     {
       "widget_id": "project_files",
@@ -856,8 +855,8 @@
     {
       "widget_id": "image_viewer",
       "instance_id": "ac08e5d5-3d70-4fe9-86c4-aa2bb10ebb58",
-      "x": -865.7544437879341,
-      "y": 619.8662483242259,
+      "x": -788.1241713110371,
+      "y": 625.5179322201514,
       "width": 480.0,
       "height": 400.0,
       "state": {},
@@ -877,20 +876,9 @@
     },
     {
       "widget_id": "scratch",
-      "instance_id": "635b3af8",
-      "x": -1260.8161814003163,
-      "y": 822.5326644108519,
-      "width": 360.0,
-      "height": 320.0,
-      "state": {},
-      "locked": false,
-      "placed_content_hash": null
-    },
-    {
-      "widget_id": "scratch",
       "instance_id": "77df2fd5",
-      "x": -904.5614633239575,
-      "y": 518.9211293223186,
+      "x": -3806.5367364836866,
+      "y": 1761.2583589002538,
       "width": 360.0,
       "height": 320.0,
       "state": {},
@@ -900,13 +888,13 @@
     {
       "widget_id": "claude_desk",
       "instance_id": "44ce05e8-01ef-461a-a2c5-257298816b16",
-      "x": -3108.9520765043603,
-      "y": 942.3582103832322,
+      "x": -3005.7981560352855,
+      "y": 924.1392449538492,
       "width": 591.0602170280699,
       "height": 560.0,
       "state": {
         "model": "claude-sonnet-5",
-        "permission_mode": "default"
+        "permission_mode": "auto"
       },
       "locked": false,
       "placed_content_hash": null
@@ -914,18 +902,104 @@
     {
       "widget_id": "image_viewer",
       "instance_id": "37beb877-5adf-4d19-8d2c-dd40d311fc89",
-      "x": -2287.6228311598634,
-      "y": 1224.6538652006718,
+      "x": -2131.3466644221958,
+      "y": 950.2962883714393,
       "width": 480.0,
       "height": 400.0,
       "state": {},
       "locked": false,
       "placed_content_hash": null
+    },
+    {
+      "widget_id": "claude_desk",
+      "instance_id": "2c57b823-61ac-4b76-a00b-6bc8fc7c7816",
+      "x": -3282.9125479010513,
+      "y": 1564.5238261266938,
+      "width": 603.4794710338863,
+      "height": 819.9846950468656,
+      "state": {
+        "model": "claude-sonnet-5",
+        "permission_mode": "auto"
+      },
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "markdown",
+      "instance_id": "5acf7dd4-4ec0-42e7-ad94-4ce6caa3590c",
+      "x": -2106.3190645123623,
+      "y": 1848.8733836093502,
+      "width": 900.0,
+      "height": 700.0,
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/.desk_temp/AM-Theban-Tribunal-overview/NOTES.md"
+      },
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "image_viewer",
+      "instance_id": "ac101482-a07e-4f39-9272-485062d37944",
+      "x": -3651.44239165391,
+      "y": 1038.2735726421924,
+      "width": 480.0,
+      "height": 400.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "project_files",
+      "instance_id": "64c8c40d",
+      "x": -2163.3502416844344,
+      "y": 1408.688624085011,
+      "width": 360.0,
+      "height": 640.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "markdown",
+      "instance_id": "e1c7e863-55a2-4df7-befd-ee6e1a921abb",
+      "x": -2490.696073622779,
+      "y": 1765.0056760775497,
+      "width": 900.0,
+      "height": 700.0,
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/.desk_temp/natural-earth.md"
+      },
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "NaturalEarthMap",
+      "instance_id": "890b22a3-b260-4834-bace-6472ce9f4a32",
+      "x": 561.4743262081779,
+      "y": 690.2042286245354,
+      "width": 860.0,
+      "height": 640.0,
+      "state": {
+        "visibleLayers": [
+          "ne_10m_rivers_lake_centerlines",
+          "ne_10m_geography_regions_polys",
+          "ne_10m_minor_islands",
+          "ne_10m_coastline",
+          "ne_10m_land"
+        ],
+        "view": {
+          "lon": 25.533299999999997,
+          "lat": 40.4833,
+          "zoom": 8
+        }
+      },
+      "locked": false,
+      "placed_content_hash": "8e18e4a2c8c6"
     }
   ],
-  "pan_x": -1998.1194642747805,
-  "pan_y": 1672.564734720989,
-  "scale": 0.9153606842340818,
+  "pan_x": -2892.8475836431226,
+  "pan_y": 2540.6096654275093,
+  "scale": 1.6011904761904763,
   "custom_widgets": [
     {
       "keyword": "SamothraceMap",
@@ -1040,6 +1114,20 @@
       },
       "capabilities": [],
       "source_path": null
+    },
+    {
+      "keyword": "NaturalEarthMap",
+      "label": "Natural Earth Map",
+      "html_b64": "",
+      "default_size": {
+        "width": 860,
+        "height": 640
+      },
+      "capabilities": [
+        "state",
+        "events"
+      ],
+      "source_path": "desk_widgets/natural-earth-map"
     }
   ],
   "file_type_registry": [],
@@ -1313,6 +1401,24 @@
             "plan": "Overview"
           },
           "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(12)Nike",
+            "label": "12",
+            "name": "Nike Monument",
+            "plan": "Actual"
+          },
+          "edit": null
+        },
+        {
+          "value": {
+            "webCode": "(0)Introduction",
+            "label": "",
+            "name": "Overview",
+            "plan": "Overview"
+          },
+          "edit": null
         }
       ]
     }
@@ -1322,9 +1428,49 @@
       "name": "map-import-from-photo",
       "version_hash": "92b63b7ab780",
       "installed_at": "2026-10-17T14:53:54.062257"
+    },
+    {
+      "name": "map-text-extractor",
+      "version_hash": "30daa0d2684a",
+      "installed_at": "2026-10-17T16:11:14.383588"
     }
   ],
   "recently_removed": [
+    {
+      "widget_id": "minimap",
+      "kind": "python",
+      "label": "Minimap (585dc966)",
+      "instance_id": "585dc966",
+      "state": {},
+      "width": 420.0,
+      "height": 360.0,
+      "removed_at": 1792372312.664907
+    },
+    {
+      "widget_id": "git_diff",
+      "kind": "python",
+      "label": "Git Diff (789a9a12)",
+      "instance_id": "789a9a12",
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/.gitignore"
+      },
+      "width": 640.0,
+      "height": 480.0,
+      "removed_at": 1792276993.02091
+    },
+    {
+      "widget_id": "scratch",
+      "kind": "python",
+      "label": "Scratch (635b3af8)",
+      "instance_id": "635b3af8",
+      "state": {
+        "label": "untitled",
+        "text": "button set that shows up during recording mode, top-center on the map area, to take a timecoded screenshot of the widget using the HTML Bridge API. include these buttons: (1) screenshot now (2) screenshot in 5s (3) annotation layer toggle (shows/hides a persistant clearable drawing layer with 7 distinct-color pens)"
+      },
+      "width": 360.0,
+      "height": 320.0,
+      "removed_at": 1792276097.237885
+    },
     {
       "widget_id": "git_diff",
       "kind": "python",
@@ -1533,46 +1679,6 @@
       "width": 360.0,
       "height": 320.0,
       "removed_at": 1792123287.249036
-    },
-    {
-      "widget_id": "SamothraceMap",
-      "kind": "html",
-      "label": "Samothrace Map (10fa8b04)",
-      "instance_id": "10fa8b04-4a35-4071-8e15-d833516b42b0",
-      "state": {
-        "visibleLayers": [
-          "topographic",
-          "aerial"
-        ]
-      },
-      "width": 1143.1798399744423,
-      "height": 1033.629850865474,
-      "removed_at": 1792112271.170743
-    },
-    {
-      "widget_id": "claude_desk",
-      "kind": "python",
-      "label": "Claude (Desk) (1a2b4fa6)",
-      "instance_id": "1a2b4fa6-697c-4815-9090-35dc1946736b",
-      "state": {
-        "model": "claude-sonnet-5",
-        "permission_mode": "auto"
-      },
-      "width": 647.0,
-      "height": 688.0,
-      "removed_at": 1791837563.140128
-    },
-    {
-      "widget_id": "git_diff",
-      "kind": "python",
-      "label": "Git Diff (8bebe8c2)",
-      "instance_id": "8bebe8c2",
-      "state": {
-        "path": "/Users/mphair/desk_imports/ae_samothrace/samothrace.desk"
-      },
-      "width": 640.0,
-      "height": 480.0,
-      "removed_at": 1791836407.7602692
     }
   ]
 }

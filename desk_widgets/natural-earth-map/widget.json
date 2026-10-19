@@ -1,0 +1,7 @@
+{
+  "keyword": "NaturalEarthMap",
+  "label": "Natural Earth Map",
+  "width": 860,
+  "height": 640,
+  "capabilities": ["state", "events"]
+}

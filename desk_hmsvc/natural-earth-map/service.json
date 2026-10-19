@@ -1,0 +1,5 @@
+{
+  "description": "Serves the clipped Natural Earth GeoJSON (Data/naturalEarth/) over HTTP for the Natural Earth Map widget.",
+  "autostart": true,
+  "capabilities": []
+}

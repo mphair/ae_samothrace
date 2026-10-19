@@ -10,3 +10,7 @@ Pillow
 scikit-image
 shapely
 ocrmac
+
+# For fetch_natural_earth.py / clip_natural_earth.py.
+requests
+pyshp

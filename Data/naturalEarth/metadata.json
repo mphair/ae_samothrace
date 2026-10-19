@@ -1,0 +1,92 @@
+{
+  "bounds": {
+    "west": 16.019029845656533,
+    "south": 33.24679152355735,
+    "east": 35.04757015434347,
+    "north": 47.71980847644265
+  },
+  "center": {
+    "lon": 25.5333,
+    "lat": 40.4833
+  },
+  "layers": [
+    {
+      "id": "ne_10m_land",
+      "url": "/data/ne_10m_land.geojson",
+      "featureCount": 8,
+      "label": "Land",
+      "group": "Land & Water",
+      "order": 0,
+      "defaultVisible": true,
+      "render": "fill-stroke",
+      "color": "#45566e",
+      "fillColor": "#2f3b4d",
+      "fillOpacity": 1,
+      "weight": 0.75
+    },
+    {
+      "id": "ne_10m_minor_islands",
+      "url": "/data/ne_10m_minor_islands.geojson",
+      "featureCount": 58,
+      "label": "Minor Islands",
+      "group": "Land & Water",
+      "order": 1,
+      "defaultVisible": true,
+      "render": "fill-stroke",
+      "color": "#53657e",
+      "fillColor": "#3a4a60",
+      "fillOpacity": 1,
+      "weight": 0.75
+    },
+    {
+      "id": "ne_10m_coastline",
+      "url": "/data/ne_10m_coastline.geojson",
+      "featureCount": 92,
+      "label": "Coastline",
+      "group": "Land & Water",
+      "order": 2,
+      "defaultVisible": true,
+      "render": "stroke",
+      "color": "#8fb0dd",
+      "weight": 1.1
+    },
+    {
+      "id": "ne_10m_rivers_lake_centerlines",
+      "url": "/data/ne_10m_rivers_lake_centerlines.geojson",
+      "featureCount": 35,
+      "label": "Rivers",
+      "group": "Rivers",
+      "order": 3,
+      "defaultVisible": true,
+      "render": "stroke",
+      "color": "#3f8fd1",
+      "weight": 1.25,
+      "labelField": "name"
+    },
+    {
+      "id": "ne_10m_geography_regions_polys",
+      "url": "/data/ne_10m_geography_regions_polys.geojson",
+      "featureCount": 7,
+      "label": "Named Islands & Regions",
+      "group": "Named Islands",
+      "order": 4,
+      "defaultVisible": true,
+      "render": "centroid-label",
+      "color": "#c9a9e0",
+      "labelField": "name"
+    },
+    {
+      "id": "ne_10m_populated_places",
+      "url": "/data/ne_10m_populated_places.geojson",
+      "featureCount": 219,
+      "label": "Cities",
+      "group": "Cities",
+      "order": 5,
+      "defaultVisible": true,
+      "render": "dot-label",
+      "color": "#f2b134",
+      "radius": 3,
+      "labelField": "name"
+    }
+  ]
+}
