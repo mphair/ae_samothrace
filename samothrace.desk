@@ -28,7 +28,7 @@
       "x": -245.20375302418128,
       "y": 555.7214807152077,
       "width": 720.0,
-      "height": 480.0,
+      "height": 561.9629414498136,
       "state": {},
       "locked": false,
       "placed_content_hash": null
@@ -88,22 +88,27 @@
       "x": -922.3053249788883,
       "y": -376.1422238555933,
       "width": 1096.0048065752785,
-      "height": 841.158765069763,
+      "height": 848.9796717562665,
       "state": {
         "recordingLogId": "079dad9b",
         "visibleLayers": [
+          "restored-waterway-view",
+          "restored-structures",
           "blank",
-          "stage:restored:0",
-          "restored-waterway-view"
+          "contours:restored"
         ],
         "view": {
-          "lon": 25.530289924228157,
-          "lat": 40.50057807421091,
+          "lon": 25.530218457698822,
+          "lat": 40.501022520924764,
           "zoom": 18
         },
         "selectedWebCode": null,
         "collapsedGroups": [
-          "stage:restored"
+          "keys",
+          "stage:actual",
+          "hmsvc:pipeline-topographic",
+          "stage:restored",
+          "user-changes"
         ],
         "annotationLayerOn": true,
         "annotationStrokes": [
@@ -839,7 +844,7 @@
         ]
       },
       "locked": false,
-      "placed_content_hash": "096a37f78650"
+      "placed_content_hash": "fffdcce8a194"
     },
     {
       "widget_id": "project_files",
@@ -875,21 +880,10 @@
       "placed_content_hash": null
     },
     {
-      "widget_id": "scratch",
-      "instance_id": "77df2fd5",
-      "x": -3806.5367364836866,
-      "y": 1761.2583589002538,
-      "width": 360.0,
-      "height": 320.0,
-      "state": {},
-      "locked": false,
-      "placed_content_hash": null
-    },
-    {
       "widget_id": "claude_desk",
       "instance_id": "44ce05e8-01ef-461a-a2c5-257298816b16",
-      "x": -3005.7981560352855,
-      "y": 924.1392449538492,
+      "x": -3923.107989388447,
+      "y": 866.088342043626,
       "width": 591.0602170280699,
       "height": 560.0,
       "state": {
@@ -902,10 +896,10 @@
     {
       "widget_id": "image_viewer",
       "instance_id": "37beb877-5adf-4d19-8d2c-dd40d311fc89",
-      "x": -2131.3466644221958,
-      "y": 950.2962883714393,
-      "width": 480.0,
-      "height": 400.0,
+      "x": -3031.5129513693923,
+      "y": 869.9312681422631,
+      "width": 600.6107220802984,
+      "height": 653.0643190195312,
       "state": {},
       "locked": false,
       "placed_content_hash": null
@@ -938,21 +932,10 @@
       "placed_content_hash": null
     },
     {
-      "widget_id": "image_viewer",
-      "instance_id": "ac101482-a07e-4f39-9272-485062d37944",
-      "x": -3651.44239165391,
-      "y": 1038.2735726421924,
-      "width": 480.0,
-      "height": 400.0,
-      "state": {},
-      "locked": false,
-      "placed_content_hash": null
-    },
-    {
       "widget_id": "project_files",
       "instance_id": "64c8c40d",
-      "x": -2163.3502416844344,
-      "y": 1408.688624085011,
+      "x": -2311.248642465118,
+      "y": 1214.5041348726058,
       "width": 360.0,
       "height": 640.0,
       "state": {},
@@ -960,23 +943,10 @@
       "placed_content_hash": null
     },
     {
-      "widget_id": "markdown",
-      "instance_id": "e1c7e863-55a2-4df7-befd-ee6e1a921abb",
-      "x": -2490.696073622779,
-      "y": 1765.0056760775497,
-      "width": 900.0,
-      "height": 700.0,
-      "state": {
-        "path": "/Users/mphair/desk_imports/ae_samothrace/.desk_temp/natural-earth.md"
-      },
-      "locked": false,
-      "placed_content_hash": null
-    },
-    {
       "widget_id": "NaturalEarthMap",
       "instance_id": "890b22a3-b260-4834-bace-6472ce9f4a32",
-      "x": 561.4743262081779,
-      "y": 690.2042286245354,
+      "x": -4144.677699429735,
+      "y": 1862.4051596218815,
       "width": 860.0,
       "height": 640.0,
       "state": {
@@ -985,21 +955,83 @@
           "ne_10m_geography_regions_polys",
           "ne_10m_minor_islands",
           "ne_10m_coastline",
-          "ne_10m_land"
+          "ne_10m_land",
+          "osm_island_names",
+          "ne_10m_geography_marine_polys"
         ],
         "view": {
-          "lon": 25.533299999999997,
-          "lat": 40.4833,
-          "zoom": 8
+          "lon": 16.054233364434225,
+          "lat": 39.08164581965111,
+          "zoom": 6
         }
       },
       "locked": false,
-      "placed_content_hash": "8e18e4a2c8c6"
+      "placed_content_hash": "ffcc4ccea61d"
+    },
+    {
+      "widget_id": "git_status",
+      "instance_id": "738cd063",
+      "x": -3088.9516728624535,
+      "y": 2516.8773234200744,
+      "width": 420.0,
+      "height": 360.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "git_diff",
+      "instance_id": "848ef52d",
+      "x": -2731.300302044584,
+      "y": 2510.541705390354,
+      "width": 640.0,
+      "height": 480.0,
+      "state": {
+        "path": "/Users/mphair/desk_imports/ae_samothrace/.gitignore"
+      },
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "image_viewer",
+      "instance_id": "72436203-d85a-4009-a900-b01919963bf0",
+      "x": -1491.2608588200787,
+      "y": 964.3949940241873,
+      "width": 480.0,
+      "height": 400.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "image_viewer",
+      "instance_id": "613e3cc7-e4e3-4333-b4c3-bd8c1fbb08c4",
+      "x": -1885.0565864233724,
+      "y": 961.2701353207792,
+      "width": 480.0,
+      "height": 400.0,
+      "state": {},
+      "locked": false,
+      "placed_content_hash": null
+    },
+    {
+      "widget_id": "Gazetteer",
+      "instance_id": "b60e798a-a220-40b5-969f-c91f70cba24d",
+      "x": -4718.007832307008,
+      "y": 1854.8305217210698,
+      "width": 560.0,
+      "height": 760.0,
+      "state": {
+        "searchText": "sea",
+        "sortMode": "type"
+      },
+      "locked": false,
+      "placed_content_hash": "09ba56b24a91"
     }
   ],
-  "pan_x": -2892.8475836431226,
-  "pan_y": 2540.6096654275093,
-  "scale": 1.6011904761904763,
+  "pan_x": -3745.6729428119256,
+  "pan_y": 2312.889182294283,
+  "scale": 0.8612604595365979,
   "custom_widgets": [
     {
       "keyword": "SamothraceMap",
@@ -1128,6 +1160,21 @@
         "events"
       ],
       "source_path": "desk_widgets/natural-earth-map"
+    },
+    {
+      "keyword": "Gazetteer",
+      "label": "Gazetteer",
+      "html_b64": "",
+      "default_size": {
+        "width": 560,
+        "height": 760
+      },
+      "capabilities": [
+        "state",
+        "events",
+        "workspace"
+      ],
+      "source_path": "desk_widgets/gazetteer"
     }
   ],
   "file_type_registry": [],
@@ -1430,12 +1477,53 @@
       "installed_at": "2026-10-17T14:53:54.062257"
     },
     {
+      "name": "painting-technique",
+      "version_hash": "ca5a027bdbe0",
+      "installed_at": "2026-10-18T22:42:35.523976"
+    },
+    {
       "name": "map-text-extractor",
-      "version_hash": "30daa0d2684a",
-      "installed_at": "2026-10-17T16:11:14.383588"
+      "version_hash": "b6d736b2cc03",
+      "installed_at": "2026-10-19T00:40:26.399695"
     }
   ],
   "recently_removed": [
+    {
+      "widget_id": "minimap",
+      "kind": "python",
+      "label": "Minimap (52839e0f)",
+      "instance_id": "52839e0f",
+      "state": {},
+      "width": 420.0,
+      "height": 360.0,
+      "removed_at": 1792392398.762836
+    },
+    {
+      "widget_id": "scratch",
+      "kind": "python",
+      "label": "Scratch (c04b5602)",
+      "instance_id": "c04b5602",
+      "state": {
+        "label": "untitled",
+        "text": "o "
+      },
+      "width": 360.0,
+      "height": 320.0,
+      "removed_at": 1792387361.2546828
+    },
+    {
+      "widget_id": "scratch",
+      "kind": "python",
+      "label": "Scratch (77df2fd5)",
+      "instance_id": "77df2fd5",
+      "state": {
+        "label": "untitled",
+        "text": "/Users/mphair/inadvisable-adventures/world-timelines/desk_domains/cartography"
+      },
+      "width": 360.0,
+      "height": 320.0,
+      "removed_at": 1792387350.8717499
+    },
     {
       "widget_id": "minimap",
       "kind": "python",
@@ -1643,42 +1731,6 @@
       "width": 1177.0,
       "height": 803.0,
       "removed_at": 1792169923.833271
-    },
-    {
-      "widget_id": "project_files",
-      "kind": "python",
-      "label": "Project Files (b893d3c8)",
-      "instance_id": "b893d3c8",
-      "state": {},
-      "width": 360.0,
-      "height": 640.0,
-      "removed_at": 1792123426.559967
-    },
-    {
-      "widget_id": "claude_desk",
-      "kind": "python",
-      "label": "Claude (Desk) (a800da51)",
-      "instance_id": "a800da51-f40e-4234-a5a0-f7040193270a",
-      "state": {
-        "model": "claude-sonnet-5",
-        "permission_mode": "auto"
-      },
-      "width": 656.0,
-      "height": 883.0,
-      "removed_at": 1792123317.090713
-    },
-    {
-      "widget_id": "scratch",
-      "kind": "python",
-      "label": "Scratch (b272504d)",
-      "instance_id": "b272504d",
-      "state": {
-        "label": "untitled",
-        "text": "current: messing with base images\nnext: redo the pipelines so that we only do the steps to the actual pipeline that we need. also: be sure to update the layers view in the widget -- we don't need the \"actual state\" category any longer. we should also rename the pipeline (actual) category to \"pipeline (waterways)\" and only include the steps that we're actually doing."
-      },
-      "width": 360.0,
-      "height": 320.0,
-      "removed_at": 1792123287.249036
     }
   ]
 }

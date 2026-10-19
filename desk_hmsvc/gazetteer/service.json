@@ -1,0 +1,5 @@
+{
+  "description": "Geocoding over Data/gazetteer/gazetteer.geojson: name search, reverse geocoding, and type-filtered 'things in this polygon' queries.",
+  "autostart": true,
+  "capabilities": []
+}

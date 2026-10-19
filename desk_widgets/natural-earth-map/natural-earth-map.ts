@@ -64,6 +64,19 @@ const TILE_SIZE = 256; // world-pixel-at-zoom unit, same convention as samothrac
 // are broken.
 const LABEL_MIN_GAP_PX = 3;
 
+// Cross-widget "jump to this place" message name -- see
+// handleFocusMessage's own comment for the full contract. Used by the
+// Gazetteer widget's own publish call; kept here (not duplicated with
+// a different literal string on that side) by that widget's own code
+// importing nothing from this one -- the two widgets agree on this
+// string purely by convention, same as any other desk.events channel
+// name.
+const FOCUS_EVENT_NAME = 'natural-earth-map.focus';
+// Close enough to see the immediate surroundings of a single
+// point-sized gazetteer entry without the caller needing to pick a
+// zoom level itself.
+const FOCUS_DEFAULT_ZOOM = 9;
+
 interface LonLatBounds {
   west: number;
   south: number;
@@ -300,6 +313,14 @@ class NaturalEarthMapElement extends HTMLElement {
   private visibleLayers = new Set<string>();
   private featureCache = new Map<string, GeoJsonFeature[]>();
 
+  // Set by handleFocusMessage, drawn as a persistent marker (distinct
+  // from the mouse-driven `hover`/`hoverScreenPoint` pair above, which
+  // only reflects the current cursor position) until the user manually
+  // pans -- see onPointerMove's own drag branch -- so a place jumped to
+  // from the Gazetteer widget stays visibly marked while the user looks
+  // around it, not just for one redraw.
+  private focusedPoint: { lon: number; lat: number; label: string | null } | null = null;
+
   private view = { lon: 25.5333, lat: 40.4833, zoom: 5 };
   private viewportWidth = 1;
   private viewportHeight = 1;
@@ -460,15 +481,45 @@ class NaturalEarthMapElement extends HTMLElement {
   // Detects a natural-earth-map hmsvc restart (a genuinely new URL
   // published to desk.hmsvc.natural-earth-map) and refreshes in place --
   // same mechanism and reasoning as samothrace-map.ts's own
-  // watchTileServiceState/handleTileServiceStateChanged.
+  // watchTileServiceState/handleTileServiceStateChanged. Also the one
+  // place this widget subscribes to events generally, so the Gazetteer
+  // widget's own "jump here" message (see handleFocusMessage's own
+  // comment for the full cross-widget contract) is wired up alongside
+  // it rather than via a second, separate subscribe call.
   private async watchServiceState(): Promise<void> {
     const desk = window.desk;
     if (!desk) return;
-    await desk.events.subscribe(['desk.state.changed']);
+    await desk.events.subscribe(['desk.state.changed', FOCUS_EVENT_NAME]);
     desk.events.onMessage((name, payload) => {
-      if (name !== 'desk.state.changed') return;
-      void this.handleServiceStateChanged(payload);
+      if (name === 'desk.state.changed') {
+        void this.handleServiceStateChanged(payload);
+      } else if (name === FOCUS_EVENT_NAME) {
+        this.handleFocusMessage(payload);
+      }
     });
+  }
+
+  // Cross-widget "jump to this place" contract, the Gazetteer widget's
+  // own half: `desk.events.publish(FOCUS_EVENT_NAME, {lon, lat, zoom?,
+  // label?})`, broadcast to every OTHER widget instance currently
+  // subscribed to that name (see tempui-custom-widgets.md's "Sending
+  // and receiving named messages" -- a publisher never gets its own
+  // message echoed back, and this is a named channel, not a targeted
+  // call at one specific instance id, so this works correctly whether
+  // zero, one, or several Gazetteer/NaturalEarthMap instances are
+  // placed). No capability negotiation beyond `events` (already held)
+  // on either side -- intentionally not coupled to this widget's own
+  // internal LayerMeta/feature-cache shape, so either widget's own
+  // internals can keep changing independently as long as this flat
+  // {lon, lat, zoom?, label?} shape is kept.
+  private handleFocusMessage(payload: unknown): void {
+    const p = payload as { lon?: unknown; lat?: unknown; zoom?: unknown; label?: unknown } | null;
+    if (!p || typeof p.lon !== 'number' || typeof p.lat !== 'number' || !Number.isFinite(p.lon) || !Number.isFinite(p.lat)) return;
+    const zoom = typeof p.zoom === 'number' && Number.isFinite(p.zoom) ? p.zoom : FOCUS_DEFAULT_ZOOM;
+    this.view = { lon: p.lon, lat: p.lat, zoom: Math.min(Math.max(zoom, MIN_ZOOM), MAX_ZOOM) };
+    this.focusedPoint = { lon: p.lon, lat: p.lat, label: typeof p.label === 'string' ? p.label : null };
+    this.scheduleSaveUiState();
+    this.scheduleRedraw();
   }
 
   private async handleServiceStateChanged(payload: unknown): Promise<void> {
@@ -622,6 +673,7 @@ class NaturalEarthMapElement extends HTMLElement {
       const dy = e.clientY - this.dragState.startClientY;
       if (Math.abs(dx) > 3 || Math.abs(dy) > 3) this.dragState.moved = true;
       if (this.dragState.moved) {
+        this.focusedPoint = null; // user is looking elsewhere now -- see this field's own comment
         const startWorld = projectWorld(this.dragState.startLon, this.dragState.startLat, this.view.zoom, TILE_SIZE);
         const newCenterWorld = { x: startWorld.x - dx, y: startWorld.y - dy };
         const newCenter = unprojectWorld(newCenterWorld.x, newCenterWorld.y, this.view.zoom, TILE_SIZE);
@@ -758,6 +810,7 @@ class NaturalEarthMapElement extends HTMLElement {
     }
 
     if (this.hover && this.hoverScreenPoint) this.drawHoverMarker(ctx, this.hoverScreenPoint);
+    if (this.focusedPoint) this.drawFocusMarker(ctx, this.focusedPoint);
 
     if (this.zoomLabelEl) this.zoomLabelEl.textContent = `zoom ${this.view.zoom.toFixed(1)}`;
   }
@@ -769,6 +822,45 @@ class NaturalEarthMapElement extends HTMLElement {
     ctx.beginPath();
     ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
     ctx.stroke();
+    ctx.restore();
+  }
+
+  // The "jumped here from the Gazetteer widget" marker -- visually
+  // distinct from the plain hover ring (a filled amber ring + crosshair
+  // + the entry's own name, rather than a thin outline) since it's
+  // meant to stay visible and findable after the initial jump, not just
+  // flash under the cursor for a moment. Persists across redraws (see
+  // this.focusedPoint's own comment for when it's cleared) rather than
+  // auto-expiring on a timer -- simpler, and there's no real harm in it
+  // staying until the user moves on themselves.
+  private drawFocusMarker(ctx: CanvasRenderingContext2D, focus: { lon: number; lat: number; label: string | null }): void {
+    const p = this.toScreen(focus.lon, focus.lat);
+    if (p.x < -20 || p.x > this.viewportWidth + 20 || p.y < -20 || p.y > this.viewportHeight + 20) return;
+    ctx.save();
+    ctx.strokeStyle = '#f2b134';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 10, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(p.x - 16, p.y);
+    ctx.lineTo(p.x - 12, p.y);
+    ctx.moveTo(p.x + 12, p.y);
+    ctx.lineTo(p.x + 16, p.y);
+    ctx.moveTo(p.x, p.y - 16);
+    ctx.lineTo(p.x, p.y - 12);
+    ctx.moveTo(p.x, p.y + 12);
+    ctx.lineTo(p.x, p.y + 16);
+    ctx.stroke();
+    if (focus.label) {
+      ctx.font = '600 12px Arial, Helvetica, sans-serif';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#11151c';
+      const w = ctx.measureText(focus.label).width;
+      ctx.fillRect(p.x - w / 2 - 4, p.y + 14, w + 8, 18);
+      ctx.fillStyle = '#f2b134';
+      ctx.fillText(focus.label, p.x - w / 2, p.y + 23);
+    }
     ctx.restore();
   }
 

@@ -1,0 +1,5199 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.47638781415211,
+          40.22941813817782
+        ]
+      },
+      "properties": {
+        "id": "gaz-267",
+        "name": "Dardanelles",
+        "type": "channel",
+        "source_layer": "ne_10m_geography_marine_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.4150321,
+          40.799976
+        ]
+      },
+      "properties": {
+        "id": "gaz-188",
+        "name": "Adapazarı",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 260109
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.5500109,
+          38.7503854
+        ]
+      },
+      "properties": {
+        "id": "gaz-119",
+        "name": "Afyon",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 156992
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.4077266,
+          38.6217627
+        ]
+      },
+      "properties": {
+        "id": "gaz-159",
+        "name": "Agrinio",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 75233
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.5800006,
+          46.0770031
+        ]
+      },
+      "properties": {
+        "id": "gaz-21",
+        "name": "Alba Lulia",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 66085
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.329884897537326,
+          43.97437013604364
+        ]
+      },
+      "properties": {
+        "id": "gaz-17",
+        "name": "Alexandria",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 49346
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.8744098,
+          40.8486194
+        ]
+      },
+      "properties": {
+        "id": "gaz-94",
+        "name": "Alexandroupoli",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 52979
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.8624458,
+          39.9291844
+        ]
+      },
+      "properties": {
+        "id": "gaz-214",
+        "name": "Ankara",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 3716000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.6980301,
+          36.891928
+        ]
+      },
+      "properties": {
+        "id": "gaz-192",
+        "name": "Antalya",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 783000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.31998,
+          46.17001
+        ]
+      },
+      "properties": {
+        "id": "gaz-78",
+        "name": "Arad",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 169065
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.7313752,
+          37.9852721
+        ]
+      },
+      "properties": {
+        "id": "gaz-217",
+        "name": "Athens",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 3242000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.8500207,
+          37.8499752
+        ]
+      },
+      "properties": {
+        "id": "gaz-64",
+        "name": "Aydın",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 198857
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.9196382,
+          46.5784347
+        ]
+      },
+      "properties": {
+        "id": "gaz-143",
+        "name": "Bacău",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 199668
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.5790669,
+          47.659454
+        ]
+      },
+      "properties": {
+        "id": "gaz-138",
+        "name": "Baia Mare",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 136553
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.0833026,
+          42.3333001
+        ]
+      },
+      "properties": {
+        "id": "gaz-39",
+        "name": "Bajram Curri",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 7967
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.8900183,
+          39.6503821
+        ]
+      },
+      "properties": {
+        "id": "gaz-113",
+        "name": "Balıkesir",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 261516
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.1799743,
+          44.7804049
+        ]
+      },
+      "properties": {
+        "id": "gaz-186",
+        "name": "Banja Luka",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 221738
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.8727579,
+          41.1142204
+        ]
+      },
+      "properties": {
+        "id": "gaz-149",
+        "name": "Bari",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 500577
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.270004,
+          41.319996
+        ]
+      },
+      "properties": {
+        "id": "gaz-88",
+        "name": "Barletta",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 107830
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.4660448,
+          44.8205913
+        ]
+      },
+      "properties": {
+        "id": "gaz-209",
+        "name": "Belgrade",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 1099000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.9719996,
+          40.709997
+        ]
+      },
+      "properties": {
+        "id": "gaz-45",
+        "name": "Berat",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 46866
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.9829966,
+          40.149999
+        ]
+      },
+      "properties": {
+        "id": "gaz-1",
+        "name": "Bilecik",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 40285
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.5130036,
+          47.1380041
+        ]
+      },
+      "properties": {
+        "id": "gaz-22",
+        "name": "Bistrița",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 81318
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.3395137,
+          41.039057
+        ]
+      },
+      "properties": {
+        "id": "gaz-147",
+        "name": "Bitola",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 86528
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.6061222,
+          40.736259
+        ]
+      },
+      "properties": {
+        "id": "gaz-118",
+        "name": "Bolu",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 96629
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.6071602,
+          45.6475354
+        ]
+      },
+      "properties": {
+        "id": "gaz-141",
+        "name": "Brașov",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 311044
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.9300061,
+          40.6403475
+        ]
+      },
+      "properties": {
+        "id": "gaz-151",
+        "name": "Brindisi",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 104437
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.9690035,
+          45.2919961
+        ]
+      },
+      "properties": {
+        "id": "gaz-29",
+        "name": "Brăila",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 213569
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.0980008,
+          44.4353177
+        ]
+      },
+      "properties": {
+        "id": "gaz-216",
+        "name": "Bucharest",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 1942000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.0813748,
+          47.5019522
+        ]
+      },
+      "properties": {
+        "id": "gaz-215",
+        "name": "Budapest",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 1679000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.2833355,
+          37.7166601
+        ]
+      },
+      "properties": {
+        "id": "gaz-4",
+        "name": "Burdur",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 66158
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.4746431,
+          42.5146
+        ]
+      },
+      "properties": {
+        "id": "gaz-196",
+        "name": "Burgas",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 195966
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.0160005,
+          41.6259991
+        ]
+      },
+      "properties": {
+        "id": "gaz-53",
+        "name": "Burrel",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 15405
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.0680521,
+          40.2019327
+        ]
+      },
+      "properties": {
+        "id": "gaz-199",
+        "name": "Bursa",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 1492000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.8065185,
+          45.156506
+        ]
+      },
+      "properties": {
+        "id": "gaz-82",
+        "name": "Buzău",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 130954
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.1010046,
+          46.6720021
+        ]
+      },
+      "properties": {
+        "id": "gaz-14",
+        "name": "Békéscsaba",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 65206
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.1944441,
+          45.9078813
+        ]
+      },
+      "properties": {
+        "id": "gaz-145",
+        "name": "Cahul",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 63407
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.6000097,
+          38.9003762
+        ]
+      },
+      "properties": {
+        "id": "gaz-148",
+        "name": "Catanzaro",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 95251
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.6123982,
+          38.4639946
+        ]
+      },
+      "properties": {
+        "id": "gaz-165",
+        "name": "Chalkida",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 71842
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.8577111,
+          47.0050236
+        ]
+      },
+      "properties": {
+        "id": "gaz-207",
+        "name": "Chișinău",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 688134
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.5984456,
+          46.7884219
+        ]
+      },
+      "properties": {
+        "id": "gaz-193",
+        "name": "Cluj-Napoca",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 316748
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.6099743,
+          44.2026624
+        ]
+      },
+      "properties": {
+        "id": "gaz-201",
+        "name": "Constanța",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 303399
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.9500008,
+          40.5199931
+        ]
+      },
+      "properties": {
+        "id": "gaz-70",
+        "name": "Corum",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 183418
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.8258736,
+          44.3262724
+        ]
+      },
+      "properties": {
+        "id": "gaz-134",
+        "name": "Craiova",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 304142
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.123337,
+          39.0833366
+        ]
+      },
+      "properties": {
+        "id": "gaz-87",
+        "name": "Crotone",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 60010
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.3259183,
+          44.2062797
+        ]
+      },
+      "properties": {
+        "id": "gaz-135",
+        "name": "Călărași",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 73224
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.6300386,
+          47.5304696
+        ]
+      },
+      "properties": {
+        "id": "gaz-132",
+        "name": "Debrecen",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 231286
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.0800232,
+          37.7703935
+        ]
+      },
+      "properties": {
+        "id": "gaz-120",
+        "name": "Denizli",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 372344
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.9166736,
+          45.883323
+        ]
+      },
+      "properties": {
+        "id": "gaz-23",
+        "name": "Deva",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 67802
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.8399955,
+          43.5850515
+        ]
+      },
+      "properties": {
+        "id": "gaz-181",
+        "name": "Dobrich",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 94831
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.6658927,
+          44.6458911
+        ]
+      },
+      "properties": {
+        "id": "gaz-76",
+        "name": "Drobeta-Turnu Severin",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 106578
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.0913916,
+          42.6609477
+        ]
+      },
+      "properties": {
+        "id": "gaz-153",
+        "name": "Dubrovnik",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 36994
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.1608333,
+          47.2630556
+        ]
+      },
+      "properties": {
+        "id": "gaz-31",
+        "name": "Dubăsari",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 23254
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.448208,
+          41.3177997
+        ]
+      },
+      "properties": {
+        "id": "gaz-173",
+        "name": "Durrës",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 142432
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.5699955,
+          41.6704397
+        ]
+      },
+      "properties": {
+        "id": "gaz-115",
+        "name": "Edirne",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 126470
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.0838281,
+          41.1215068
+        ]
+      },
+      "properties": {
+        "id": "gaz-99",
+        "name": "Elbasan",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 165010
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.0516577,
+          37.5062752
+        ]
+      },
+      "properties": {
+        "id": "gaz-124",
+        "name": "Ereğli",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 92117
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.6832965,
+          40.3333021
+        ]
+      },
+      "properties": {
+        "id": "gaz-42",
+        "name": "Ersekë",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 7890
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.5299605,
+          39.7949986
+        ]
+      },
+      "properties": {
+        "id": "gaz-191",
+        "name": "Eskişehir",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 514869
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.9500101,
+          35.1250252
+        ]
+      },
+      "properties": {
+        "id": "gaz-106",
+        "name": "Famagusta",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 42526
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.5730026,
+          40.730004
+        ]
+      },
+      "properties": {
+        "id": "gaz-36",
+        "name": "Fier",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 82297
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.186547,
+          45.6965505
+        ]
+      },
+      "properties": {
+        "id": "gaz-84",
+        "name": "Focșani",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 105112
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.0458744,
+          45.4558934
+        ]
+      },
+      "properties": {
+        "id": "gaz-83",
+        "name": "Galați",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 311156
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.96632527518501,
+          43.90180698686904
+        ]
+      },
+      "properties": {
+        "id": "gaz-19",
+        "name": "Giurgiu",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 69067
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.1490026,
+          40.0789981
+        ]
+      },
+      "properties": {
+        "id": "gaz-51",
+        "name": "Gjirokastër",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 23437
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.1999965,
+          40.866696
+        ]
+      },
+      "properties": {
+        "id": "gaz-47",
+        "name": "Gramsh",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 11556
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.6300244,
+          47.7003559
+        ]
+      },
+      "properties": {
+        "id": "gaz-129",
+        "name": "Győr",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 136081
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.0155778,
+          35.5122109
+        ]
+      },
+      "properties": {
+        "id": "gaz-92",
+        "name": "Hania",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 78728
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.1358101,
+          38.3681089
+        ]
+      },
+      "properties": {
+        "id": "gaz-164",
+        "name": "Hios",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 26891
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.5749471,
+          47.168347
+        ]
+      },
+      "properties": {
+        "id": "gaz-202",
+        "name": "Iași",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 325914
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.6199951,
+          36.7999876
+        ]
+      },
+      "properties": {
+        "id": "gaz-69",
+        "name": "Icel",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 616990
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.666593,
+          46.3000021
+        ]
+      },
+      "properties": {
+        "id": "gaz-63",
+        "name": "Illichivsk",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 54102
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.8508614,
+          39.6679004
+        ]
+      },
+      "properties": {
+        "id": "gaz-162",
+        "name": "Ioanina",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 86304
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.1304968,
+          35.325013
+        ]
+      },
+      "properties": {
+        "id": "gaz-195",
+        "name": "Iraklio",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 137154
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.5299605,
+          37.7699801
+        ]
+      },
+      "properties": {
+        "id": "gaz-66",
+        "name": "Isparta",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 172334
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.97427681675554,
+          41.01760173507249
+        ]
+      },
+      "properties": {
+        "id": "gaz-218",
+        "name": "Istanbul",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 10061000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.8373506,
+          45.3503443
+        ]
+      },
+      "properties": {
+        "id": "gaz-110",
+        "name": "Izmayil",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 83194
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.1141951,
+          37.0389136
+        ]
+      },
+      "properties": {
+        "id": "gaz-194",
+        "name": "Kalamata",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 71823
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.7999882,
+          46.3670264
+        ]
+      },
+      "properties": {
+        "id": "gaz-130",
+        "name": "Kaposvár",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 108528
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.600015,
+          41.2000033
+        ]
+      },
+      "properties": {
+        "id": "gaz-72",
+        "name": "Karabük",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 128564
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.2150162,
+          37.1815405
+        ]
+      },
+      "properties": {
+        "id": "gaz-125",
+        "name": "Karaman",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 120399
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.7830035,
+          41.3890022
+        ]
+      },
+      "properties": {
+        "id": "gaz-3",
+        "name": "Kastamonu",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 70402
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.5024918,
+          40.2723338
+        ]
+      },
+      "properties": {
+        "id": "gaz-166",
+        "name": "Katerini",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 53293
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.4017604,
+          40.9412111
+        ]
+      },
+      "properties": {
+        "id": "gaz-93",
+        "name": "Kavala",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 59240
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.7000272,
+          46.9000429
+        ]
+      },
+      "properties": {
+        "id": "gaz-74",
+        "name": "Kecskemét",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 113895
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.9147428,
+          39.615423
+        ]
+      },
+      "properties": {
+        "id": "gaz-156",
+        "name": "Kerkira",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 38517
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.5632869,
+          41.9437822
+        ]
+      },
+      "properties": {
+        "id": "gaz-176",
+        "name": "Khaskovo",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 79699
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.6006649,
+          46.6325372
+        ]
+      },
+      "properties": {
+        "id": "gaz-109",
+        "name": "Kherson",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 320477
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.4167026,
+          41.1333031
+        ]
+      },
+      "properties": {
+        "id": "gaz-34",
+        "name": "Komatini",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 45631
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.4730639,
+          37.8769583
+        ]
+      },
+      "properties": {
+        "id": "gaz-200",
+        "name": "Konya",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 919000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.7666635,
+          40.616676
+        ]
+      },
+      "properties": {
+        "id": "gaz-44",
+        "name": "Korçë",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 58259
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.9200044,
+          44.0199603
+        ]
+      },
+      "properties": {
+        "id": "gaz-96",
+        "name": "Kragujevac",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 171197
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.7970036,
+          41.5189982
+        ]
+      },
+      "properties": {
+        "id": "gaz-35",
+        "name": "Krujë",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 21286
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.4339965,
+          42.0830011
+        ]
+      },
+      "properties": {
+        "id": "gaz-40",
+        "name": "Kukës",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 17832
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.3330036,
+          35.3259991
+        ]
+      },
+      "properties": {
+        "id": "gaz-61",
+        "name": "Kyrenia",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 26701
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.6911108,
+          42.2842782
+        ]
+      },
+      "properties": {
+        "id": "gaz-180",
+        "name": "Kyustendil",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 51067
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.9299971,
+          39.4200086
+        ]
+      },
+      "properties": {
+        "id": "gaz-67",
+        "name": "Kütahya",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 185008
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.2259996,
+          41.7429992
+        ]
+      },
+      "properties": {
+        "id": "gaz-0",
+        "name": "Kırklareli",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 58223
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.5299841,
+          39.8503699
+        ]
+      },
+      "properties": {
+        "id": "gaz-127",
+        "name": "Kırıkkale",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 211138
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.1710026,
+          39.1419992
+        ]
+      },
+      "properties": {
+        "id": "gaz-5",
+        "name": "Kırşehir",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 94336
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.4340036,
+          38.8989992
+        ]
+      },
+      "properties": {
+        "id": "gaz-32",
+        "name": "Lamia",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 47246
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.4200162,
+          39.6304092
+        ]
+      },
+      "properties": {
+        "id": "gaz-161",
+        "name": "Larissa",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 128758
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.6359976,
+          34.9170031
+        ]
+      },
+      "properties": {
+        "id": "gaz-59",
+        "name": "Larnaka",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 48947
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.1499926,
+          40.3603904
+        ]
+      },
+      "properties": {
+        "id": "gaz-150",
+        "name": "Lecce",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 162582
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.0333219,
+          34.6754144
+        ]
+      },
+      "properties": {
+        "id": "gaz-187",
+        "name": "Lemosos",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 154000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.6540025,
+          41.7879991
+        ]
+      },
+      "properties": {
+        "id": "gaz-54",
+        "name": "Lezhë",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 18695
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.3667036,
+          41.2000021
+        ]
+      },
+      "properties": {
+        "id": "gaz-48",
+        "name": "Librazhd",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 12691
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.7190046,
+          43.1379991
+        ]
+      },
+      "properties": {
+        "id": "gaz-56",
+        "name": "Lovec",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 42211
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.7160035,
+          40.9400011
+        ]
+      },
+      "properties": {
+        "id": "gaz-37",
+        "name": "Lushnjë",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 41469
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.3552189,
+          41.4066573
+        ]
+      },
+      "properties": {
+        "id": "gaz-65",
+        "name": "Lüleburgaz",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 90899
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.4399682,
+          38.6303927
+        ]
+      },
+      "properties": {
+        "id": "gaz-121",
+        "name": "Manisa",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 243971
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.5240005,
+          46.3609981
+        ]
+      },
+      "properties": {
+        "id": "gaz-27",
+        "name": "Miercurea Cuic",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 42029
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.5546476,
+          39.1104151
+        ]
+      },
+      "properties": {
+        "id": "gaz-163",
+        "name": "Mitilini",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 29328
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.2370016,
+          43.414002
+        ]
+      },
+      "properties": {
+        "id": "gaz-57",
+        "name": "Montana",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 47445
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.8200386,
+          43.3504922
+        ]
+      },
+      "properties": {
+        "id": "gaz-175",
+        "name": "Mostar",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 163067
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.3638912,
+          37.2163705
+        ]
+      },
+      "properties": {
+        "id": "gaz-68",
+        "name": "Muğla",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 48183
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.984342,
+          46.9677391
+        ]
+      },
+      "properties": {
+        "id": "gaz-62",
+        "name": "Mykolayiv",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 510840
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.7239985,
+          38.624004
+        ]
+      },
+      "properties": {
+        "id": "gaz-6",
+        "name": "Nevşehir",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 75527
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.3666349,
+          35.1666765
+        ]
+      },
+      "properties": {
+        "id": "gaz-213",
+        "name": "Nicosia",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 224300
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.4062097,
+          47.5665914
+        ]
+      },
+      "properties": {
+        "id": "gaz-111",
+        "name": "Nikopol",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 130500
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.6940016,
+          37.9760041
+        ]
+      },
+      "properties": {
+        "id": "gaz-8",
+        "name": "Niğde",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 91039
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.8999963,
+          43.3304159
+        ]
+      },
+      "properties": {
+        "id": "gaz-171",
+        "name": "Niš",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 250000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.8499406,
+          45.2503762
+        ]
+      },
+      "properties": {
+        "id": "gaz-172",
+        "name": "Novi Sad",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 225457
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.7080553,
+          46.4919622
+        ]
+      },
+      "properties": {
+        "id": "gaz-197",
+        "name": "Odessa",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 991000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.9199951,
+          47.0499821
+        ]
+      },
+      "properties": {
+        "id": "gaz-79",
+        "name": "Oradea",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 213830
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.6800378,
+          45.5503837
+        ]
+      },
+      "properties": {
+        "id": "gaz-155",
+        "name": "Osijek",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 95077
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.4224567,
+          34.7559152
+        ]
+      },
+      "properties": {
+        "id": "gaz-60",
+        "name": "Paphos",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 35961
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.7299808,
+          38.2300037
+        ]
+      },
+      "properties": {
+        "id": "gaz-189",
+        "name": "Patra",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 163360
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.3107393,
+          42.6603276
+        ]
+      },
+      "properties": {
+        "id": "gaz-144",
+        "name": "Pec",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 105163
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.0227185,
+          42.6099947
+        ]
+      },
+      "properties": {
+        "id": "gaz-102",
+        "name": "Pernik",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 82467
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.4333035,
+          41.6833021
+        ]
+      },
+      "properties": {
+        "id": "gaz-52",
+        "name": "Peshkopi",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 14848
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.3829966,
+          46.9400041
+        ]
+      },
+      "properties": {
+        "id": "gaz-28",
+        "name": "Piatra-Neamt",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 102688
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.6999898,
+          37.9500208
+        ]
+      },
+      "properties": {
+        "id": "gaz-90",
+        "name": "Piraeus",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 466065
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.4499979,
+          37.6837321
+        ]
+      },
+      "properties": {
+        "id": "gaz-160",
+        "name": "Pirgos",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 22399
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.8758353,
+          44.8563176
+        ]
+      },
+      "properties": {
+        "id": "gaz-140",
+        "name": "Pitești",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 171021
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.6133707,
+          43.4237693
+        ]
+      },
+      "properties": {
+        "id": "gaz-178",
+        "name": "Pleven",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 118675
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.036488,
+          44.9469064
+        ]
+      },
+      "properties": {
+        "id": "gaz-142",
+        "name": "Ploiești",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 232542
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.7539823,
+          42.1539761
+        ]
+      },
+      "properties": {
+        "id": "gaz-101",
+        "name": "Plovdiv",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 340494
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.2663069,
+          42.4659725
+        ]
+      },
+      "properties": {
+        "id": "gaz-203",
+        "name": "Podgorica",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 145850
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.6640006,
+          40.8999961
+        ]
+      },
+      "properties": {
+        "id": "gaz-43",
+        "name": "Pogradec",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 40000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.1472261,
+          39.5841588
+        ]
+      },
+      "properties": {
+        "id": "gaz-71",
+        "name": "Polatlı",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 93262
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.4530015,
+          40.3810021
+        ]
+      },
+      "properties": {
+        "id": "gaz-33",
+        "name": "Polygyros",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 5258
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.7000036,
+          44.9803927
+        ]
+      },
+      "properties": {
+        "id": "gaz-185",
+        "name": "Prijedor",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 104858
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.1659843,
+          42.6667096
+        ]
+      },
+      "properties": {
+        "id": "gaz-204",
+        "name": "Pristina",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 465186
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.7500923,
+          42.2293203
+        ]
+      },
+      "properties": {
+        "id": "gaz-85",
+        "name": "Prizren",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 171464
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.8833045,
+          42.033303
+        ]
+      },
+      "properties": {
+        "id": "gaz-38",
+        "name": "Pukë",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 6495
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.2200142,
+          46.0804289
+        ]
+      },
+      "properties": {
+        "id": "gaz-128",
+        "name": "Pécs",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 186262
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.3519976,
+          40.233996
+        ]
+      },
+      "properties": {
+        "id": "gaz-50",
+        "name": "Përmet",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 10686
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.5359966,
+          43.533999
+        ]
+      },
+      "properties": {
+        "id": "gaz-58",
+        "name": "Razgrad",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 38285
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.8865087,
+          45.2969625
+        ]
+      },
+      "properties": {
+        "id": "gaz-136",
+        "name": "Reșița",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 83324
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.3829986,
+          45.109998
+        ]
+      },
+      "properties": {
+        "id": "gaz-25",
+        "name": "Rimnicu Vilcea",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 107558
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.2225044,
+          36.441224
+        ]
+      },
+      "properties": {
+        "id": "gaz-169",
+        "name": "Rodos",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 56969
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.8167046,
+          41.7833011
+        ]
+      },
+      "properties": {
+        "id": "gaz-55",
+        "name": "Rrëshen",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 10064
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.9733394,
+          43.8536914
+        ]
+      },
+      "properties": {
+        "id": "gaz-183",
+        "name": "Ruse",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 184270
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.4000025,
+          40.7666611
+        ]
+      },
+      "properties": {
+        "id": "gaz-2",
+        "name": "Sakarya",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 286787
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.3830017,
+          43.8500224
+        ]
+      },
+      "properties": {
+        "id": "gaz-212",
+        "name": "Sarajevo",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 696731
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.9999986,
+          39.8770021
+        ]
+      },
+      "properties": {
+        "id": "gaz-41",
+        "name": "Sarandë",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 15147
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.5497147,
+          41.0859792
+        ]
+      },
+      "properties": {
+        "id": "gaz-167",
+        "name": "Seres",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 55886
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.52439491312476,
+          44.60392525649835
+        ]
+      },
+      "properties": {
+        "id": "gaz-206",
+        "name": "Sevastopol",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 379200
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.7930015,
+          45.8679961
+        ]
+      },
+      "properties": {
+        "id": "gaz-26",
+        "name": "Sfintu-Gheorghe",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 60677
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.5188496,
+          42.0684516
+        ]
+      },
+      "properties": {
+        "id": "gaz-174",
+        "name": "Shkodër",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 155767
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.9293534,
+          43.2700061
+        ]
+      },
+      "properties": {
+        "id": "gaz-104",
+        "name": "Shumen",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 87283
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.1371207,
+          45.7971129
+        ]
+      },
+      "properties": {
+        "id": "gaz-80",
+        "name": "Sibiu",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 155565
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.0987349,
+          44.9491543
+        ]
+      },
+      "properties": {
+        "id": "gaz-108",
+        "name": "Simferopol",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 358108
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.4334615,
+          42.0000061
+        ]
+      },
+      "properties": {
+        "id": "gaz-205",
+        "name": "Skopje",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 494087
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.3710016,
+          44.4349981
+        ]
+      },
+      "properties": {
+        "id": "gaz-16",
+        "name": "Slatina",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 78988
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.0155822,
+          45.1602783
+        ]
+      },
+      "properties": {
+        "id": "gaz-89",
+        "name": "Slavonski Brod",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 97718
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.3300101,
+          42.6793703
+        ]
+      },
+      "properties": {
+        "id": "gaz-100",
+        "name": "Sliven",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 96368
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.3819966,
+          44.5699981
+        ]
+      },
+      "properties": {
+        "id": "gaz-20",
+        "name": "Slobozia",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 52693
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.3147082,
+          42.6852953
+        ]
+      },
+      "properties": {
+        "id": "gaz-211",
+        "name": "Sofia",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 1185000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.4296797,
+          37.0737177
+        ]
+      },
+      "properties": {
+        "id": "gaz-158",
+        "name": "Sparti",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 16187
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.4699918,
+          43.5204043
+        ]
+      },
+      "properties": {
+        "id": "gaz-154",
+        "name": "Split",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 214741
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.6227148,
+          42.4231328
+        ]
+      },
+      "properties": {
+        "id": "gaz-177",
+        "name": "Stara Zagora",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 143431
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.6800284,
+          46.0700161
+        ]
+      },
+      "properties": {
+        "id": "gaz-95",
+        "name": "Subotica",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 100000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.2593168,
+          47.6376982
+        ]
+      },
+      "properties": {
+        "id": "gaz-81",
+        "name": "Suceava",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 105796
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.1500256,
+          46.2503927
+        ]
+      },
+      "properties": {
+        "id": "gaz-131",
+        "name": "Szeged",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 187765
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.7129986,
+          46.3439971
+        ]
+      },
+      "properties": {
+        "id": "gaz-13",
+        "name": "Szekszárd",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 34174
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.1793778,
+          47.1863562
+        ]
+      },
+      "properties": {
+        "id": "gaz-133",
+        "name": "Szolnok",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 109261
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.6287418,
+          47.2253461
+        ]
+      },
+      "properties": {
+        "id": "gaz-73",
+        "name": "Szombathely",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 109518
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.4080647,
+          47.1946761
+        ]
+      },
+      "properties": {
+        "id": "gaz-75",
+        "name": "Székesfehérvár",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 144319
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.4102543,
+          37.7512215
+        ]
+      },
+      "properties": {
+        "id": "gaz-112",
+        "name": "Söke",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 77341
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.2299971,
+          40.5083917
+        ]
+      },
+      "properties": {
+        "id": "gaz-152",
+        "name": "Taranto",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 202033
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.8799792,
+          36.9203937
+        ]
+      },
+      "properties": {
+        "id": "gaz-122",
+        "name": "Tarsus",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 894318
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.4329996,
+          47.5499972
+        ]
+      },
+      "properties": {
+        "id": "gaz-12",
+        "name": "Tatabánya",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 70541
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.5099898,
+          40.9908688
+        ]
+      },
+      "properties": {
+        "id": "gaz-116",
+        "name": "Tekirdağ",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 122287
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.0332985,
+          40.2832981
+        ]
+      },
+      "properties": {
+        "id": "gaz-49",
+        "name": "Tepelenë",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 11955
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.9700789,
+          42.0092304
+        ]
+      },
+      "properties": {
+        "id": "gaz-86",
+        "name": "Tetovo",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 119132
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.8830549,
+          40.6980522
+        ]
+      },
+      "properties": {
+        "id": "gaz-208",
+        "name": "Thessaloniki",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 828000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.2234484,
+          45.7588206
+        ]
+      },
+      "properties": {
+        "id": "gaz-137",
+        "name": "Timișoara",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 315053
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.818883,
+          41.3275407
+        ]
+      },
+      "properties": {
+        "id": "gaz-210",
+        "name": "Tirana",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 895350
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.639989,
+          46.8530949
+        ]
+      },
+      "properties": {
+        "id": "gaz-146",
+        "name": "Tiraspol",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 157000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.5578186,
+          46.5582033
+        ]
+      },
+      "properties": {
+        "id": "gaz-139",
+        "name": "Tirgu Mures",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 149433
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.3793986,
+          37.5091433
+        ]
+      },
+      "properties": {
+        "id": "gaz-157",
+        "name": "Tripoli",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 28970
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.7966813,
+          45.1993457
+        ]
+      },
+      "properties": {
+        "id": "gaz-77",
+        "name": "Tulcea",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 92475
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.6555293,
+          43.0862447
+        ]
+      },
+      "properties": {
+        "id": "gaz-179",
+        "name": "Turnovo",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 53115
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.6800378,
+          44.5504706
+        ]
+      },
+      "properties": {
+        "id": "gaz-184",
+        "name": "Tuzla",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 144334
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.4590025,
+          44.9379991
+        ]
+      },
+      "properties": {
+        "id": "gaz-18",
+        "name": "Târgoviște",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 88435
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.2740006,
+          45.045
+        ]
+      },
+      "properties": {
+        "id": "gaz-15",
+        "name": "Târgu Jiu",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 97179
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.4200024,
+          38.6803638
+        ]
+      },
+      "properties": {
+        "id": "gaz-126",
+        "name": "Uşak",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 152862
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.8952893,
+          43.2156425
+        ]
+      },
+      "properties": {
+        "id": "gaz-182",
+        "name": "Varna",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 312770
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.7333386,
+          46.6333291
+        ]
+      },
+      "properties": {
+        "id": "gaz-30",
+        "name": "Vaslui",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 69225
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.9109996,
+          47.0909971
+        ]
+      },
+      "properties": {
+        "id": "gaz-10",
+        "name": "Veszprém",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 62023
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.4982308,
+          40.47736
+        ]
+      },
+      "properties": {
+        "id": "gaz-98",
+        "name": "Vlorë",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 89546
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.9500097,
+          39.3699599
+        ]
+      },
+      "properties": {
+        "id": "gaz-91",
+        "name": "Volos",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 110632
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.5625305,
+          43.2099839
+        ]
+      },
+      "properties": {
+        "id": "gaz-103",
+        "name": "Vratsa",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 71633
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.8835868,
+          41.1417898
+        ]
+      },
+      "properties": {
+        "id": "gaz-168",
+        "name": "Xanthi",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 50570
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.159403,
+          44.4993109
+        ]
+      },
+      "properties": {
+        "id": "gaz-190",
+        "name": "Yalta",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 79509
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.3630692,
+          45.1968911
+        ]
+      },
+      "properties": {
+        "id": "gaz-107",
+        "name": "Yevpatoriya",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 105223
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.8149975,
+          39.8179981
+        ]
+      },
+      "properties": {
+        "id": "gaz-9",
+        "name": "Yozgat",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 87881
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.8399996,
+          46.844001
+        ]
+      },
+      "properties": {
+        "id": "gaz-11",
+        "name": "Zalaegerszeg",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 61898
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.0630045,
+          47.1750031
+        ]
+      },
+      "properties": {
+        "id": "gaz-24",
+        "name": "Zalău",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 63232
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.9199808,
+          44.219974
+        ]
+      },
+      "properties": {
+        "id": "gaz-105",
+        "name": "Zenica",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 164423
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.7800134,
+          41.4303768
+        ]
+      },
+      "properties": {
+        "id": "gaz-123",
+        "name": "Zonguldak",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 156918
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.3994677,
+          45.3786371
+        ]
+      },
+      "properties": {
+        "id": "gaz-97",
+        "name": "Zrenjanin",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 64053
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.4063879,
+          40.1459332
+        ]
+      },
+      "properties": {
+        "id": "gaz-114",
+        "name": "Çanakkale",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 87791
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.6210036,
+          40.607001
+        ]
+      },
+      "properties": {
+        "id": "gaz-7",
+        "name": "Çankırı",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 71379
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.2332966,
+          40.516704
+        ]
+      },
+      "properties": {
+        "id": "gaz-46",
+        "name": "Çorovodë",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 14046
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.330118,
+          43.8897357
+        ]
+      },
+      "properties": {
+        "id": "gaz-170",
+        "name": "Čačak",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 170000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.1498482,
+          38.4380955
+        ]
+      },
+      "properties": {
+        "id": "gaz-198",
+        "name": "İzmir",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 2587000
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.9306172,
+          40.776024
+        ]
+      },
+      "properties": {
+        "id": "gaz-117",
+        "name": "İzmit",
+        "type": "city",
+        "source_layer": "ne_10m_populated_places",
+        "population": 466504
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.898487,
+          36.8525242
+        ]
+      },
+      "properties": {
+        "id": "gaz-247",
+        "name": "Amorgos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 120.8,
+        "country": "Greece",
+        "name_source": "osm_search_admin_derived_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.8623824,
+          37.8408347
+        ]
+      },
+      "properties": {
+        "id": "gaz-233",
+        "name": "Andros",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 378.8,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.3029291,
+          36.5760811
+        ]
+      },
+      "properties": {
+        "id": "gaz-254",
+        "name": "Astypalea",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 94.5,
+        "country": "Greece",
+        "name_source": "osm_search_admin_derived_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.6548451,
+          43.3239449
+        ]
+      },
+      "properties": {
+        "id": "gaz-232",
+        "name": "Brač",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 384.5,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.5373903,
+          38.2660322
+        ]
+      },
+      "properties": {
+        "id": "gaz-225",
+        "name": "Cephalonia",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 760.5,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.0646552,
+          38.3758132
+        ]
+      },
+      "properties": {
+        "id": "gaz-224",
+        "name": "Chios",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 862.9,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.8596189,
+          39.591337
+        ]
+      },
+      "properties": {
+        "id": "gaz-226",
+        "name": "Corfu",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 598.9,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.4633423,
+          35.3084952
+        ]
+      },
+      "properties": {
+        "id": "gaz-220",
+        "name": "Crete",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 8280.5,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.1451285,
+          34.9823018
+        ]
+      },
+      "properties": {
+        "id": "gaz-219",
+        "name": "Cyprus",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 9280.9,
+        "country": null,
+        "name_source": "osm_search_seed_administrative"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.9110844,
+          38.4941724
+        ]
+      },
+      "properties": {
+        "id": "gaz-221",
+        "name": "Euboea",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 3661.1,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.5565161,
+          43.1739411
+        ]
+      },
+      "properties": {
+        "id": "gaz-238",
+        "name": "Hvar",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 276.4,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.1516894,
+          37.5999295
+        ]
+      },
+      "properties": {
+        "id": "gaz-240",
+        "name": "Icaria",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 263.6,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.3331121,
+          36.7173241
+        ]
+      },
+      "properties": {
+        "id": "gaz-251",
+        "name": "Ios",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 106.0,
+        "country": "Greece",
+        "name_source": "osm_search_admin_derived_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.9923072,
+          37.0025735
+        ]
+      },
+      "properties": {
+        "id": "gaz-249",
+        "name": "Kalymnos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 111.1,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.1192567,
+          35.6136611
+        ]
+      },
+      "properties": {
+        "id": "gaz-235",
+        "name": "Karpathos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 303.1,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.3274958,
+          37.6048603
+        ]
+      },
+      "properties": {
+        "id": "gaz-248",
+        "name": "Kea",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 120.3,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.9134763,
+          42.9437813
+        ]
+      },
+      "properties": {
+        "id": "gaz-241",
+        "name": "Korčula",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 258.7,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.0848266,
+          36.7936933
+        ]
+      },
+      "properties": {
+        "id": "gaz-236",
+        "name": "Kos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 293.8,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.0024352,
+          36.2580288
+        ]
+      },
+      "properties": {
+        "id": "gaz-239",
+        "name": "Kythira",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 276.4,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.4260276,
+          37.3912235
+        ]
+      },
+      "properties": {
+        "id": "gaz-252",
+        "name": "Kythnos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 98.5,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.6416779,
+          38.7065734
+        ]
+      },
+      "properties": {
+        "id": "gaz-234",
+        "name": "Lefkada",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 303.6,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.1499608,
+          39.9088688
+        ]
+      },
+      "properties": {
+        "id": "gaz-227",
+        "name": "Lemnos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 481.2,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.9989135,
+          39.1758419
+        ]
+      },
+      "properties": {
+        "id": "gaz-222",
+        "name": "Lesbos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 1636.6,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.6184464,
+          40.6212433
+        ]
+      },
+      "properties": {
+        "id": "gaz-250",
+        "name": "Marmara Island",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 108.2,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.5068338,
+          36.7093441
+        ]
+      },
+      "properties": {
+        "id": "gaz-246",
+        "name": "Milos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 161.8,
+        "country": "Greece",
+        "name_source": "osm_search_admin_derived_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.4707567,
+          37.0600105
+        ]
+      },
+      "properties": {
+        "id": "gaz-229",
+        "name": "Naxos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 424.8,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.198097897265633,
+          37.066005763500044
+        ]
+      },
+      "properties": {
+        "id": "gaz-244",
+        "name": "Paros",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 193.2,
+        "country": "Greece",
+        "name_source": "osm_administrative_fallback"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.224422242710187,
+          37.38735283254563
+        ]
+      },
+      "properties": {
+        "id": "gaz-256",
+        "name": "Pelopónnisos",
+        "type": "island",
+        "source_layer": "ne_10m_geography_regions_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.9194815,
+          36.1724049
+        ]
+      },
+      "properties": {
+        "id": "gaz-223",
+        "name": "Rhodes",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 1428.8,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.5083736,
+          37.9383706
+        ]
+      },
+      "properties": {
+        "id": "gaz-253",
+        "name": "Salamis",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 97.9,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.8192919,
+          37.7246162
+        ]
+      },
+      "properties": {
+        "id": "gaz-228",
+        "name": "Samos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 480.1,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.5856572,
+          40.4511544
+        ]
+      },
+      "properties": {
+        "id": "gaz-245",
+        "name": "Samothraki",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 184.1,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.681376,
+          39.1401737
+        ]
+      },
+      "properties": {
+        "id": "gaz-255",
+        "name": "Skopelos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 93.5,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.5244774,
+          38.8730436
+        ]
+      },
+      "properties": {
+        "id": "gaz-242",
+        "name": "Skyros",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 208.6,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.6512064,
+          40.6844479
+        ]
+      },
+      "properties": {
+        "id": "gaz-231",
+        "name": "Thasos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 395.6,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.1540218,
+          37.6017133
+        ]
+      },
+      "properties": {
+        "id": "gaz-243",
+        "name": "Tinos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 198.4,
+        "country": "Greece",
+        "name_source": "osm_search_admin_derived_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.7900896,
+          37.7891384
+        ]
+      },
+      "properties": {
+        "id": "gaz-230",
+        "name": "Zakynthos",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 416.7,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.8314338,
+          40.1658537
+        ]
+      },
+      "properties": {
+        "id": "gaz-237",
+        "name": "İmbros",
+        "type": "island",
+        "source_layer": "osm_island_names",
+        "area_km2": 290.7,
+        "country": null,
+        "name_source": "osm_search_seed_island"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.040784645031053,
+          37.02216217655656
+        ]
+      },
+      "properties": {
+        "id": "gaz-258",
+        "name": "Cyclades",
+        "type": "island_group",
+        "source_layer": "ne_10m_geography_regions_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.524602740730984,
+          38.691595770306606
+        ]
+      },
+      "properties": {
+        "id": "gaz-257",
+        "name": "Ionian Is.",
+        "type": "island_group",
+        "source_layer": "ne_10m_geography_regions_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.374327712819994,
+          41.99811136640947
+        ]
+      },
+      "properties": {
+        "id": "gaz-275",
+        "name": "Bojana",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.805023296340313,
+          44.34272439241295
+        ]
+      },
+      "properties": {
+        "id": "gaz-302",
+        "name": "Borcea",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.110292992129327,
+          45.36946626111072
+        ]
+      },
+      "properties": {
+        "id": "gaz-299",
+        "name": "Bratul Chillia",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.238225073690035,
+          45.03798726485741
+        ]
+      },
+      "properties": {
+        "id": "gaz-300",
+        "name": "Bratul Sfântu Gheorghe",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.286122347058786,
+          45.17185853839401
+        ]
+      },
+      "properties": {
+        "id": "gaz-301",
+        "name": "Bratul Sulina",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.87639606182842,
+          37.947473474759235
+        ]
+      },
+      "properties": {
+        "id": "gaz-279",
+        "name": "Büyük Menderes",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.295213783278992,
+          44.96922596344821
+        ]
+      },
+      "properties": {
+        "id": "gaz-298",
+        "name": "Danube",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.361589649695706,
+          46.22515578821188
+        ]
+      },
+      "properties": {
+        "id": "gaz-290",
+        "name": "Dniester",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.35289743500426,
+          46.93679547919024
+        ]
+      },
+      "properties": {
+        "id": "gaz-291",
+        "name": "Dniester",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.11760476340532,
+          47.47652692698815
+        ]
+      },
+      "properties": {
+        "id": "gaz-296",
+        "name": "Dnipro",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.09804925649232,
+          46.76183151713032
+        ]
+      },
+      "properties": {
+        "id": "gaz-297",
+        "name": "Dnipro",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.43129723472293,
+          46.309564367513254
+        ]
+      },
+      "properties": {
+        "id": "gaz-303",
+        "name": "Drau",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.25848276026681,
+          42.18495482969674
+        ]
+      },
+      "properties": {
+        "id": "gaz-274",
+        "name": "Drin",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.26817656345276,
+          43.812594387768414
+        ]
+      },
+      "properties": {
+        "id": "gaz-282",
+        "name": "Drina",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.893902262019925,
+          42.00293131827937
+        ]
+      },
+      "properties": {
+        "id": "gaz-284",
+        "name": "Evros",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.89435837884553,
+          46.00467420546657
+        ]
+      },
+      "properties": {
+        "id": "gaz-294",
+        "name": "Ferenc Csatorna",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.637687552016235,
+          39.96132625319283
+        ]
+      },
+      "properties": {
+        "id": "gaz-280",
+        "name": "Haliacmon",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.462651032085926,
+          44.718890161532656
+        ]
+      },
+      "properties": {
+        "id": "gaz-272",
+        "name": "Ialomița",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.58925203122748,
+          40.22553479622509
+        ]
+      },
+      "properties": {
+        "id": "gaz-285",
+        "name": "Kızılırmak",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.68294732485282,
+          43.53656051779215
+        ]
+      },
+      "properties": {
+        "id": "gaz-283",
+        "name": "Morava",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.359199029817553,
+          45.95663428094189
+        ]
+      },
+      "properties": {
+        "id": "gaz-289",
+        "name": "Mur",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.23020978800403,
+          45.92214735518562
+        ]
+      },
+      "properties": {
+        "id": "gaz-281",
+        "name": "Mureș",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.115420102338174,
+          41.30305488353025
+        ]
+      },
+      "properties": {
+        "id": "gaz-271",
+        "name": "Ofanto",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.57202113310018,
+          45.7914531614283
+        ]
+      },
+      "properties": {
+        "id": "gaz-277",
+        "name": "Olt",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.204748746207287,
+          46.70235547719814
+        ]
+      },
+      "properties": {
+        "id": "gaz-287",
+        "name": "Prut",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.219938349773816,
+          40.50937798744389
+        ]
+      },
+      "properties": {
+        "id": "gaz-278",
+        "name": "Sakarya",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.26809231353825,
+          45.147600758526764
+        ]
+      },
+      "properties": {
+        "id": "gaz-286",
+        "name": "Sava",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.123772676507997,
+          39.482643322292546
+        ]
+      },
+      "properties": {
+        "id": "gaz-270",
+        "name": "Simav",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.629785979847547,
+          46.70443966876855
+        ]
+      },
+      "properties": {
+        "id": "gaz-288",
+        "name": "Sió",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.975005535337814,
+          47.25217709666259
+        ]
+      },
+      "properties": {
+        "id": "gaz-293",
+        "name": "Soroksari Duna",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.415425940563654,
+          47.50655294005365
+        ]
+      },
+      "properties": {
+        "id": "gaz-276",
+        "name": "Southern Bug",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.167061346924356,
+          41.71547539288981
+        ]
+      },
+      "properties": {
+        "id": "gaz-273",
+        "name": "Strymnas",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.099036479673906,
+          45.72042452741342
+        ]
+      },
+      "properties": {
+        "id": "gaz-295",
+        "name": "Tisa",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.188692578741303,
+          47.07158740605534
+        ]
+      },
+      "properties": {
+        "id": "gaz-292",
+        "name": "Tisza",
+        "type": "river",
+        "source_layer": "ne_10m_rivers_lake_centerlines"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.797487129212943,
+          41.665428926653306
+        ]
+      },
+      "properties": {
+        "id": "gaz-262",
+        "name": "Adriatic Sea",
+        "type": "sea",
+        "source_layer": "ne_10m_geography_marine_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.2788886015639,
+          38.75330668797662
+        ]
+      },
+      "properties": {
+        "id": "gaz-264",
+        "name": "Aegean Sea",
+        "type": "sea",
+        "source_layer": "ne_10m_geography_marine_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.849851378503363,
+          44.13969625505541
+        ]
+      },
+      "properties": {
+        "id": "gaz-259",
+        "name": "Black Sea",
+        "type": "sea",
+        "source_layer": "ne_10m_geography_marine_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.819376860999476,
+          38.490570787096686
+        ]
+      },
+      "properties": {
+        "id": "gaz-263",
+        "name": "Ionian Sea",
+        "type": "sea",
+        "source_layer": "ne_10m_geography_marine_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.377426481122015,
+          35.05416555433551
+        ]
+      },
+      "properties": {
+        "id": "gaz-269",
+        "name": "Mediterranean Sea",
+        "type": "sea",
+        "source_layer": "ne_10m_geography_marine_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.964790445084816,
+          45.933036403988424
+        ]
+      },
+      "properties": {
+        "id": "gaz-261",
+        "name": "Sea of Azov",
+        "type": "sea",
+        "source_layer": "ne_10m_geography_marine_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.68128196532611,
+          36.573672288553794
+        ]
+      },
+      "properties": {
+        "id": "gaz-265",
+        "name": "Sea of Crete",
+        "type": "sea",
+        "source_layer": "ne_10m_geography_marine_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.34822392480131,
+          40.697722886714885
+        ]
+      },
+      "properties": {
+        "id": "gaz-268",
+        "name": "Sea of Marmara",
+        "type": "sea",
+        "source_layer": "ne_10m_geography_marine_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.05423336443424,
+          39.08164581965107
+        ]
+      },
+      "properties": {
+        "id": "gaz-260",
+        "name": "Tyrrhenian Sea",
+        "type": "sea",
+        "source_layer": "ne_10m_geography_marine_polys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.048780688905833,
+          41.12106913915794
+        ]
+      },
+      "properties": {
+        "id": "gaz-266",
+        "name": "Bosporus",
+        "type": "strait",
+        "source_layer": "ne_10m_geography_marine_polys"
+      }
+    }
+  ]
+}

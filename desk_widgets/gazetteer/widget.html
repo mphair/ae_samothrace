@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Gazetteer</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: #11151c;
+      }
+      gazetteer-widget {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <template id="gazetteer-widget-template">
+      <style>
+        :host {
+          display: block;
+          width: 100%;
+          height: 100%;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+        .wrap {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          background: #1b1f27;
+          color: #e6e9ef;
+          box-sizing: border-box;
+        }
+        .toolbar {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          padding: 10px;
+          background: #20262f;
+          border-bottom: 1px solid #333c48;
+          flex: 0 0 auto;
+        }
+        .search-row {
+          display: flex;
+          gap: 8px;
+        }
+        .search-input {
+          flex: 1 1 auto;
+          min-width: 0;
+          font-size: 13px;
+          padding: 7px 9px;
+          border-radius: 4px;
+          border: 1px solid #3a4454;
+          background: #11151c;
+          color: #e6e9ef;
+          box-sizing: border-box;
+        }
+        .sort-row {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 11.5px;
+          color: #9aa5b5;
+        }
+        .sort-button {
+          font-size: 11.5px;
+          padding: 5px 9px;
+          border-radius: 4px;
+          border: 1px solid #3a4454;
+          background: #2a3444;
+          color: #e6e9ef;
+          cursor: pointer;
+        }
+        .sort-button.active {
+          border-color: #4a7fc9;
+          background: #1f3454;
+        }
+        .sort-button:hover:not(.active) {
+          background: #344258;
+        }
+        .map-hint {
+          font-size: 10.5px;
+          color: #d8a944;
+          display: none;
+        }
+        .status-row {
+          flex: 0 0 auto;
+          font-size: 11px;
+          color: #70798a;
+          padding: 6px 10px;
+          border-bottom: 1px solid #262c36;
+        }
+        .list-area {
+          flex: 1 1 auto;
+          min-height: 0;
+          overflow-y: auto;
+          padding: 4px 0 14px;
+        }
+        .type-group-title {
+          position: sticky;
+          top: 0;
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: #8a93a3;
+          background: #1b1f27;
+          padding: 8px 10px 4px;
+          z-index: 1;
+        }
+        .entry-row {
+          display: flex;
+          align-items: baseline;
+          gap: 8px;
+          padding: 6px 10px;
+          cursor: pointer;
+          border-bottom: 1px solid #22272f;
+        }
+        .entry-row:hover {
+          background: #242a34;
+        }
+        .entry-name {
+          flex: 1 1 auto;
+          min-width: 0;
+          color: #bcd6ff;
+          text-decoration: underline;
+          text-decoration-color: rgba(188, 214, 255, 0.35);
+          font-size: 13px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .entry-row:hover .entry-name {
+          color: #e4edff;
+        }
+        .entry-type-badge {
+          flex: 0 0 auto;
+          font-size: 9.5px;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          padding: 2px 6px;
+          border-radius: 3px;
+          color: #11151c;
+          white-space: nowrap;
+        }
+        .entry-extra {
+          flex: 0 0 auto;
+          font-size: 10.5px;
+          color: #70798a;
+          white-space: nowrap;
+        }
+        .empty-state {
+          padding: 24px 14px;
+          color: #70798a;
+          font-size: 12px;
+          text-align: center;
+        }
+        .status-overlay {
+          position: absolute;
+          inset: 0;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          background: rgba(17, 21, 28, 0.85);
+          color: #e6e9ef;
+          font-size: 13px;
+          z-index: 20;
+          text-align: center;
+          padding: 16px;
+        }
+      </style>
+      <div class="wrap">
+        <div class="toolbar">
+          <div class="search-row">
+            <input type="text" class="search-input" placeholder="Search by name…" />
+          </div>
+          <div class="sort-row">
+            <span>Sort:</span>
+            <button type="button" class="sort-button" data-sort="name">Name</button>
+            <button type="button" class="sort-button" data-sort="type">Type, then Name</button>
+            <span class="map-hint">Open the Natural Earth Map widget to jump to a place</span>
+          </div>
+        </div>
+        <div class="status-row"></div>
+        <div class="list-area"></div>
+        <div class="status-overlay"></div>
+      </div>
+    </template>
+    <script>
+      /* BUILD:COMPILED_JS */
+    </script>
+    <gazetteer-widget></gazetteer-widget>
+  </body>
+</html>

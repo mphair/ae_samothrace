@@ -1,0 +1,7 @@
+{
+  "keyword": "Gazetteer",
+  "label": "Gazetteer",
+  "width": 560,
+  "height": 760,
+  "capabilities": ["state", "events", "workspace"]
+}
