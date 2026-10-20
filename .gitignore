@@ -9,3 +9,6 @@ desk-installed-jobs/**/.venv/
 # MacOS
 .DS_Store
 
+# Project-specific
+Data/local/
+
