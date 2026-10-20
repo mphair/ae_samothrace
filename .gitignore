@@ -2,13 +2,10 @@
 # Desk-specific
 .desk_temp/
 **/__pycache__/
+desk_widgets/**/.build/
+desk-installed-jobs/**/target/
+desk-installed-jobs/**/.venv/
 
 # MacOS
 .DS_Store
 
-# Desk-specific
-desk_widgets/**/.build/
-
-# Desk-specific
-desk-installed-jobs/**/target/
-desk-installed-jobs/**/.venv/
