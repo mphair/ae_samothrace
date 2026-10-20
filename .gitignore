@@ -11,3 +11,4 @@ desk_widgets/**/.build/
 
 # Desk-specific
 desk-installed-jobs/**/target/
+desk-installed-jobs/**/.venv/
