@@ -30,6 +30,7 @@ import json
 import math
 import mimetypes
 import os
+import re
 from functools import lru_cache
 from pathlib import Path
 
@@ -163,6 +164,73 @@ LAYERS = [
 # "actual-structures" directly, by hardcoded id, independent of this
 # service's own /layers response).
 LAYER_IDS = {entry["id"] for entry in LAYERS} | {"actual-plan-raw", "restored-plan-raw", "actual-structures", "actual-monuments"}
+
+# Real lon/lat extent per layer, for the benefit of a map that (unlike
+# this project's own samothrace-map widget, which only ever shows this
+# data at a fixed, already-correct view) composites this service's
+# tiles alongside regional data from somewhere else entirely
+# (desk_widgets/layered-map/) and has no other way to know where on
+# earth any of this actually is. Read once from each source tile set's
+# own `tilemapresource.xml` (the same file every tile set already has
+# -- written by whatever GDAL/tile-cutting step produced it -- `gdal2tiles`
+# and friends always emit one `<BoundingBox minx= miny= maxx= maxy=/>`
+# tag in real lon/lat, already reprojected out of EPSG:3857, despite the
+# file's own `<SRS>` tag still saying EPSG:3857 -- confirmed directly
+# against this project's own tile sets, see
+# plans/samothrace-map-pan-zoom-limits.md's own note on the same file).
+# 2026-10-19: added after a user found "Aerial Imagery" simply wasn't
+# appearing in Layered Map -- the data itself was fine (this bounds box
+# matches the Restored State Plan's own, already-trusted-correct, box
+# almost exactly), the widget just had no way to tell the user WHERE to
+# look or that they needed to zoom to 17+ in the first place.
+_BOUNDING_BOX_RE = re.compile(
+    r'<BoundingBox\s+minx="([-0-9.]+)"\s+miny="([-0-9.]+)"\s+maxx="([-0-9.]+)"\s+maxy="([-0-9.]+)"'
+)
+
+
+def _parse_tilemapresource_bounds(source_dir: Path) -> dict | None:
+    xml_path = source_dir / "tilemapresource.xml"
+    if not xml_path.is_file():
+        return None
+    try:
+        text = xml_path.read_text()
+    except OSError:
+        return None
+    m = _BOUNDING_BOX_RE.search(text)
+    if not m:
+        return None
+    west, south, east, north = (float(g) for g in m.groups())
+    return {"west": west, "south": south, "east": east, "north": north}
+
+
+# Which on-disk tile set each LAYERS id's own real extent should be read
+# from -- a synthesized/computed layer (e.g. "topographic") has no
+# `tilemapresource.xml` of its own, but is always derived per-tile from
+# one specific real source, whose box is exactly its own. Deliberately
+# omits "blank" (a synthetic backdrop valid at any location -- there is
+# no real "where" to report) and "initial-map" (no `tilemapresource.xml`
+# exists for it as of this writing -- see
+# plans/samothrace-map-pan-zoom-limits.md's own open question on the
+# same gap; `_layer_bounds` below returns `None` for it either way,
+# since `BOUNDS_SOURCE_DIR` simply has no entry).
+BOUNDS_SOURCE_DIR = {
+    "aerial": RAW_LAYER_DIRS["aerial"],
+    "restored-monuments": RAW_LAYER_DIRS["restored-monuments"],
+    "restored-structures": PLAN_DIRS["restored"],
+    "topographic": PLAN_DIRS["restored"],
+    "restored-plan-raw": PLAN_DIRS["restored"],
+    "topographic-structures-raw": PLAN_DIRS["restored"],
+    "topographic-structures-buffered": PLAN_DIRS["restored"],
+}
+
+
+@lru_cache(maxsize=None)
+def _layer_bounds(layer_id: str) -> dict | None:
+    source_dir = BOUNDS_SOURCE_DIR.get(layer_id)
+    if source_dir is None:
+        return None
+    return _parse_tilemapresource_bounds(source_dir)
+
 
 app = FastAPI()
 app.add_middleware(
@@ -445,7 +513,8 @@ def _discover_keys() -> list[dict]:
 
 @app.get("/layers")
 def layers():
-    return {"layers": LAYERS, "minZoom": MIN_ZOOM, "maxZoom": MAX_ZOOM, "tileSize": TILE_SIZE, "keys": _discover_keys()}
+    enriched = [{**entry, "bounds": _layer_bounds(entry["id"])} for entry in LAYERS]
+    return {"layers": enriched, "minZoom": MIN_ZOOM, "maxZoom": MAX_ZOOM, "tileSize": TILE_SIZE, "keys": _discover_keys()}
 
 
 @app.get("/source/{slug}")

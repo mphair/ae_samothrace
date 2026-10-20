@@ -1,0 +1,10 @@
+{
+  "keyword": "LayerStack",
+  "label": "Layer Stack",
+  "width": 860,
+  "height": 640,
+  "capabilities": ["state", "events"],
+  "state_schema": {
+    "samothrace.mapLayerStack": "string[]"
+  }
+}

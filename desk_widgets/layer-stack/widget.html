@@ -1,0 +1,228 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Layer Stack</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: #11151c;
+      }
+      layer-stack {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <template id="layer-stack-template">
+      <style>
+        :host {
+          display: block;
+          width: 100%;
+          height: 100%;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+        .wrap {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          background: #1b1f27;
+          color: #e6e9ef;
+          box-sizing: border-box;
+        }
+        .toolbar {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 10px;
+          background: #20262f;
+          border-bottom: 1px solid #333c48;
+          flex: 0 0 auto;
+          font-size: 12px;
+          color: #9aa5b5;
+        }
+        .body-row {
+          position: relative;
+          flex: 1 1 auto;
+          display: flex;
+          min-height: 0;
+        }
+        .stack-pane {
+          flex: 0 0 220px;
+          display: flex;
+          flex-direction: column;
+          border-right: 1px solid #333c48;
+          box-sizing: border-box;
+          padding: 10px;
+          min-height: 0;
+        }
+        .pane-title {
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: #8a93a3;
+          margin: 0 0 6px;
+          flex: 0 0 auto;
+        }
+        .stack-column {
+          flex: 1 1 auto;
+          overflow-y: auto;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          padding: 6px;
+          border: 1px dashed #3a4454;
+          border-radius: 6px;
+          min-height: 0;
+        }
+        .palette-pane {
+          flex: 1 1 auto;
+          display: flex;
+          flex-direction: column;
+          box-sizing: border-box;
+          padding: 10px;
+          min-width: 0;
+          min-height: 0;
+        }
+        .palette-area {
+          position: relative;
+          flex: 1 1 auto;
+          border: 1px dashed #2a3444;
+          border-radius: 6px;
+          background: #11151c;
+          overflow: hidden;
+          min-height: 0;
+        }
+        .layer-chip {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 6px 8px;
+          border-radius: 4px;
+          border: 1px solid #3a4454;
+          background: #20262f;
+          color: #e6e9ef;
+          font-size: 11.5px;
+          cursor: grab;
+          user-select: none;
+          touch-action: none;
+          box-sizing: border-box;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+        .layer-chip.dragging {
+          cursor: grabbing;
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+          opacity: 0.95;
+        }
+        .layer-chip:hover {
+          background: #262e3a;
+        }
+        .chip-swatch {
+          width: 10px;
+          height: 10px;
+          border-radius: 2px;
+          flex: 0 0 auto;
+        }
+        .chip-label {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          flex: 1 1 auto;
+          min-width: 0;
+        }
+        .chip-source {
+          flex: 0 0 auto;
+          font-size: 9px;
+          color: #9aa5b5;
+          border: 1px solid #3a4454;
+          border-radius: 3px;
+          padding: 1px 4px;
+        }
+        /* A dragged chip is reparented here for the duration of the
+           gesture (see layer-stack.ts's own onChipPointerDown comment
+           for why) -- plain pass-through overlay, never written to by
+           render()/renderStack()/renderPalette() themselves, so
+           rebuilding either of those containers can never destroy a
+           chip that's actively being dragged. `pointer-events: none` on
+           the layer itself is fine -- the dragged chip receives its
+           own pointermove/up via setPointerCapture regardless of what's
+           visually on top or what has pointer-events set. */
+        .drag-layer {
+          position: fixed;
+          inset: 0;
+          pointer-events: none;
+          z-index: 999;
+        }
+        .status-overlay {
+          position: absolute;
+          inset: 0;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          background: rgba(17, 21, 28, 0.75);
+          color: #e6e9ef;
+          font-size: 13px;
+          z-index: 20;
+          text-align: center;
+          padding: 16px;
+        }
+        /* Startup load-retry UI (RetryingLoader) -- rendered INTO
+           .status-overlay above (same container), not a separate
+           element. */
+        .retry-box {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          max-width: 320px;
+        }
+        .retry-message {
+          line-height: 1.4;
+        }
+        .retry-countdown {
+          font-size: 11.5px;
+          color: #9aa5b5;
+        }
+        .retry-button {
+          margin-top: 4px;
+          font-size: 12px;
+          padding: 6px 14px;
+          border-radius: 4px;
+          border: 1px solid #3a4454;
+          background: #2a3444;
+          color: #e6e9ef;
+          cursor: pointer;
+        }
+        .retry-button:hover {
+          background: #344258;
+        }
+      </style>
+      <div class="wrap">
+        <div class="toolbar">Drag a layer into the Stack to show it on the Layered Map widget. Top of the stack = closest to you.</div>
+        <div class="body-row">
+          <div class="stack-pane">
+            <div class="pane-title">Stack</div>
+            <div class="stack-column"></div>
+          </div>
+          <div class="palette-pane">
+            <div class="pane-title">Available layers</div>
+            <div class="palette-area"></div>
+          </div>
+        </div>
+        <div class="drag-layer"></div>
+        <div class="status-overlay"></div>
+      </div>
+    </template>
+    <script>
+      /* BUILD:COMPILED_JS */
+    </script>
+    <layer-stack></layer-stack>
+  </body>
+</html>

@@ -431,7 +431,81 @@ is worth designing deliberately, not left implicit:
   `desk.workspace.getState()` (a real, cheap read) and show your own
   hint rather than silently doing nothing when nothing is listening.
 
-## 8. The general methodological takeaway
+## 8. Composing two independently-sourced layer types into one view, driven by shared state
+
+`desk_widgets/layered-map/` + `desk_widgets/layer-stack/` (2026-10-19)
+answer a different need than §4/§7 above: not "two widgets talking
+about a place," but **one widget drawing layers it doesn't own the
+list of**, with that list itself editable from a second widget. Worth
+recording as its own pattern, since it inverts a couple of the earlier
+sections' own defaults:
+
+- **A durable list, read on startup — so `desk.state`, not
+  `desk.events`, this time.** §7 above picked an event for "jump to
+  this place" specifically because that was a one-off action with no
+  "current value" a late-opening widget would ever need to find. The
+  layer stack is the opposite case: which layers are visible, and in
+  what order, is exactly the kind of fact a freshly-opened Layered Map
+  instance must be able to find out for itself, not just react to going
+  forward. `desk.state.get(key)` is unconditionally readable at any
+  time (confirmed directly: a key nothing has ever written to just
+  returns `{value: null, edit: null}`, not an error) — exactly the
+  "read current layer order on my own startup, not just the next change
+  event" shape this needed. Live updates still ride `desk.state`'s own
+  companion broadcast (`desk.state.changed`), so a second mechanism
+  isn't needed for "and keep it current after that."
+- **Keep the stored value inside the documented validated-schema
+  subset, even where a richer shape would read more naturally.** The
+  stack is conceptually an ordered list of `{source, id}` pairs; it's
+  stored as `string[]` instead (each entry `"<source>|<id>"`,
+  parsed/built by one small shared pair of functions on both ends) —
+  `tempui-custom-widgets.md`'s own schema-syntax subset explicitly lists
+  arrays of primitives and separately lists simple object shapes, but
+  never actually shows an array-of-object-shape example. Rather than
+  gamble a state-schema declaration (and this widget's entire ability
+  to load at all, if the guess is wrong — see that doc's own "conflict"
+  failure mode) on an untested corner of the parser, flattening to a
+  plain string array sidesteps the question entirely. A real
+  constraint of the schema system shaped the wire format, not the other
+  way around — worth checking what's actually demonstrated in the spec
+  before assuming a natural-feeling richer shape is supported.
+- **One widget owns the write path; others only read + react.** Layer
+  Stack is the sole writer of `samothrace.mapLayerStack` (declares the
+  key's `state_schema` in its own `widget.json`, the same "whichever
+  widget's manifest currently owns the key's schema governs every
+  write" convention `samothrace.selectedMonument` already established
+  between samothrace-map.ts and samothrace-description.ts); Layered Map
+  only ever reads it. This isn't enforced by anything Desk checks — any
+  widget with the `state` capability could write that key — it's a
+  convention worth stating explicitly in both widgets' own header
+  comments (as both do), the same "the message/key name is the only
+  coupling" caution §7 already gives for events.
+- **A load-order race, handled by NOT filtering too early.** A stack
+  entry naming a layer this particular widget instance hasn't finished
+  loading the catalog for yet (a real possibility: Layered Map depends
+  on two separate hmsvcs booting, and a `desk.state.changed` for the
+  stack key can arrive before both catalogs have resolved) must not be
+  treated as invalid and discarded — that would permanently lose a
+  perfectly legitimate entry because of a timing accident, not because
+  it was ever actually wrong. Both widgets' own `sanitizeStack` only
+  checks shape (is this a string, does it parse into a known `source`
+  literal) and never checks "does this id currently exist in my
+  catalog" — a catalog-miss is handled downstream instead, at the one
+  place it's actually safe to skip a reference for a frame or two
+  (render/hit-test simply skip an entry whose lookup misses), which
+  self-heals the moment the catalog finishes loading with no special
+  retry logic of its own.
+- **Pointer-based custom drag, not native HTML5 drag-and-drop** — see
+  `desk_widgets/layer-stack/layer-stack.ts`'s own header comment for the
+  full reasoning; the short version is that this project already had an
+  established pointer-event drag pattern (samothrace-map.ts's image
+  -overlay reposition) and no native-DnD code anywhere, and the
+  "dropped-in-the-neutral-area stays wherever you let go" requirement
+  maps directly onto "read the pointer's own final position," which
+  native DnD's `dataTransfer`/drag-image machinery doesn't make any
+  easier.
+
+## 9. The general methodological takeaway
 
 The same shape recurs across every section above: **a public dataset's
 own documentation or layer name tells you what it's *for*, not

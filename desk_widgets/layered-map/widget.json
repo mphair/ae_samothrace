@@ -1,0 +1,7 @@
+{
+  "keyword": "LayeredMap",
+  "label": "Layered Map",
+  "width": 820,
+  "height": 600,
+  "capabilities": ["state", "events"]
+}
