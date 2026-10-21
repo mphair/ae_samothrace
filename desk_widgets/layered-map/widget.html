@@ -48,7 +48,11 @@
         .zoom-controls {
           position: absolute;
           right: 10px;
-          bottom: 10px;
+          /* Scooted up from the bottom-10px corner to leave room for
+             .zoom-label below it, now that the label lives in this same
+             bottom-right corner too (2026-10-20, moved from bottom-left
+             -- see that rule's own comment). */
+          bottom: 44px;
           display: flex;
           flex-direction: column;
           align-items: stretch;
@@ -74,7 +78,11 @@
         }
         .zoom-label {
           position: absolute;
-          left: 10px;
+          /* Bottom-right (2026-10-20, moved from bottom-left) -- same
+             corner .zoom-controls already lives in, stacked directly
+             underneath it, so both zoom-related controls read as one
+             group instead of being split across opposite corners. */
+          right: 10px;
           bottom: 10px;
           font-size: 11px;
           padding: 3px 6px;
@@ -151,6 +159,35 @@
         .recenter-button:hover {
           background: #4a3c1e;
         }
+        /* Attribution box -- every distinct third-party source among
+           the layers currently on the stack, each a link to that
+           source's own license page. See layered-map.ts's own
+           sourceKeyForLayer/SOURCE_INFO comments for which layers
+           count (project-original content, like every samothrace-tiles
+           /samothrace-vectors layer, is never listed here at all).
+           Hidden entirely (display:none, set in JS) whenever nothing
+           on the stack needs attribution. */
+        .sources-panel {
+          position: absolute;
+          left: 10px;
+          bottom: 10px;
+          display: none;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 2px;
+          padding: 6px 9px;
+          border-radius: 4px;
+          background: rgba(13, 20, 32, 0.5);
+          font-size: 10.5px;
+          max-width: 55%;
+        }
+        .sources-panel a {
+          color: #9db8e8;
+          text-decoration: none;
+        }
+        .sources-panel a:hover {
+          text-decoration: underline;
+        }
         .status-overlay {
           position: absolute;
           inset: 0;
@@ -208,6 +245,7 @@
           <span class="recenter-text"></span>
           <button type="button" class="recenter-button">Center here</button>
         </div>
+        <div class="sources-panel"></div>
         <div class="status-overlay"></div>
       </div>
     </template>

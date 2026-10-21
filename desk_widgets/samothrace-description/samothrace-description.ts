@@ -170,7 +170,17 @@ async function buildDescription(webCode: string, name: string): Promise<Rendered
     }),
   );
 
-  return { html: renderDescriptionHtml(lines, images), subtitle: name || webCode };
+  // This text/image content is the forked samo_website repo's own
+  // scholarly material (see Data/mapDescriptions/README.md's own
+  // "Provenance" section and root README.md's "Forked from..."
+  // section), carried over unmodified -- credited directly here since
+  // this is the one widget that actually displays it, rather than
+  // leaving attribution to only live in project docs the user never
+  // sees.
+  const credit =
+    '<p class="source-credit">Source: <a href="https://github.com/jagingrich/samo_website" target="_blank" rel="noopener noreferrer">American Excavations: Samothrace</a></p>';
+
+  return { html: renderDescriptionHtml(lines, images) + credit, subtitle: name || webCode };
 }
 
 function loadDescription(webCode: string, name: string): Promise<RenderedEntry> {
