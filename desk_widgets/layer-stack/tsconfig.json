@@ -10,5 +10,5 @@
     "outDir": ".build",
     "noEmitOnError": true
   },
-  "files": ["layer-stack.ts"]
+  "files": ["../_shared/platform.ts", "../_shared/desk-platform.ts", "layer-stack.ts"]
 }

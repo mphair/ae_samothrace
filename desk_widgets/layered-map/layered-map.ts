@@ -5,18 +5,23 @@
 // taking only "the area inside the map area" from each.
 //
 // What makes this widget different from either of those: it draws
-// layers from BOTH the `natural-earth-map` hmsvc (vector GeoJSON) and
-// the `samothrace-tiles` hmsvc (raster tiles) at once, interleaved in
-// a single z-order -- and that z-order is not a local per-instance
-// setting. It's read from the shared `desk.state` key
+// layers from THREE hmsvcs at once -- `natural-earth-map` (vector
+// GeoJSON), `samothrace-tiles` (raster tiles), and `samothrace-vectors`
+// (vector GeoJSON, added 2026-10-20 -- Extracted Contours/Restored
+// State -- Waterway/Restored State Plan structures, previously only
+// readable by Samothrace Map itself straight off disk, see
+// desk_hmsvc/samothrace-vectors/service.py's own header comment for the
+// full story) -- interleaved in a single z-order, and that z-order is
+// not a local per-instance setting. It's read from the shared state key
 // `samothrace.mapLayerStack` (see STACK_STATE_KEY below), written by
 // the companion `desk_widgets/layer-stack/` widget's own drag-and-drop
 // UI. This widget never writes that key, only reads it (once at
-// startup, and live via `desk.state.changed`) -- see
+// startup, and live via the shared platform's own change notifications
+// -- see `desk_widgets/_shared/platform.ts`) -- see
 // desk_domains/cartography/natural-earth-and-openstreetmap.md's own
 // "Cross-widget navigation" section for why a durable, read-on-startup
-// value like this belongs in `desk.state` rather than a `desk.events`
-// broadcast.
+// value like this belongs in durable shared state rather than a
+// fire-and-forget broadcast.
 //
 // Web Mercator projection formulas, pan/zoom mechanics, and the
 // RetryingLoader startup-race fix are kept byte-for-byte parallel to
@@ -34,30 +39,15 @@ declare class ResizeObserver {
   disconnect(): void;
 }
 
-// Only the Bridge members this widget actually calls -- see
-// tempui-custom-widgets.md's "The Desk Bridge API" for the full list.
-interface Window {
-  desk?: {
-    self: {
-      getLocalStorage(): Promise<{ data: Record<string, unknown> }>;
-      setLocalStorage(data: Record<string, unknown>): Promise<{ ok: boolean }>;
-    };
-    state: {
-      get(key: string): Promise<{ value: unknown; edit: unknown }>;
-    };
-    events: {
-      subscribe(names: string[]): Promise<{ ok: boolean }>;
-      onMessage(callback: (name: string, payload: unknown, senderInstanceId: string) => void): void;
-    };
-  };
-}
-
 // ── Constants ──
+//
+// Service URLs are resolved through the shared platform module (see
+// `desk_widgets/_shared/platform.ts`) by plain service name -- no
+// host-specific key format is known here at all.
 
 const NE_SERVICE_NAME = 'natural-earth-map';
-const NE_STATE_KEY = `desk.hmsvc.${NE_SERVICE_NAME}`;
 const TILES_SERVICE_NAME = 'samothrace-tiles';
-const TILES_STATE_KEY = `desk.hmsvc.${TILES_SERVICE_NAME}`;
+const VECTORS_SERVICE_NAME = 'samothrace-vectors';
 
 // The shared layer-stack contract -- see desk_widgets/layer-stack/
 // layer-stack.ts's own header comment for the writer's half of this.
@@ -65,8 +55,8 @@ const TILES_STATE_KEY = `desk.hmsvc.${TILES_SERVICE_NAME}`;
 // makeLayerKey/parseLayerKey below), ordered CLOSEST-TO-THE-VIEWER
 // FIRST (index 0 = top of the layer-stack widget's own visual stack =
 // drawn last/on top here). A flat string array (not an array of
-// richer objects) is deliberate -- it's unambiguously within
-// `desk.state`'s documented validated-schema subset ("arrays
+// richer objects) is deliberate -- it's unambiguously within the
+// shared platform's own documented validated-schema subset ("arrays
 // (`string[]`, ...)"), where an array-of-object-shape's own support is
 // untested and not worth risking a widget that fails to load at all
 // over.
@@ -76,7 +66,13 @@ const TILE_SIZE = 256; // world-pixel-at-zoom unit, shared by both hmsvcs' own d
 const GLOBAL_MIN_ZOOM = 2; // natural-earth-map's own vector data has no real tiling scheme, so this is just "zoomed out enough to see the region."
 const GLOBAL_MAX_ZOOM = 22; // matches samothrace-tiles' own MAX_ZOOM -- the tightest real raster detail either source has.
 
-type MapSource = 'natural-earth-map' | 'samothrace-tiles';
+type MapSource = 'natural-earth-map' | 'samothrace-tiles' | 'samothrace-vectors';
+// natural-earth-map and samothrace-vectors are both "vector" sources in
+// the sense that matters to this widget (fetch a whole GeoJSON
+// FeatureCollection per layer, render via VectorLayerMeta's own style
+// fields) -- checked with `!== 'samothrace-tiles'` in a few places below
+// rather than listing both literals out, so a future fourth vector
+// source needs no extra branching.
 
 function makeLayerKey(source: MapSource, id: string): string {
   return `${source}|${id}`;
@@ -87,7 +83,7 @@ function parseLayerKey(key: string): { source: MapSource; id: string } | null {
   if (i < 0) return null;
   const source = key.slice(0, i);
   const id = key.slice(i + 1);
-  if (source !== 'natural-earth-map' && source !== 'samothrace-tiles') return null;
+  if (source !== 'natural-earth-map' && source !== 'samothrace-tiles' && source !== 'samothrace-vectors') return null;
   if (!id) return null;
   return { source, id };
 }
@@ -121,6 +117,13 @@ interface VectorLayerMeta {
   labelField?: string;
   extraField?: string;
   extraLabel?: string;
+  // Only meaningful for `render: 'stroke'` -- a dashed line instead of
+  // solid, consulted by drawVectorLayer below. Added 2026-10-20 for
+  // restored_waterway_bridges (see scripts/build_samothrace_vectors.py's
+  // own header comment on why a bridge is represented as a thin dashed
+  // connector rather than merged into the Waterway fill the way the
+  // raster view does it).
+  dashed?: boolean;
   featureCount: number;
 }
 
@@ -164,6 +167,58 @@ const RASTER_DEFAULT_COLOR = '#5fd4a0';
 
 function rasterColorForGroup(group: string): string {
   return RASTER_GROUP_COLORS[group] ?? RASTER_DEFAULT_COLOR;
+}
+
+// ── Attribution: which currently-visible layers come from a
+// third-party source that asks for (or just warrants) credit. See
+// desk_domains/cartography/natural-earth-and-openstreetmap.md's own
+// "Licensing" sections for the full reasoning behind the
+// natural-earth/openstreetmap URLs: Natural Earth is public domain but
+// credited anyway (its own terms-of-use page says as much);
+// OpenStreetMap's ODbL is a real license term, and
+// openstreetmap.org/copyright is the same page this project's own
+// Data/OpenStreetMap-geocoding/README.md already cites for that.
+//
+// samothrace-tiles and samothrace-vectors are NOT this project's own
+// original content -- this whole project is a fork of
+// https://github.com/jagingrich/samo_website (American Excavations:
+// Samothrace's own "Interactive Map: Sanctuary of the Great Gods,
+// Samothrace" web map; see root README.md's own "Forked from..."
+// section), and both of those sources' underlying data
+// (Data/mapTiles/, Data/mapFeatures/) came from that fork, carried
+// over at import time -- see Data/mapTiles/README.md and
+// Data/mapDescriptions/README.md for the fuller provenance writeup.
+// samothrace-vectors is a derived product of that same forked data
+// (vectorized/split, never redrawn from scratch -- see
+// scripts/build_samothrace_vectors.py's own header comment), so it's
+// credited identically rather than treated as this project's own. ──
+interface SourceInfo {
+  name: string;
+  url: string;
+}
+
+const SOURCE_INFO: Record<string, SourceInfo> = {
+  'natural-earth': { name: 'Natural Earth', url: 'https://www.naturalearthdata.com/about/terms-of-use/' },
+  openstreetmap: { name: 'OpenStreetMap', url: 'https://www.openstreetmap.org/copyright' },
+  'samo-website': { name: 'American Excavations: Samothrace', url: 'https://github.com/jagingrich/samo_website' },
+};
+
+// natural-earth-map's own hmsvc merges two data directories with two
+// different real licenses into one layer catalog (see that hmsvc's own
+// service.py header comment) -- the single layer id
+// `osm_island_names` is the only one sourced from
+// Data/OpenStreetMap-geocoding/ rather than Data/naturalEarth/,
+// confirmed directly against scripts/clip_natural_earth.py's own
+// DATASETS list vs fetch_island_names.py's own output filename.
+// Every samothrace-tiles/samothrace-vectors layer, regardless of id,
+// traces back to the forked samo_website repo (see this function's own
+// header comment above) -- there's no project-original map layer left
+// to carve out an exception for.
+function sourceKeyForLayer(ref: { source: MapSource; id: string }): string | null {
+  if (ref.source === 'natural-earth-map') {
+    return ref.id === 'osm_island_names' ? 'openstreetmap' : 'natural-earth';
+  }
+  return 'samo-website';
 }
 
 interface GeoJsonFeature {
@@ -419,22 +474,38 @@ class LayeredMapElement extends HTMLElement {
   private emptyMessageEl: HTMLElement | null = null;
   private recenterBannerEl: HTMLElement | null = null;
   private recenterTextEl: HTMLElement | null = null;
+  private sourcesPanelEl: HTMLElement | null = null;
+  // Compared against on every updateSourcesPanel() call so a redraw
+  // with an unchanged stack never touches the DOM -- same "don't
+  // innerHTML-replace every single frame" discipline the rest of this
+  // widget's own overlays already follow.
+  private lastSourcesPanelHtml: string | null = null;
   private loader: RetryingLoader | null = null;
   private resizeObserver: ResizeObserver | null = null;
 
   private neServiceUrl: string | null = null;
   private tilesServiceUrl: string | null = null;
+  private vectorsServiceUrl: string | null = null;
   private tilesMinZoom = 17;
   private tilesMaxZoom = 22;
 
   private neCatalog = new Map<string, VectorLayerMeta>();
+  private vectorsCatalog = new Map<string, VectorLayerMeta>();
   private tilesCatalog = new Map<string, RasterLayerMeta>();
-  private featureCache = new Map<string, GeoJsonFeature[]>(); // keyed by vector layer id only
+  // Vector feature data from EITHER vector source, keyed by plain layer
+  // id -- not source-qualified, since natural-earth-map's and
+  // samothrace-vectors' own id namespaces are disjoint today (confirmed
+  // directly: "ne_10m_*"/"osm_*" vs "extracted_contours_*"/
+  // "restored_*") and a shared cache keeps loadVectorFeaturesFrom/
+  // drawVectorLayer/hitTest simple -- a real collision would need
+  // revisiting this, same caveat natural-earth-map's own hmsvc already
+  // notes for ITS OWN multi-directory id merge.
+  private featureCache = new Map<string, GeoJsonFeature[]>();
   private tileCache = new Map<string, TileEntry>(); // keyed by full tile URL
 
   // The shared layer stack, closest-to-the-viewer first -- read from
-  // STACK_STATE_KEY at startup and on every `desk.state.changed` for
-  // that key. Deliberately NOT filtered down to "only entries whose
+  // STACK_STATE_KEY at startup and on every shared-value change
+  // notification for that key. Deliberately NOT filtered down to "only entries whose
   // catalog lookup currently succeeds" at read time -- see
   // sanitizeStack's own comment for why a too-early filter would be
   // actively wrong here.
@@ -498,6 +569,7 @@ class LayeredMapElement extends HTMLElement {
     this.emptyMessageEl = shadow.querySelector('.empty-stack-message');
     this.recenterBannerEl = shadow.querySelector('.recenter-banner');
     this.recenterTextEl = shadow.querySelector('.recenter-text');
+    this.sourcesPanelEl = shadow.querySelector('.sources-panel');
 
     shadow.querySelector('.zoom-in-button')?.addEventListener('click', () => this.zoomBy(1, this.viewportWidth / 2, this.viewportHeight / 2));
     shadow.querySelector('.zoom-out-button')?.addEventListener('click', () => this.zoomBy(-1, this.viewportWidth / 2, this.viewportHeight / 2));
@@ -527,34 +599,35 @@ class LayeredMapElement extends HTMLElement {
   // ── Startup ──
 
   private async init(): Promise<void> {
-    this.watchState().catch((err) => {
-      console.warn('watching shared map state failed to start:', err);
-    });
+    this.watchState();
     if (!this.statusEl) return;
     this.loader = new RetryingLoader(this.statusEl, () => this.attemptLoad());
     this.loader.start();
   }
 
-  // Everything that can legitimately fail because one of the two
+  // Everything that can legitimately fail because one of the three
   // hmsvcs, or the shared layer-stack value, isn't ready yet -- see
   // RetryingLoader's own header comment. Safe to re-run in full: every
   // step overwrites its own previous result.
   private async attemptLoad(): Promise<void> {
-    const desk = window.desk;
-    if (!desk) throw new Error('Desk bridge unavailable');
-
     this.loader?.setMessage('Finding map services…');
-    const [neState, tilesState] = await Promise.all([desk.state.get(NE_STATE_KEY), desk.state.get(TILES_STATE_KEY)]);
-    const neValue = neState.value as { status: string; url: string | null } | null;
-    const tilesValue = tilesState.value as { status: string; url: string | null } | null;
-    if (!neValue || !neValue.url) {
+    const [neServiceUrl, tilesServiceUrl, vectorsServiceUrl] = await Promise.all([
+      sharedPlatform.getServiceUrl(NE_SERVICE_NAME),
+      sharedPlatform.getServiceUrl(TILES_SERVICE_NAME),
+      sharedPlatform.getServiceUrl(VECTORS_SERVICE_NAME),
+    ]);
+    if (!neServiceUrl) {
       throw new Error(`${NE_SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
     }
-    if (!tilesValue || !tilesValue.url) {
+    if (!tilesServiceUrl) {
       throw new Error(`${TILES_SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
     }
-    this.neServiceUrl = neValue.url.replace(/\/+$/, '');
-    this.tilesServiceUrl = tilesValue.url.replace(/\/+$/, '');
+    if (!vectorsServiceUrl) {
+      throw new Error(`${VECTORS_SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
+    }
+    this.neServiceUrl = neServiceUrl;
+    this.tilesServiceUrl = tilesServiceUrl;
+    this.vectorsServiceUrl = vectorsServiceUrl;
 
     this.loader?.setMessage('Loading layer catalogs…');
     let neCenter: { lon: number; lat: number } | null = null;
@@ -577,18 +650,27 @@ class LayeredMapElement extends HTMLElement {
         if (typeof data.minZoom === 'number') this.tilesMinZoom = data.minZoom;
         if (typeof data.maxZoom === 'number') this.tilesMaxZoom = data.maxZoom;
       })(),
+      (async () => {
+        const res = await fetch(`${this.vectorsServiceUrl}/layers`);
+        if (!res.ok) throw new Error(`${VECTORS_SERVICE_NAME} /layers request failed: ${res.status}`);
+        const data = (await res.json()) as { layers: VectorLayerMeta[] };
+        this.vectorsCatalog = new Map(data.layers.map((m) => [m.id, m]));
+      })(),
     ]);
 
     this.loader?.setMessage('Loading map data…');
-    await this.loadAllVectorFeatures();
+    await Promise.all([
+      this.loadVectorFeaturesFrom(this.neServiceUrl, this.neCatalog, NE_SERVICE_NAME),
+      this.loadVectorFeaturesFrom(this.vectorsServiceUrl, this.vectorsCatalog, VECTORS_SERVICE_NAME),
+    ]);
 
     this.loader?.setMessage('Loading layer stack…');
-    const stackState = await desk.state.get(STACK_STATE_KEY);
-    this.stack = this.sanitizeStack(stackState.value);
+    const stackValue = await sharedPlatform.getSharedValue(STACK_STATE_KEY);
+    this.stack = this.sanitizeStack(stackValue);
 
     let restoredView = false;
     try {
-      const { data: localData } = await desk.self.getLocalStorage();
+      const localData = await sharedPlatform.getLocalData();
       const rawView = localData.view;
       if (rawView && typeof rawView === 'object') {
         const v = rawView as { lon?: unknown; lat?: unknown; zoom?: unknown };
@@ -611,18 +693,21 @@ class LayeredMapElement extends HTMLElement {
     this.scheduleRedraw();
   }
 
-  // Every vector layer is fetched once, up front, regardless of
-  // whether it's currently on the shared stack -- same reasoning as
-  // natural-earth-map.ts's own loadAllFeatures (small files, cheap to
-  // hold all of, and it means a stack change never needs a refetch,
-  // only a redraw). Raster tiles stay lazy/per-tile, same as
-  // samothrace-map.ts.
-  private async loadAllVectorFeatures(): Promise<void> {
-    if (!this.neServiceUrl) throw new Error('natural-earth-map service URL unknown');
-    const metas = [...this.neCatalog.values()];
+  // Every vector layer from the given source/catalog is fetched once,
+  // up front, regardless of whether it's currently on the shared stack
+  // -- same reasoning as natural-earth-map.ts's own loadAllFeatures
+  // (small files, cheap to hold all of, and it means a stack change
+  // never needs a refetch, only a redraw). Raster tiles stay
+  // lazy/per-tile, same as samothrace-map.ts. Shared by both vector
+  // sources (natural-earth-map, samothrace-vectors) -- called once per
+  // source from attemptLoad, writing into the one shared featureCache
+  // (see that field's own comment on why a shared cache is safe here).
+  private async loadVectorFeaturesFrom(serviceUrl: string | null, catalog: Map<string, VectorLayerMeta>, serviceName: string): Promise<void> {
+    if (!serviceUrl) throw new Error(`${serviceName} service URL unknown`);
+    const metas = [...catalog.values()];
     await Promise.all(
       metas.map(async (meta) => {
-        const res = await fetch(`${this.neServiceUrl}${meta.url}`);
+        const res = await fetch(`${serviceUrl}${meta.url}`);
         if (!res.ok) throw new Error(`${meta.url} request failed: ${res.status}`);
         const fc = (await res.json()) as GeoJsonFeatureCollection;
         this.featureCache.set(meta.id, fc.features);
@@ -630,11 +715,25 @@ class LayeredMapElement extends HTMLElement {
     );
   }
 
+  // Looks a stack entry's own VectorLayerMeta up in whichever vector
+  // catalog matches its `source` -- used by redraw()'s vector-drawing
+  // branch and hitTest below, so neither has to special-case which of
+  // the two vector sources a given ref came from beyond this one lookup.
+  // Returns undefined for a `samothrace-tiles` ref (not a vector
+  // source at all) or an id this widget's own catalogs don't (yet, or
+  // ever) recognize -- both treated identically by every caller: skip
+  // this entry, draw/hit-test nothing for it.
+  private vectorMetaFor(ref: { source: MapSource; id: string }): VectorLayerMeta | undefined {
+    if (ref.source === 'natural-earth-map') return this.neCatalog.get(ref.id);
+    if (ref.source === 'samothrace-vectors') return this.vectorsCatalog.get(ref.id);
+    return undefined;
+  }
+
   // Minimal shape validation only -- NOT filtered against "does this
   // id currently exist in neCatalog/tilesCatalog," on purpose: this
   // runs both at startup (where the catalogs are already loaded by the
   // time this is called, see attemptLoad's own ordering) and from a
-  // live desk.state.changed event (which can arrive before this
+  // live shared-value change notification (which can arrive before this
   // widget's OWN catalogs are ready, if two widgets start around the
   // same time). Filtering here would permanently and silently drop a
   // perfectly valid stack entry just because of a load-order race;
@@ -653,27 +752,23 @@ class LayeredMapElement extends HTMLElement {
     return out;
   }
 
-  private async watchState(): Promise<void> {
-    const desk = window.desk;
-    if (!desk) return;
-    await desk.events.subscribe(['desk.state.changed']);
-    desk.events.onMessage((name, payload) => {
-      if (name !== 'desk.state.changed') return;
-      const p = payload as { key?: unknown; value?: unknown } | null;
-      if (!p || typeof p.key !== 'string') return;
-      if (p.key === STACK_STATE_KEY) {
-        this.stack = this.sanitizeStack(p.value);
-        this.scheduleRedraw();
-      } else if (p.key === NE_STATE_KEY || p.key === TILES_STATE_KEY) {
-        // One of the two hmsvcs restarted (new URL published) -- the
-        // simplest correct response is to re-run the whole load
-        // attempt, same as samothrace-map.ts/natural-earth-map.ts's own
+  private watchState(): void {
+    sharedPlatform.onSharedValueChanged((key, value) => {
+      if (key !== STACK_STATE_KEY) return;
+      this.stack = this.sanitizeStack(value);
+      this.scheduleRedraw();
+    });
+    for (const serviceName of [NE_SERVICE_NAME, TILES_SERVICE_NAME, VECTORS_SERVICE_NAME]) {
+      sharedPlatform.onServiceUrlChanged(serviceName, () => {
+        // This hmsvc restarted (new URL published) -- the simplest
+        // correct response is to re-run the whole load attempt, same as
+        // samothrace-map.ts/natural-earth-map.ts's own
         // watchTileServiceState/watchServiceState handlers.
-        console.warn(`${p.key} changed -- reloading`);
+        console.warn(`${serviceName} service URL changed -- reloading`);
         this.tileCache.clear();
         this.loader?.retryNow();
-      }
-    });
+      });
+    }
   }
 
   // ── Persistence (view only -- layer stack membership/order is
@@ -683,7 +778,7 @@ class LayeredMapElement extends HTMLElement {
     if (this.saveUiStateTimer !== null) return;
     this.saveUiStateTimer = window.setTimeout(() => {
       this.saveUiStateTimer = null;
-      void window.desk?.self.setLocalStorage({ view: this.view });
+      void sharedPlatform.setLocalData({ view: this.view });
     }, 400);
   }
 
@@ -821,8 +916,8 @@ class LayeredMapElement extends HTMLElement {
       }
     }
     for (const ref of this.stack) {
-      if (ref.source !== 'natural-earth-map') continue;
-      const meta = this.neCatalog.get(ref.id);
+      if (ref.source === 'samothrace-tiles') continue;
+      const meta = this.vectorMetaFor(ref);
       const features = this.featureCache.get(ref.id);
       if (!meta || !features) continue;
       for (const feature of features) {
@@ -928,7 +1023,7 @@ class LayeredMapElement extends HTMLElement {
         if (zoom < this.tilesMinZoom || zoom > this.tilesMaxZoom) continue; // out of range and no known bounds to fall back to a marker for (e.g. "blank"/"initial-map") -- just skip, no fetch
         this.drawRasterLayer(ctx, ref.id, zoom, centerWorld);
       } else {
-        const meta = this.neCatalog.get(ref.id);
+        const meta = this.vectorMetaFor(ref);
         const features = this.featureCache.get(ref.id);
         if (!meta || !features) continue;
         this.drawVectorLayer(ctx, meta, features, occupied);
@@ -941,6 +1036,45 @@ class LayeredMapElement extends HTMLElement {
 
     this.updateEmptyMessage();
     this.updateRecenterTarget();
+    this.updateSourcesPanel();
+  }
+
+  // Lower-left attribution box -- every distinct third-party source
+  // among the layers currently on the stack (see sourceKeyForLayer's
+  // own comment for which layers count), each a hyperlink to that
+  // source's own license page. "Currently visible" is read as "on the
+  // shared stack right now," the same meaning every other per-frame
+  // check in this widget (updateEmptyMessage, updateRecenterTarget)
+  // already uses -- not a stricter "and its tiles/features actually
+  // rendered something in the current viewport" test, which would make
+  // the box flicker in and out while panning past a layer's own edge
+  // for no reason a user would find useful.
+  private updateSourcesPanel(): void {
+    if (!this.sourcesPanelEl) return;
+    const seen = new Set<string>();
+    const entries: SourceInfo[] = [];
+    for (const ref of this.stack) {
+      const key = sourceKeyForLayer(ref);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      const info = SOURCE_INFO[key];
+      if (info) entries.push(info);
+    }
+
+    const el = this.sourcesPanelEl as HTMLElement;
+    if (entries.length === 0) {
+      el.style.display = 'none';
+      this.lastSourcesPanelHtml = null;
+      return;
+    }
+    const html = entries
+      .map((e) => `<a href="${escapeHtml(e.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(e.name)}</a>`)
+      .join('');
+    if (html !== this.lastSourcesPanelHtml) {
+      el.innerHTML = html;
+      this.lastSourcesPanelHtml = html;
+    }
+    el.style.display = 'flex';
   }
 
   // A raster layer's own real extent (see RasterLayerMeta.bounds's own
@@ -1182,6 +1316,16 @@ class LayeredMapElement extends HTMLElement {
       ctx.lineWidth = meta.weight ?? 1;
       ctx.lineJoin = 'round';
       ctx.lineCap = 'round';
+      if (meta.dashed) {
+        // A short dash + round cap reads as a dotted line, not a
+        // dashed one -- scaled off the line's own weight so it stays
+        // proportionate at any configured thickness. Reset to solid
+        // (`[]`) is implicit: this is inside ctx.save()/restore(), and
+        // every OTHER stroke layer never sets a dash in the first
+        // place.
+        const dot = Math.max(1, (meta.weight ?? 1) * 0.8);
+        ctx.setLineDash([dot, dot * 3]);
+      }
       for (const feature of features) {
         const lines = lineParts(feature.geometry);
         for (const line of lines) {

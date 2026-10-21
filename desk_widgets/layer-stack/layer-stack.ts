@@ -1,16 +1,18 @@
 // Layer Stack -- a drag-and-drop layer picker/orderer for the companion
-// desk_widgets/layered-map/ widget. Every layer exposed by either the
-// `natural-earth-map` or `samothrace-tiles` hmsvc shows up here as a
-// small labelled "chip." Chips not currently in use sit in a free-form
+// desk_widgets/layered-map/ widget. Every layer exposed by any of the
+// `natural-earth-map`, `samothrace-tiles`, or `samothrace-vectors`
+// (added 2026-10-20 -- see desk_hmsvc/samothrace-vectors/service.py's
+// own header comment) hmsvcs shows up here as a small labelled "chip." Chips not currently in use sit in a free-form
 // palette area (drop them anywhere; position is purely cosmetic, saved
-// to this widget INSTANCE's own localStorage, never shared). Chips
-// dragged into the central Stack column are the layers Layered Map
+// to this widget INSTANCE's own persisted local data, never shared).
+// Chips dragged into the central Stack column are the layers Layered Map
 // actually draws, ordered top-to-bottom = closest-to-the-viewer-first
-// in z-order -- written to the shared `desk.state` key
+// in z-order -- written to the shared state key
 // `samothrace.mapLayerStack` (STACK_STATE_KEY below) on every change,
-// which is what Layered Map reads (once at its own startup, and live
-// via `desk.state.changed`). See that widget's own layered-map.ts
-// header comment for the reader's half of this contract.
+// which is what Layered Map reads (once at its own startup, and live via
+// the shared platform's own change notifications -- see
+// `desk_widgets/_shared/platform.ts`). See that widget's own
+// layered-map.ts header comment for the reader's half of this contract.
 //
 // Drag-and-drop here is custom, pointer-event-based (pointerdown/
 // setPointerCapture/pointermove/pointerup) rather than native HTML5
@@ -28,37 +30,21 @@
 // (no canvas/no size-dependent redraw), but harmless to omit entirely.
 // (Left out here since this widget truly has no use for it.)
 
-// Only the Bridge members this widget actually calls -- see
-// tempui-custom-widgets.md's "The Desk Bridge API" for the full list.
-interface Window {
-  desk?: {
-    self: {
-      getLocalStorage(): Promise<{ data: Record<string, unknown> }>;
-      setLocalStorage(data: Record<string, unknown>): Promise<{ ok: boolean }>;
-    };
-    state: {
-      get(key: string): Promise<{ value: unknown; edit: unknown }>;
-      set(key: string, value: unknown, edit?: unknown): Promise<{ ok: boolean }>;
-    };
-    events: {
-      subscribe(names: string[]): Promise<{ ok: boolean }>;
-      onMessage(callback: (name: string, payload: unknown, senderInstanceId: string) => void): void;
-    };
-  };
-}
-
 // ── Constants ──
+//
+// Service URLs are resolved through the shared platform module (see
+// `desk_widgets/_shared/platform.ts`) by plain service name -- no
+// host-specific key format is known here at all.
 
 const NE_SERVICE_NAME = 'natural-earth-map';
-const NE_STATE_KEY = `desk.hmsvc.${NE_SERVICE_NAME}`;
 const TILES_SERVICE_NAME = 'samothrace-tiles';
-const TILES_STATE_KEY = `desk.hmsvc.${TILES_SERVICE_NAME}`;
+const VECTORS_SERVICE_NAME = 'samothrace-vectors';
 
 // See desk_widgets/layered-map/layered-map.ts's own header comment for
 // the full contract this key is part of -- this widget is the WRITER.
 const STACK_STATE_KEY = 'samothrace.mapLayerStack';
 
-type MapSource = 'natural-earth-map' | 'samothrace-tiles';
+type MapSource = 'natural-earth-map' | 'samothrace-tiles' | 'samothrace-vectors';
 
 function makeLayerKey(source: MapSource, id: string): string {
   return `${source}|${id}`;
@@ -69,7 +55,7 @@ function parseLayerKey(key: string): { source: MapSource; id: string } | null {
   if (i < 0) return null;
   const source = key.slice(0, i);
   const id = key.slice(i + 1);
-  if (source !== 'natural-earth-map' && source !== 'samothrace-tiles') return null;
+  if (source !== 'natural-earth-map' && source !== 'samothrace-tiles' && source !== 'samothrace-vectors') return null;
   if (!id) return null;
   return { source, id };
 }
@@ -93,6 +79,7 @@ function rasterColorForGroup(group: string): string {
 const SOURCE_BADGE: Record<MapSource, string> = {
   'natural-earth-map': 'NE',
   'samothrace-tiles': 'Tiles',
+  'samothrace-vectors': 'Vectors',
 };
 
 interface CatalogLayer {
@@ -257,51 +244,55 @@ class LayerStackElement extends HTMLElement {
   // ── Startup ──
 
   private async init(): Promise<void> {
-    this.watchState().catch((err) => {
-      console.warn('watching shared layer-stack state failed to start:', err);
-    });
+    this.watchState();
     if (!this.statusEl) return;
     this.loader = new RetryingLoader(this.statusEl, () => this.attemptLoad());
     this.loader.start();
   }
 
   private async attemptLoad(): Promise<void> {
-    const desk = window.desk;
-    if (!desk) throw new Error('Desk bridge unavailable');
-
     this.loader?.setMessage('Finding map services…');
-    const [neState, tilesState] = await Promise.all([desk.state.get(NE_STATE_KEY), desk.state.get(TILES_STATE_KEY)]);
-    const neValue = neState.value as { status: string; url: string | null } | null;
-    const tilesValue = tilesState.value as { status: string; url: string | null } | null;
-    if (!neValue || !neValue.url) {
+    const [neServiceUrl, tilesServiceUrl, vectorsServiceUrl] = await Promise.all([
+      sharedPlatform.getServiceUrl(NE_SERVICE_NAME),
+      sharedPlatform.getServiceUrl(TILES_SERVICE_NAME),
+      sharedPlatform.getServiceUrl(VECTORS_SERVICE_NAME),
+    ]);
+    if (!neServiceUrl) {
       throw new Error(`${NE_SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
     }
-    if (!tilesValue || !tilesValue.url) {
+    if (!tilesServiceUrl) {
       throw new Error(`${TILES_SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
     }
-    const neServiceUrl = neValue.url.replace(/\/+$/, '');
-    const tilesServiceUrl = tilesValue.url.replace(/\/+$/, '');
+    if (!vectorsServiceUrl) {
+      throw new Error(`${VECTORS_SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
+    }
 
     this.loader?.setMessage('Loading layer catalogs…');
     const catalog = new Map<string, CatalogLayer>();
+    // natural-earth-map and samothrace-vectors are both already-colored
+    // vector sources (their own /layers response includes a per-layer
+    // `color`) -- shared by one small helper rather than writing out
+    // the same fetch-and-populate block twice.
+    const loadVectorCatalog = async (source: MapSource, serviceName: string, serviceUrl: string): Promise<void> => {
+      const res = await fetch(`${serviceUrl}/layers`);
+      if (!res.ok) throw new Error(`${serviceName} /layers request failed: ${res.status}`);
+      const data = (await res.json()) as {
+        layers: { id: string; label: string; group: string; order: number; color: string }[];
+      };
+      for (const m of data.layers) {
+        catalog.set(makeLayerKey(source, m.id), {
+          source,
+          id: m.id,
+          label: m.label,
+          group: m.group,
+          order: m.order,
+          color: m.color,
+        });
+      }
+    };
     await Promise.all([
-      (async () => {
-        const res = await fetch(`${neServiceUrl}/layers`);
-        if (!res.ok) throw new Error(`${NE_SERVICE_NAME} /layers request failed: ${res.status}`);
-        const data = (await res.json()) as {
-          layers: { id: string; label: string; group: string; order: number; color: string }[];
-        };
-        for (const m of data.layers) {
-          catalog.set(makeLayerKey('natural-earth-map', m.id), {
-            source: 'natural-earth-map',
-            id: m.id,
-            label: m.label,
-            group: m.group,
-            order: m.order,
-            color: m.color,
-          });
-        }
-      })(),
+      loadVectorCatalog('natural-earth-map', NE_SERVICE_NAME, neServiceUrl),
+      loadVectorCatalog('samothrace-vectors', VECTORS_SERVICE_NAME, vectorsServiceUrl),
       (async () => {
         const res = await fetch(`${tilesServiceUrl}/layers`);
         if (!res.ok) throw new Error(`${TILES_SERVICE_NAME} /layers request failed: ${res.status}`);
@@ -321,11 +312,11 @@ class LayerStackElement extends HTMLElement {
     this.catalog = catalog;
 
     this.loader?.setMessage('Loading layer stack…');
-    const stackState = await desk.state.get(STACK_STATE_KEY);
-    this.stack = this.sanitizeStack(stackState.value);
+    const stackValue = await sharedPlatform.getSharedValue(STACK_STATE_KEY);
+    this.stack = this.sanitizeStack(stackValue);
 
     try {
-      const { data: localData } = await desk.self.getLocalStorage();
+      const localData = await sharedPlatform.getLocalData();
       const rawPositions = localData.palettePositions;
       if (rawPositions && typeof rawPositions === 'object') {
         for (const [key, value] of Object.entries(rawPositions as Record<string, unknown>)) {
@@ -383,28 +374,24 @@ class LayerStackElement extends HTMLElement {
     }
   }
 
-  private async watchState(): Promise<void> {
-    const desk = window.desk;
-    if (!desk) return;
-    await desk.events.subscribe(['desk.state.changed']);
-    desk.events.onMessage((name, payload) => {
-      if (name !== 'desk.state.changed') return;
-      const p = payload as { key?: unknown; value?: unknown } | null;
-      if (!p || typeof p.key !== 'string') return;
-      if (p.key === STACK_STATE_KEY) {
-        // Another Layer Stack instance (or any other writer) changed
-        // the shared stack -- stay in sync, but only if we're not
-        // mid-drag ourselves (don't yank the stack out from under an
-        // in-progress local reorder).
-        if (this.drag) return;
-        this.stack = this.sanitizeStack(p.value);
-        this.assignDefaultPositions();
-        this.render();
-      } else if (p.key === NE_STATE_KEY || p.key === TILES_STATE_KEY) {
-        console.warn(`${p.key} changed -- reloading catalog`);
-        this.loader?.retryNow();
-      }
+  private watchState(): void {
+    sharedPlatform.onSharedValueChanged((key, value) => {
+      if (key !== STACK_STATE_KEY) return;
+      // Another Layer Stack instance (or any other writer) changed the
+      // shared stack -- stay in sync, but only if we're not mid-drag
+      // ourselves (don't yank the stack out from under an in-progress
+      // local reorder).
+      if (this.drag) return;
+      this.stack = this.sanitizeStack(value);
+      this.assignDefaultPositions();
+      this.render();
     });
+    for (const serviceName of [NE_SERVICE_NAME, TILES_SERVICE_NAME, VECTORS_SERVICE_NAME]) {
+      sharedPlatform.onServiceUrlChanged(serviceName, () => {
+        console.warn(`${serviceName} service URL changed -- reloading catalog`);
+        this.loader?.retryNow();
+      });
+    }
   }
 
   // ── Persistence ──
@@ -415,7 +402,7 @@ class LayerStackElement extends HTMLElement {
       this.saveLocalTimer = null;
       const positions: Record<string, { x: number; y: number }> = {};
       for (const [key, pos] of this.palettePositions) positions[key] = pos;
-      void window.desk?.self.setLocalStorage({ palettePositions: positions });
+      void sharedPlatform.setLocalData({ palettePositions: positions });
     }, 400);
   }
 
@@ -423,7 +410,7 @@ class LayerStackElement extends HTMLElement {
     if (this.saveStackTimer !== null) return;
     this.saveStackTimer = window.setTimeout(() => {
       this.saveStackTimer = null;
-      void window.desk?.state.set(STACK_STATE_KEY, this.stack);
+      void sharedPlatform.setSharedValue(STACK_STATE_KEY, this.stack);
     }, 200);
   }
 
@@ -438,11 +425,25 @@ class LayerStackElement extends HTMLElement {
   // during a live drag, where the dragged chip is a separate,
   // independently pointer-tracked element (see onChipPointerDown)
   // rather than part of the normal flow/grid being rebuilt here.
+  // `excludeKey`'s own slot renders a `.drop-target` placeholder instead
+  // of being skipped (2026-10-20) -- `this.stack` already holds the
+  // dragged key at its own live, continuously-updated insertion index
+  // while a drag is hovering this column (see onChipPointerMove's own
+  // stack-splice), so rendering AT that position, rather than omitting
+  // it, is exactly "where the item will be inserted." If `excludeKey`
+  // isn't currently in `this.stack` at all (the drag is hovering the
+  // palette instead, or hasn't moved yet, or came from the palette and
+  // hasn't crossed into the stack column yet), the loop below simply
+  // never hits it -- no placeholder appears, correctly, since there's
+  // no insertion position to show.
   private renderStack(excludeKey: string | null): void {
     if (!this.stackColumnEl) return;
     const parts: string[] = [];
     for (const key of this.stack) {
-      if (key === excludeKey) continue;
+      if (key === excludeKey) {
+        parts.push('<div class="drop-target"></div>');
+        continue;
+      }
       const layer = this.catalog.get(key);
       if (!layer) continue; // stale/unknown id -- see sanitizeStack's own comment; skipped, not dropped
       parts.push(this.chipHtml(key, layer));
