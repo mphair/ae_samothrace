@@ -11,4 +11,4 @@ desk-installed-jobs/**/.venv/
 
 # Project-specific
 Data/local/
-
+hosting/
