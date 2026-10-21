@@ -145,6 +145,21 @@
           border-radius: 3px;
           padding: 1px 4px;
         }
+        /* Drop target -- where a dragged chip will land if released
+           right now, rendered in the stack column in place of whichever
+           chip is currently being dragged (see layer-stack.ts's own
+           renderStack comment: this.stack already holds the dragged
+           key at its own live insertion index during a drag, so this
+           is simply what gets rendered at that slot instead of the real
+           chip). Not shown in the palette -- "insertion position" is a
+           concept specific to the ordered stack list; a free-form
+           palette drop has no such position to mark. */
+        .drop-target {
+          height: 8px;
+          border-radius: 4px;
+          background: rgba(226, 232, 240, 0.85);
+          flex: 0 0 auto;
+        }
         /* A dragged chip is reparented here for the duration of the
            gesture (see layer-stack.ts's own onChipPointerDown comment
            for why) -- plain pass-through overlay, never written to by
