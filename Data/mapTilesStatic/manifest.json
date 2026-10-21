@@ -1,0 +1,39 @@
+{
+  "layers": {
+    "aerial": {
+      "overrides": {},
+      "urlTemplate": "/tiles/aerial/{z}/{x}/{y}.png",
+      "version": 1
+    },
+    "blank": {
+      "overrides": {},
+      "urlTemplate": "/tiles/blank/{z}/{x}/{y}.png",
+      "version": 1
+    },
+    "initial-map": {
+      "overrides": {},
+      "urlTemplate": "/tiles/initial-map/{z}/{x}/{y}.png",
+      "version": 1
+    },
+    "restored-monuments": {
+      "overrides": {},
+      "urlTemplate": "/tiles/restored-monuments/{z}/{x}/{y}.png",
+      "version": 1
+    },
+    "restored-plan-raw": {
+      "overrides": {},
+      "urlTemplate": "/tiles/restored-plan-raw/{z}/{x}/{y}.png",
+      "version": 1
+    },
+    "restored-structures": {
+      "overrides": {},
+      "urlTemplate": "/tiles/v{version}/restored-structures/{z}/{x}/{y}.png",
+      "version": 1
+    },
+    "topographic": {
+      "overrides": {},
+      "urlTemplate": "/tiles/v{version}/topographic/{z}/{x}/{y}.png",
+      "version": 1
+    }
+  }
+}

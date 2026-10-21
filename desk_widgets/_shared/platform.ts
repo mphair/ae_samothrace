@@ -21,17 +21,43 @@
 // same build.
 
 /**
+ * The tile-serving hmsvcs a raster layer's own tile IMAGES can come
+ * from (today's two; extend as more are added). Deliberately a closed
+ * union, not a plain `string`, so widget code can only ever name one
+ * of these, never hold or construct a URL itself -- see
+ * `resolveTileUrl`'s own comment below.
+ */
+type TileServiceName = 'samothrace-tiles' | 'samothrace-tiles-static';
+
+/**
  * The capability surface a widget needs from its host environment: a
  * shared, cross-instance key/value store with change notifications; a
- * way to resolve a named map-data service's current base URL; and
+ * way to resolve a named map-data service's current base URL; a way to
+ * resolve one raster tile's actual image URL without the widget ever
+ * knowing a URL-template/versioning convention of its own; and
  * per-instance persisted storage that survives a reload.
  */
 interface SharedPlatform {
   /**
    * Current base URL (no trailing slash) of the named map-data service,
-   * or `null` if it isn't up / known yet.
+   * or `null` if it isn't up / known yet. For non-image data only
+   * (`/layers` catalogs, GeoJSON) -- a raster layer's own tile
+   * *images* must go through `resolveTileUrl` below instead, never
+   * build a `/tiles/...` URL from this directly.
    */
   getServiceUrl(serviceName: string): Promise<string | null>;
+
+  /**
+   * Resolves one raster tile's actual image URL -- going through the
+   * named tile service's own version/override manifest, so a
+   * published tile's bytes can be corrected or re-baked (a new
+   * version, or a one-off per-tile override) without ever changing
+   * what an already-cached tile URL points to. Widget code provides
+   * only a service name, a layer id, and zoom/tx/ty -- never a URL,
+   * never a URL-template or versioning convention of its own; those
+   * live entirely behind this one call.
+   */
+  resolveTileUrl(service: TileServiceName, layerId: string, zoom: number, tx: number, ty: number): Promise<string>;
 
   /**
    * Registers a handler that fires whenever the named service's own base

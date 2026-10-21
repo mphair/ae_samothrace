@@ -19,10 +19,21 @@
 // static files, no live PIL compute -- see
 // desk_hmsvc/samothrace-tiles-static/service.py's own header comment),
 // merged into the same logical `samothrace-tiles` catalog this widget
-// already had. Each RasterLayerMeta entry carries its own resolved
-// `serviceUrl` forward from whichever origin its own /layers response
-// came from, so drawRasterLayer/getTile never have to re-decide
-// ownership per tile request.
+// already had. `samothrace-tiles`' own /layers response is left fully
+// intact (samothrace-map's own panel depends on it) and genuinely
+// overlaps samothrace-tiles-static's on 7 of 9 ids -- the merge runs
+// samothrace-tiles THEN samothrace-tiles-static, never concurrently
+// with each other, so the static origin deterministically wins on any
+// overlapping id instead of that being a timing-dependent race. Each
+// RasterLayerMeta entry carries forward the short service NAME (not a
+// resolved URL, see that interface's own comment) of whichever origin
+// actually won.
+// 2026-10-21, second pass -- tile-image URLs no longer come from a
+// plain string template at all: `sharedPlatform.resolveTileUrl`
+// resolves each tile through that service's own version/override
+// manifest (so a correction or re-bake never has to change the bytes
+// at an already-published, long-cached tile URL). drawRasterLayer/
+// getTile never construct a `/tiles/...` path themselves anymore.
 // It's read from the shared state key
 // `samothrace.mapLayerStack` (see STACK_STATE_KEY below), written by
 // the companion `desk_widgets/layer-stack/` widget's own drag-and-drop
@@ -165,10 +176,11 @@ interface RasterLayerMeta {
   // Also assigned client-side (2026-10-21), from whichever of
   // samothrace-tiles/samothrace-tiles-static's own /layers response this
   // entry actually came from -- see this file's own header comment on
-  // the two-hmsvc split. drawRasterLayer/getTile use this directly
-  // rather than a single shared service-URL field, since different
-  // layers can now come from different origins.
-  serviceUrl: string;
+  // the two-hmsvc split. A short name, NOT a resolved URL (2026-10-21,
+  // second pass) -- tile-image URLs now go entirely through
+  // `sharedPlatform.resolveTileUrl`, which takes a service name itself;
+  // this widget must never hold or construct a tile URL on its own.
+  service: TileServiceName;
 }
 
 // A per-group fallback color for samothrace-tiles' own raster layers --
@@ -520,6 +532,16 @@ class LayeredMapElement extends HTMLElement {
   // notes for ITS OWN multi-directory id merge.
   private featureCache = new Map<string, GeoJsonFeature[]>();
   private tileCache = new Map<string, TileEntry>(); // keyed by full tile URL
+  // One layer of indirection in front of tileCache above -- resolving a
+  // tile's actual URL through `sharedPlatform.resolveTileUrl` is itself
+  // async (a manifest fetch, possibly), so this caches that resolution
+  // the same way tileCache caches the subsequent image load: a pending
+  // resolution schedules a redraw on completion rather than blocking
+  // the current frame. Keyed `${service}|${layerId}|${zoom}|${tx}|${ty}`.
+  // Not proactively invalidated on a manifest version bump (see
+  // this file's own header comment) -- only onServiceUrlChanged
+  // (a service restart) clears it, same as tileCache.
+  private resolvedTileUrlCache = new Map<string, { status: 'resolving' | 'resolved' | 'error'; url?: string }>();
 
   // The shared layer stack, closest-to-the-viewer first -- read from
   // STACK_STATE_KEY at startup and on every shared-value change
@@ -655,17 +677,19 @@ class LayeredMapElement extends HTMLElement {
     // samothrace-tiles and samothrace-tiles-static both back the SAME
     // logical raster catalog (see this file's own header comment) --
     // merged into `this.tilesCatalog` by this one small helper, called
-    // once per origin, each entry keeping its OWN resolved `serviceUrl`
-    // so drawRasterLayer/getTile never have to re-decide ownership.
-    const mergeRasterCatalog = async (serviceName: string, serviceUrl: string): Promise<void> => {
+    // once per origin, each entry keeping the short `service` NAME of
+    // whichever origin actually won (see RasterLayerMeta.service's own
+    // comment) so drawRasterLayer/getTile can hand it straight to
+    // `resolveTileUrl` without re-deciding ownership.
+    const mergeRasterCatalog = async (serviceName: TileServiceName, serviceUrl: string): Promise<void> => {
       const res = await fetch(`${serviceUrl}/layers`);
       if (!res.ok) throw new Error(`${serviceName} /layers request failed: ${res.status}`);
-      const data = (await res.json()) as { layers: Omit<RasterLayerMeta, 'color' | 'serviceUrl'>[]; minZoom: number; maxZoom: number };
+      const data = (await res.json()) as { layers: Omit<RasterLayerMeta, 'color' | 'service'>[]; minZoom: number; maxZoom: number };
       // Neither origin's own /layers response has a per-layer color
       // field (see RasterLayerMeta.color's own comment) -- assigned
       // here, client-side, from each layer's own group.
       for (const m of data.layers) {
-        this.tilesCatalog.set(m.id, { ...m, color: rasterColorForGroup(m.group), serviceUrl });
+        this.tilesCatalog.set(m.id, { ...m, color: rasterColorForGroup(m.group), service: serviceName });
       }
       if (typeof data.minZoom === 'number') this.tilesMinZoom = data.minZoom;
       if (typeof data.maxZoom === 'number') this.tilesMaxZoom = data.maxZoom;
@@ -679,8 +703,13 @@ class LayeredMapElement extends HTMLElement {
         this.neCatalog = new Map(data.layers.map((m) => [m.id, m]));
         neCenter = data.center;
       })(),
-      mergeRasterCatalog(TILES_SERVICE_NAME, tilesServiceUrl),
-      mergeRasterCatalog(TILES_STATIC_SERVICE_NAME, tilesStaticServiceUrl),
+      // Sequenced (not run concurrently with each other) so
+      // samothrace-tiles-static deterministically wins on any
+      // overlapping id -- see this file's own header comment.
+      (async () => {
+        await mergeRasterCatalog(TILES_SERVICE_NAME, tilesServiceUrl);
+        await mergeRasterCatalog(TILES_STATIC_SERVICE_NAME, tilesStaticServiceUrl);
+      })(),
       (async () => {
         const res = await fetch(`${this.vectorsServiceUrl}/layers`);
         if (!res.ok) throw new Error(`${VECTORS_SERVICE_NAME} /layers request failed: ${res.status}`);
@@ -797,6 +826,7 @@ class LayeredMapElement extends HTMLElement {
         // watchTileServiceState/watchServiceState handlers.
         console.warn(`${serviceName} service URL changed -- reloading`);
         this.tileCache.clear();
+        this.resolvedTileUrlCache.clear();
         this.loader?.retryNow();
       });
     }
@@ -1052,7 +1082,7 @@ class LayeredMapElement extends HTMLElement {
           continue;
         }
         if (zoom < this.tilesMinZoom || zoom > this.tilesMaxZoom) continue; // out of range and no known bounds to fall back to a marker for (e.g. "blank"/"initial-map") -- just skip, no fetch
-        this.drawRasterLayer(ctx, ref.id, meta.serviceUrl, zoom, centerWorld);
+        this.drawRasterLayer(ctx, ref.id, meta.service, zoom, centerWorld);
       } else {
         const meta = this.vectorMetaFor(ref);
         const features = this.featureCache.get(ref.id);
@@ -1276,7 +1306,33 @@ class LayeredMapElement extends HTMLElement {
     return entry;
   }
 
-  private drawRasterLayer(ctx: CanvasRenderingContext2D, layerId: string, serviceUrl: string, zoom: number, centerWorld: { x: number; y: number }): void {
+  // Resolves one tile's actual URL via `sharedPlatform.resolveTileUrl`
+  // -- `null` while the resolution is still pending (or failed), in
+  // which case the caller just skips this tile for the current frame;
+  // the resolution itself schedules a redraw once it completes, same
+  // pattern as getTile's own async image load one layer further in.
+  private getResolvedTileUrl(service: TileServiceName, layerId: string, zoom: number, tx: number, ty: number): string | null {
+    const key = `${service}|${layerId}|${zoom}|${tx}|${ty}`;
+    let entry = this.resolvedTileUrlCache.get(key);
+    if (!entry) {
+      entry = { status: 'resolving' };
+      this.resolvedTileUrlCache.set(key, entry);
+      sharedPlatform.resolveTileUrl(service, layerId, zoom, tx, ty).then(
+        (url) => {
+          entry!.status = 'resolved';
+          entry!.url = url;
+          this.scheduleRedraw();
+        },
+        (err) => {
+          entry!.status = 'error';
+          console.warn(`resolving tile URL for ${service}/${layerId}/${zoom}/${tx}/${ty} failed:`, err);
+        }
+      );
+    }
+    return entry.status === 'resolved' ? (entry.url ?? null) : null;
+  }
+
+  private drawRasterLayer(ctx: CanvasRenderingContext2D, layerId: string, service: TileServiceName, zoom: number, centerWorld: { x: number; y: number }): void {
     const tileSize = TILE_SIZE;
     const topLeftWorldX = centerWorld.x - this.viewportWidth / 2;
     const topLeftWorldY = centerWorld.y - this.viewportHeight / 2;
@@ -1293,7 +1349,8 @@ class LayeredMapElement extends HTMLElement {
       if (tx < 0 || tx > maxIndex) continue;
       for (let ty = minTy; ty <= maxTy; ty++) {
         if (ty < 0 || ty > maxIndex) continue;
-        const url = `${serviceUrl}/tiles/${layerId}/${zoom}/${tx}/${ty}.png`;
+        const url = this.getResolvedTileUrl(service, layerId, zoom, tx, ty);
+        if (!url) continue; // not resolved yet (or errored) -- redraws once it is
         const entry = this.getTile(url);
         if (entry.status !== 'loaded') continue;
         const screenX = tx * tileSize - centerWorld.x + this.viewportWidth / 2;

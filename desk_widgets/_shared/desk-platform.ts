@@ -37,6 +37,17 @@ interface Window {
   };
 }
 
+/** `/manifest`'s own response shape, same for every tile-serving hmsvc
+ * (see e.g. desk_hmsvc/samothrace-tiles-static/service.py's own
+ * `manifest()` -- this is the one place that shape is known on the
+ * widget side). `urlTemplate` is relative to the service's own base
+ * URL, with `{version}`/`{z}`/`{x}`/`{y}` placeholders; `overrides` is
+ * keyed `"{z}/{x}/{y}"`, each value also relative to the service's
+ * own base URL. */
+interface TileManifest {
+  layers: Record<string, { version: number; urlTemplate: string; overrides: Record<string, string> }>;
+}
+
 class DeskPlatform implements SharedPlatform {
   // `desk.events.subscribe`/`onMessage` is wired up lazily, the first
   // time anything actually registers a change handler -- a widget that
@@ -77,6 +88,50 @@ class DeskPlatform implements SharedPlatform {
     handlers.push(handler);
     this.serviceUrlHandlers.set(key, handlers);
     this.ensureWatching();
+  }
+
+  // Fetched fresh at most once per MANIFEST_TTL_MS per service -- the
+  // server's own /manifest response is itself only ~1-minute cached
+  // (see that endpoint's own Cache-Control), so re-fetching more often
+  // than that would just be re-reading something that can't have
+  // changed yet. A tile already resolved+drawn this session is NOT
+  // retroactively re-resolved just because the manifest changes
+  // server-side mid-session -- only tiles not yet drawn (a new pan/
+  // zoom, or a fresh page load) pick up a version bump, which matches
+  // the "live in about a minute" framing this exists for: an operator
+  // correction becomes visible the next time that tile is actually
+  // requested, not instantly for tiles already on screen.
+  private manifestCache = new Map<TileServiceName, { fetchedAt: number; manifest: TileManifest }>();
+  private static readonly MANIFEST_TTL_MS = 60_000;
+
+  private async getManifest(service: TileServiceName): Promise<TileManifest> {
+    const cached = this.manifestCache.get(service);
+    const now = Date.now();
+    if (cached && now - cached.fetchedAt < DeskPlatform.MANIFEST_TTL_MS) return cached.manifest;
+    const baseUrl = await this.getServiceUrl(service);
+    if (!baseUrl) throw new Error(`${service} service is not running yet -- start it from the Microservices widget if this persists`);
+    const res = await fetch(`${baseUrl}/manifest`);
+    if (!res.ok) throw new Error(`${service} /manifest request failed: ${res.status}`);
+    const manifest = (await res.json()) as TileManifest;
+    this.manifestCache.set(service, { fetchedAt: now, manifest });
+    return manifest;
+  }
+
+  async resolveTileUrl(service: TileServiceName, layerId: string, zoom: number, tx: number, ty: number): Promise<string> {
+    const baseUrl = await this.getServiceUrl(service);
+    if (!baseUrl) throw new Error(`${service} service is not running yet -- start it from the Microservices widget if this persists`);
+    const manifest = await this.getManifest(service);
+    const entry = manifest.layers[layerId];
+    if (!entry) throw new Error(`${service} manifest has no entry for layer "${layerId}"`);
+    const overrideKey = `${zoom}/${tx}/${ty}`;
+    const overridePath = entry.overrides[overrideKey];
+    if (overridePath) return `${baseUrl}${overridePath}`;
+    const path = entry.urlTemplate
+      .replace('{version}', String(entry.version))
+      .replace('{z}', String(zoom))
+      .replace('{x}', String(tx))
+      .replace('{y}', String(ty));
+    return `${baseUrl}${path}`;
   }
 
   async getSharedValue(key: string): Promise<unknown> {

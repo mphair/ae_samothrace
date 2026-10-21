@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "topographic-structures-raw": {
+      "version": 1,
+      "urlTemplate": "/tiles/topographic-structures-raw/{z}/{x}/{y}.png",
+      "overrides": {}
+    },
+    "topographic-structures-buffered": {
+      "version": 1,
+      "urlTemplate": "/tiles/topographic-structures-buffered/{z}/{x}/{y}.png",
+      "overrides": {}
+    }
+  }
+}

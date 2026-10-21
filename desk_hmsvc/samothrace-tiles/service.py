@@ -81,6 +81,18 @@ def _project_dir() -> Path:
 PROJECT_DIR = _project_dir()
 TILES_DIR = PROJECT_DIR / "Data" / "mapTiles"
 FEATURES_DIR = PROJECT_DIR / "Data" / "mapFeatures"
+# Operational config for THIS service (which "version" each tile-image
+# URL this service answers for currently points at, plus any one-off
+# overrides) -- not project GIS data, so kept next to this file itself
+# rather than under Data/, unlike every other path above. See
+# desk_widgets/_shared/desk-platform.ts's own `TileManifest` for the
+# shape read on the widget side, and this module's own `manifest()`
+# endpoint below for why there's genuinely nothing to version here (no
+# "v{N}" path segment, unlike desk_hmsvc/samothrace-tiles-static/'s own
+# baked layers -- this service computes fresh every request, so there's
+# no stored-per-version artifact to point at in the first place).
+MANIFEST_PATH = Path(__file__).resolve().parent / "manifest.json"
+CORRECTIONS_DIR = Path(__file__).resolve().parent / "corrections"
 # Data/mapSources/<slug>/source.<ext> -- see desk-installed-jobs/
 # map-import-from-photo/'s own header comment for the full convention
 # (source photo + transform.json per import). Served raw here so the
@@ -241,6 +253,11 @@ app.add_middleware(
 )
 
 PNG_HEADERS = {"Cache-Control": "public, max-age=31536000, immutable"}
+# Short -- /layers and /manifest can both change (a hand-edited
+# override, or this module's own code changing what it computes) and
+# need to be re-checked regularly, unlike an individual tile image's
+# own URL, which never changes once published.
+METADATA_HEADERS = {"Cache-Control": "public, max-age=60"}
 
 
 def _tms_path(base: Path, z: int, x: int, y: int) -> Path:
@@ -514,7 +531,41 @@ def _discover_keys() -> list[dict]:
 @app.get("/layers")
 def layers():
     enriched = [{**entry, "bounds": _layer_bounds(entry["id"])} for entry in LAYERS]
-    return {"layers": enriched, "minZoom": MIN_ZOOM, "maxZoom": MAX_ZOOM, "tileSize": TILE_SIZE, "keys": _discover_keys()}
+    payload = {"layers": enriched, "minZoom": MIN_ZOOM, "maxZoom": MAX_ZOOM, "tileSize": TILE_SIZE, "keys": _discover_keys()}
+    return Response(content=json.dumps(payload), media_type="application/json", headers=METADATA_HEADERS)
+
+
+@app.get("/manifest")
+def manifest():
+    """Re-read manifest.json (next to this file, see MANIFEST_PATH's
+    own comment) on every call -- a hand-edited change is picked up
+    immediately, no restart needed. Only covers the two
+    pipeline-topographic debug layers in practice: every other id this
+    service answers for is routed to via
+    desk_hmsvc/samothrace-tiles-static/ instead once merged by
+    desk_widgets/layer-stack/layer-stack.ts's/
+    desk_widgets/layered-map/layered-map.ts's own catalog merge (see
+    that merge's own comment on why samothrace-tiles-static always wins
+    on an overlapping id) -- see
+    desk_widgets/_shared/desk-platform.ts's own `TileManifest` for the
+    shape this is read into on the widget side."""
+    if not MANIFEST_PATH.is_file():
+        return Response(status_code=404)
+    return Response(content=MANIFEST_PATH.read_bytes(), media_type="application/json", headers=METADATA_HEADERS)
+
+
+@app.get("/corrections/{filename}")
+def correction(filename: str):
+    """A one-off override target (manifest.json's own `overrides` map
+    points here) -- see
+    desk_hmsvc/samothrace-tiles-static/service.py's own matching
+    endpoint for the full "why" (unlikely to ever be used here in
+    practice, kept for consistency with that service)."""
+    path = CORRECTIONS_DIR / filename
+    if not path.is_file():
+        return Response(status_code=404)
+    media_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+    return Response(content=path.read_bytes(), media_type=media_type, headers=PNG_HEADERS)
 
 
 @app.get("/source/{slug}")

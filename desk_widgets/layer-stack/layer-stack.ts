@@ -326,8 +326,18 @@ class LayerStackElement extends HTMLElement {
     await Promise.all([
       loadVectorCatalog('natural-earth-map', NE_SERVICE_NAME, neServiceUrl),
       loadVectorCatalog('samothrace-vectors', VECTORS_SERVICE_NAME, vectorsServiceUrl),
-      loadRasterCatalog(TILES_SERVICE_NAME, tilesServiceUrl),
-      loadRasterCatalog(TILES_STATIC_SERVICE_NAME, tilesStaticServiceUrl),
+      // samothrace-tiles' own /layers response still lists every id
+      // (left fully intact, per the prior request -- samothrace-map's
+      // own panel depends on it), so it genuinely overlaps with
+      // samothrace-tiles-static's response on 7 of 9 ids. Sequenced
+      // (not run concurrently with each other) so samothrace-tiles-static
+      // deterministically wins `catalog.set()` on any overlapping id --
+      // running them in Promise.all alongside each other would make
+      // that a timing-dependent race instead.
+      (async () => {
+        await loadRasterCatalog(TILES_SERVICE_NAME, tilesServiceUrl);
+        await loadRasterCatalog(TILES_STATIC_SERVICE_NAME, tilesStaticServiceUrl);
+      })(),
     ]);
     this.catalog = catalog;
 

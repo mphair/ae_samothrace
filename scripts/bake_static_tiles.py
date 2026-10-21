@@ -1,6 +1,6 @@
 """Bakes the two genuinely-computed samothrace-tiles layers
-("topographic", "restored-structures") to static PNGs once, plus a
-single static "blank" backdrop tile -- the pre-baked output
+("topographic", "restored-structures") to static PNGs, plus a single
+static "blank" backdrop tile -- the pre-baked output
 desk_hmsvc/samothrace-tiles-static/ serves.
 
 Written 2026-10-21 in response to a request from the aws_am_samothrace
@@ -14,6 +14,24 @@ desk_hmsvc/samothrace-tiles-static/service.py reads them straight from
 their EXISTING Data/mapTiles/ directories (the same ones
 desk_hmsvc/samothrace-tiles/ itself reads, read-only, no copy needed).
 
+2026-10-21 (same day, second pass): versioned. A re-bake must never
+change the bytes at an already-published tile URL (that's the entire
+point of the long-lived immutable Cache-Control those URLs get -- see
+desk_hmsvc/samothrace-tiles-static/service.py's own header comment), so
+each run of this script writes topographic/restored-structures to a
+NEW `v<N>/` subdirectory -- never overwriting a previous version's own
+directory -- and bumps that layer's `version` in
+Data/mapTilesStatic/manifest.json (resolved live by
+desk_widgets/_shared/platform.ts's `resolveTileUrl`). Each layer's
+`overrides` are cleared on its own re-bake: an override exists to patch
+one specific tile in a specific, now-superseded version, and carrying
+it forward into a version whose underlying content has already changed
+wouldn't mean the same thing. Passthrough/blank layers have no version
+concept (nothing to re-bake) -- their manifest entries are written once,
+on first run only, and never touched again by this script (so a
+hand-added override for one of those, if ever needed, survives a later
+re-run of this script for the OTHER, versioned layers).
+
 Imports desk_hmsvc/samothrace-tiles/service.py directly (rather than
 reimplementing its PIL mask logic) so this bake is byte-for-byte
 identical to what that service would compute live for the same
@@ -25,6 +43,7 @@ Run from the project root: `python3 scripts/bake_static_tiles.py`
 location, same convention desk_hmsvc/*/service.py's own
 `_project_dir()` already documents for standalone invocation).
 """
+import json
 import os
 import sys
 from pathlib import Path
@@ -41,6 +60,7 @@ sys.path.insert(0, str(SAMOTHRACE_TILES_DIR))
 import service as tiles_service  # noqa: E402  (must follow sys.path.insert)
 
 STATIC_OUT_DIR = PROJECT_DIR / "Data" / "mapTilesStatic"
+MANIFEST_PATH = STATIC_OUT_DIR / "manifest.json"
 
 # layer id -> the tiles_service function that computes it, taking
 # (z, x, y) in standard XYZ (north-origin) -- same convention
@@ -52,6 +72,18 @@ STATIC_OUT_DIR = PROJECT_DIR / "Data" / "mapTilesStatic"
 COMPUTED_LAYERS = {
     "topographic": lambda z, x, y: tiles_service._topographic_png(z, x, y),
     "restored-structures": lambda z, x, y: tiles_service._structures_png("restored", z, x, y),
+}
+
+# One static, un-versioned manifest entry each, written only if the
+# layer isn't already present (see this module's own header comment --
+# never touched again on a later run, so a hand-added override
+# survives).
+STATIC_MANIFEST_DEFAULTS = {
+    "aerial": {"version": 1, "urlTemplate": "/tiles/aerial/{z}/{x}/{y}.png", "overrides": {}},
+    "blank": {"version": 1, "urlTemplate": "/tiles/blank/{z}/{x}/{y}.png", "overrides": {}},
+    "initial-map": {"version": 1, "urlTemplate": "/tiles/initial-map/{z}/{x}/{y}.png", "overrides": {}},
+    "restored-monuments": {"version": 1, "urlTemplate": "/tiles/restored-monuments/{z}/{x}/{y}.png", "overrides": {}},
+    "restored-plan-raw": {"version": 1, "urlTemplate": "/tiles/restored-plan-raw/{z}/{x}/{y}.png", "overrides": {}},
 }
 
 
@@ -76,11 +108,24 @@ def _enumerate_source_tiles():
                 yield z, x, y
 
 
-def bake_computed_layers() -> None:
+def _load_manifest() -> dict:
+    if not MANIFEST_PATH.is_file():
+        return {"layers": {}}
+    return json.loads(MANIFEST_PATH.read_text())
+
+
+def _write_manifest(manifest: dict) -> None:
+    MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
+    MANIFEST_PATH.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
+
+
+def bake_computed_layers(manifest: dict) -> None:
     tiles = list(_enumerate_source_tiles())
     print(f"Found {len(tiles)} source tiles in the Restored State Plan's own tile set.")
     for layer_id, compute in COMPUTED_LAYERS.items():
-        out_dir = STATIC_OUT_DIR / layer_id
+        current = manifest["layers"].get(layer_id)
+        new_version = (current["version"] + 1) if current else 1
+        out_dir = STATIC_OUT_DIR / layer_id / f"v{new_version}"
         written = skipped = 0
         for z, x, y in tiles:
             data = compute(z, x, y)
@@ -91,22 +136,42 @@ def bake_computed_layers() -> None:
             tile_path.parent.mkdir(parents=True, exist_ok=True)
             tile_path.write_bytes(data)
             written += 1
-        print(f"{layer_id}: wrote {written} tiles, skipped {skipped} (no computable output).")
+        print(f"{layer_id}: wrote {written} tiles (version {new_version}), skipped {skipped} (no computable output).")
+        manifest["layers"][layer_id] = {
+            "version": new_version,
+            "urlTemplate": f"/tiles/v{{version}}/{layer_id}/{{z}}/{{x}}/{{y}}.png",
+            "overrides": {},  # cleared on every re-bake -- see this module's own header comment
+        }
 
 
 def bake_blank_tile() -> None:
     """Single static file, not a tile pyramid -- see
     tiles_service._blank_png's own comment: a blank tile looks the same
-    everywhere, so one file covers every z/x/y request."""
+    everywhere, so one file covers every z/x/y request. Not versioned
+    (STATIC_MANIFEST_DEFAULTS covers its manifest entry) -- regenerated
+    every run regardless, since it's a single cheap file with nothing
+    to lose by overwriting it in place."""
     out_path = STATIC_OUT_DIR / "blank.png"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_bytes(tiles_service._blank_png())
     print(f"blank: wrote {out_path.relative_to(PROJECT_DIR)}.")
 
 
+def apply_static_manifest_defaults(manifest: dict) -> None:
+    for layer_id, default_entry in STATIC_MANIFEST_DEFAULTS.items():
+        if layer_id in manifest["layers"]:
+            continue  # already present -- never overwritten by this script again
+        manifest["layers"][layer_id] = dict(default_entry)
+        print(f"{layer_id}: added default (un-versioned) manifest entry.")
+
+
 def main() -> int:
-    bake_computed_layers()
+    manifest = _load_manifest()
+    bake_computed_layers(manifest)
     bake_blank_tile()
+    apply_static_manifest_defaults(manifest)
+    _write_manifest(manifest)
+    print(f"Wrote {MANIFEST_PATH.relative_to(PROJECT_DIR)}.")
     return 0
 
 

@@ -42,6 +42,22 @@ aws_am_samothrace actually wants to deploy -- not a replacement, and
 not the one-true-owner of these ids the way a from-scratch design might
 prefer; see the originating ae-sam-requests doc for the full reasoning.
 
+2026-10-21: the two baked layers' tile IMAGES moved behind a version/
+override manifest (desk_widgets/_shared/platform.ts's own
+`resolveTileUrl` -- an aws_am_samothrace request: updating deployed
+tiles after the site is live, without ever changing the bytes at an
+already-published, long-cached tile URL). `/manifest` publishes each
+layer's current version (mapping to a URL via `urlTemplate`) plus any
+per-tile overrides, short-cached (~1 minute) so an update is picked up
+quickly without ever touching an existing tile URL's own immutable
+cache. Only "topographic"/"restored-structures" actually vary by
+version -- scripts/bake_static_tiles.py writes each new bake to its own
+`Data/mapTilesStatic/<layer-id>/v<N>/<z>/<x>/<y>.png`, never overwriting
+an older version's directory, served by `/tiles/v{version}/{layer}/...`
+below. The five passthrough/blank layers have no version concept at all
+(there's nothing to re-bake) and keep using the plain, un-versioned
+`/tiles/{layer}/...` route exactly as before.
+
 Run standalone for development: `uvicorn service:app --reload --port 8100`
 (from this directory) -- DESK_PROJECT_DIR then needs to be set manually
 since there's no Desk process to set it for you; see `_project_dir()`.
@@ -49,6 +65,8 @@ Requires `python3 scripts/bake_static_tiles.py` (run once from the
 project root) to have already populated Data/mapTilesStatic/ -- the two
 baked layers 404 until that's been run.
 """
+import json
+import mimetypes
 import os
 import re
 from pathlib import Path
@@ -69,6 +87,8 @@ def _project_dir() -> Path:
 PROJECT_DIR = _project_dir()
 TILES_DIR = PROJECT_DIR / "Data" / "mapTiles"
 STATIC_DIR = PROJECT_DIR / "Data" / "mapTilesStatic"
+MANIFEST_PATH = STATIC_DIR / "manifest.json"
+CORRECTIONS_DIR = STATIC_DIR / "corrections"
 
 # Passthrough layers -- the SAME on-disk directories
 # desk_hmsvc/samothrace-tiles/service.py's own PLAN_DIRS/RAW_LAYER_DIRS
@@ -82,12 +102,19 @@ PASSTHROUGH_DIRS = {
     "restored-plan-raw": TILES_DIR / "SamoWebsite_RestoredStatePlan_3857",
 }
 
-# Pre-baked layers -- plain XYZ on disk (no TMS flip needed, see
-# scripts/bake_static_tiles.py's own header comment), written once by
-# that script.
+# Pre-baked, VERSIONED layers -- plain XYZ on disk (no TMS flip needed,
+# see scripts/bake_static_tiles.py's own header comment), written once
+# per version by that script into their own `v<N>/` subdirectory.
+# Served only via /tiles/v{version}/{layer}/... below, NOT the plain
+# /tiles/{layer}/... route (see LAYER_IDS' own comment) -- the whole
+# point of versioning these two is that a widget must go through the
+# manifest (desk_widgets/_shared/platform.ts's `resolveTileUrl`) to
+# learn which version is current, never assume an un-versioned path.
 BAKED_LAYER_IDS = {"topographic", "restored-structures"}
 
-LAYER_IDS = set(PASSTHROUGH_DIRS) | BAKED_LAYER_IDS | {"blank"}
+# Valid ids for the plain, un-versioned /tiles/{layer}/... route only --
+# deliberately EXCLUDES BAKED_LAYER_IDS (see that set's own comment).
+LAYER_IDS = set(PASSTHROUGH_DIRS) | {"blank"}
 
 # Same shape (id/label/group/order/defaultVisible) as the matching
 # entries in desk_hmsvc/samothrace-tiles/service.py's own LAYERS --
@@ -157,6 +184,11 @@ app.add_middleware(
 )
 
 PNG_HEADERS = {"Cache-Control": "public, max-age=31536000, immutable"}
+# Short -- /layers and /manifest can both change (a re-bake bumps a
+# version, an override gets added) and need to be re-checked regularly,
+# unlike an individual tile image's own URL, which never changes once
+# published (see this module's own header comment).
+METADATA_HEADERS = {"Cache-Control": "public, max-age=60"}
 
 
 def _passthrough_tms_path(base: Path, z: int, x: int, y: int) -> Path:
@@ -170,7 +202,39 @@ def _passthrough_tms_path(base: Path, z: int, x: int, y: int) -> Path:
 @app.get("/layers")
 def layers():
     enriched = [{**entry, "bounds": _layer_bounds(entry["id"])} for entry in LAYERS]
-    return {"layers": enriched, "minZoom": MIN_ZOOM, "maxZoom": MAX_ZOOM, "tileSize": TILE_SIZE}
+    return Response(
+        content=json.dumps({"layers": enriched, "minZoom": MIN_ZOOM, "maxZoom": MAX_ZOOM, "tileSize": TILE_SIZE}),
+        media_type="application/json",
+        headers=METADATA_HEADERS,
+    )
+
+
+@app.get("/manifest")
+def manifest():
+    """Re-read Data/mapTilesStatic/manifest.json on every call -- same
+    "no caching, trust the filesystem" convention every other
+    metadata.json-driven hmsvc in this project already uses, so a
+    hand-edited version bump or override entry is picked up immediately,
+    no restart needed. See desk_widgets/_shared/desk-platform.ts's own
+    `TileManifest` for the shape this is read into on the widget side."""
+    if not MANIFEST_PATH.is_file():
+        return Response(status_code=404)
+    return Response(content=MANIFEST_PATH.read_bytes(), media_type="application/json", headers=METADATA_HEADERS)
+
+
+@app.get("/corrections/{filename}")
+def correction(filename: str):
+    """A one-off override target (manifest.json's own `overrides` map
+    points here) -- a plain file read, same immutable treatment as a
+    normal tile: once published at a given filename, a correction's own
+    bytes never change either; a further fix uses a NEW filename, same
+    "never overwrite an already-cached URL" principle this whole
+    manifest mechanism exists for."""
+    path = CORRECTIONS_DIR / filename
+    if not path.is_file():
+        return Response(status_code=404)
+    media_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+    return Response(content=path.read_bytes(), media_type=media_type, headers=PNG_HEADERS)
 
 
 @app.get("/tiles/{layer}/{z}/{x}/{y}.png")
@@ -180,11 +244,22 @@ def tile(layer: str, z: int, x: int, y: int):
 
     if layer == "blank":
         path = STATIC_DIR / "blank.png"
-    elif layer in BAKED_LAYER_IDS:
-        path = STATIC_DIR / layer / str(z) / str(x) / f"{y}.png"
     else:
         path = _passthrough_tms_path(PASSTHROUGH_DIRS[layer], z, x, y)
 
+    if not path.is_file():
+        return Response(status_code=404)
+    return Response(content=path.read_bytes(), media_type="image/png", headers=PNG_HEADERS)
+
+
+@app.get("/tiles/v{version}/{layer}/{z}/{x}/{y}.png")
+def versioned_tile(version: int, layer: str, z: int, x: int, y: int):
+    """The only route BAKED_LAYER_IDS are actually served from -- see
+    that set's own comment for why the plain /tiles/{layer}/... route
+    above deliberately doesn't recognize them at all."""
+    if layer not in BAKED_LAYER_IDS or not (MIN_ZOOM <= z <= MAX_ZOOM):
+        return Response(status_code=404)
+    path = STATIC_DIR / layer / f"v{version}" / str(z) / str(x) / f"{y}.png"
     if not path.is_file():
         return Response(status_code=404)
     return Response(content=path.read_bytes(), media_type="image/png", headers=PNG_HEADERS)

@@ -35,3 +35,27 @@ implementation of the same interface. An interface that itself leaks "desk"
 naming would defeat that — widget code and the interface it depends on
 should read as platform-agnostic; "Desk" only belongs in the one module that
 is actually Desk-specific.
+
+## Tile-image URLs never come from a plain string template — go through `resolveTileUrl`'s manifest
+
+A widget must never construct a `/tiles/...` URL itself (string-templating
+a service's base URL with `{layer}/{z}/{x}/{y}`) — always call
+`SharedPlatform.resolveTileUrl(service, layerId, zoom, tx, ty)` instead. Any
+tile-serving hmsvc that wants a layer's own image bytes to be correctable or
+re-bakeable after the fact (without ever changing what an already-published,
+long-cached tile URL points to) publishes a `/manifest` endpoint (short,
+~1 minute `Cache-Control`) recording that layer's current `version` — mapped
+via a fixed `urlTemplate` to the real tile URL — plus a per-tile `overrides`
+map for one-off corrections, served from a `/corrections/{filename}` route.
+A layer with nothing to re-bake (a plain passthrough/static file) doesn't
+need a `{version}` segment in its own template at all — the manifest schema
+still carries a `version` field for uniformity, it just never changes.
+
+Context: decided 2026-10-21, for an aws_am_samothrace request needing to
+update deployed tile images post-launch without disturbing already-cached
+URLs. Both `desk_hmsvc/samothrace-tiles/` and
+`desk_hmsvc/samothrace-tiles-static/` implement this manifest for real (not
+a Desk-only shortcut), so testing a correction locally in Desk exercises the
+same mechanism that runs once deployed. See
+`desk_hmsvc/samothrace-tiles-static/service.py`'s own header comment for the
+fullest worked example (versioned vs. un-versioned layers side by side).
