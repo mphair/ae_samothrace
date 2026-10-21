@@ -111,6 +111,24 @@ function parseLayerKey(key: string): { source: MapSource; id: string } | null {
   return { source, id };
 }
 
+// Byte-for-byte the same ordered id list as
+// desk_widgets/layer-stack/layer-stack.ts's own DEFAULT_STACK --
+// duplicated per this project's established convention (same as
+// makeLayerKey/parseLayerKey above), not read from shared state, so
+// this widget shows the matching arrangement even though it never
+// writes STACK_STATE_KEY itself. See that file's own DEFAULT_STACK
+// comment for the full "why" and the "applies only when nothing has
+// ever been saved" rule this follows identically.
+const DEFAULT_STACK: string[] = [
+  makeLayerKey('samothrace-vectors', 'regio_1'),
+  makeLayerKey('samothrace-vectors', 'restored_waterway'),
+  makeLayerKey('samothrace-tiles', 'aerial'),
+  makeLayerKey('natural-earth-map', 'osm_island_names'),
+  makeLayerKey('natural-earth-map', 'ne_10m_rivers_lake_centerlines'),
+  makeLayerKey('natural-earth-map', 'ne_10m_geography_marine_polys'),
+  makeLayerKey('natural-earth-map', 'ne_10m_land'),
+];
+
 interface LonLatBounds {
   west: number;
   south: number;
@@ -726,7 +744,10 @@ class LayeredMapElement extends HTMLElement {
 
     this.loader?.setMessage('Loading layer stack…');
     const stackValue = await sharedPlatform.getSharedValue(STACK_STATE_KEY);
-    this.stack = this.sanitizeStack(stackValue);
+    // Checked on the RAW value, before sanitizeStack ever runs -- same
+    // "nothing saved yet" vs. "saved as []" distinction
+    // layer-stack.ts's own DEFAULT_STACK comment explains.
+    this.stack = this.sanitizeStack(stackValue === null || stackValue === undefined ? DEFAULT_STACK : stackValue);
 
     let restoredView = false;
     try {

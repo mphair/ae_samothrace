@@ -70,6 +70,30 @@ function parseLayerKey(key: string): { source: MapSource; id: string } | null {
   return { source, id };
 }
 
+// Shown in the Stack column the first time ever that
+// STACK_STATE_KEY has nothing saved -- requested directly (2026-10-21)
+// so a first-time visitor sees a meaningful arrangement instead of a
+// blank Stack. Order here IS the stack order (index 0 = top = closest
+// to the viewer, confirmed directly against renderStack's own
+// iteration + .stack-column's plain, non-reversed flex-direction:
+// column) -- not re-sorted or otherwise interpreted. Applies ONLY when
+// nothing has ever been saved (the raw shared value is null/undefined,
+// checked in attemptLoad before sanitizeStack ever runs) -- once any
+// save happens, even one that empties the stack back out, that saved
+// value takes over permanently, same as today; see attemptLoad's own
+// comment for why that check happens on the RAW value, not on
+// sanitizeStack's result (which can't distinguish "saved as []" from
+// "never saved" -- both sanitize to the same empty array).
+const DEFAULT_STACK: string[] = [
+  makeLayerKey('samothrace-vectors', 'regio_1'),
+  makeLayerKey('samothrace-vectors', 'restored_waterway'),
+  makeLayerKey('samothrace-tiles', 'aerial'),
+  makeLayerKey('natural-earth-map', 'osm_island_names'),
+  makeLayerKey('natural-earth-map', 'ne_10m_rivers_lake_centerlines'),
+  makeLayerKey('natural-earth-map', 'ne_10m_geography_marine_polys'),
+  makeLayerKey('natural-earth-map', 'ne_10m_land'),
+];
+
 // A per-group fallback color for samothrace-tiles' own raster layers,
 // which (unlike natural-earth-map's vector layers) carry no `color`
 // field of their own -- there's nothing per-layer to show a swatch of,
@@ -343,7 +367,12 @@ class LayerStackElement extends HTMLElement {
 
     this.loader?.setMessage('Loading layer stack…');
     const stackValue = await sharedPlatform.getSharedValue(STACK_STATE_KEY);
-    this.stack = this.sanitizeStack(stackValue);
+    // Checked on the RAW value, before sanitizeStack ever runs -- see
+    // DEFAULT_STACK's own comment for why: nothing saved yet (null/
+    // undefined) gets the default, but a stack explicitly saved as `[]`
+    // (or anything else sanitizeStack would also reduce to `[]`) does
+    // NOT -- that's a real saved value, not an absence of one.
+    this.stack = stackValue === null || stackValue === undefined ? DEFAULT_STACK : this.sanitizeStack(stackValue);
 
     try {
       const localData = await sharedPlatform.getLocalData();
