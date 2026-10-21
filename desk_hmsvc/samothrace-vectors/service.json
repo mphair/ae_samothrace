@@ -1,0 +1,5 @@
+{
+  "description": "Serves vector data (Extracted Contours, Restored State -- Waterway, Restored State Plan structures, Regios) from Data/samothraceVectors/ over HTTP for the Layer Stack and Layered Map widgets.",
+  "autostart": true,
+  "capabilities": []
+}

@@ -1,0 +1,106 @@
+{
+  "bounds": {
+    "west": 25.52845001220703,
+    "south": 40.49944201541591,
+    "east": 25.531883239746094,
+    "north": 40.501791575844436
+  },
+  "center": {
+    "lon": 25.530166625976562,
+    "lat": 40.50061679563017
+  },
+  "layers": [
+    {
+      "id": "extracted_contours_major",
+      "url": "/data/extracted_contours_major.geojson",
+      "featureCount": 21,
+      "label": "Extracted Contours \u2014 Major",
+      "group": "Contours",
+      "order": 0,
+      "defaultVisible": false,
+      "render": "stroke",
+      "color": "#c026d3",
+      "weight": 1.1
+    },
+    {
+      "id": "extracted_contours_minor",
+      "url": "/data/extracted_contours_minor.geojson",
+      "featureCount": 8,
+      "label": "Extracted Contours \u2014 Minor",
+      "group": "Contours",
+      "order": 1,
+      "defaultVisible": false,
+      "render": "stroke",
+      "color": "#f59e0b",
+      "weight": 1
+    },
+    {
+      "id": "extracted_contours_unlabeled",
+      "url": "/data/extracted_contours_unlabeled.geojson",
+      "featureCount": 404,
+      "label": "Extracted Contours \u2014 Unlabeled",
+      "group": "Contours",
+      "order": 2,
+      "defaultVisible": false,
+      "render": "stroke",
+      "color": "#94a3b8",
+      "weight": 0.85
+    },
+    {
+      "id": "restored_waterway",
+      "url": "/data/restored_waterway.geojson",
+      "featureCount": 1,
+      "label": "Restored State \u2014 Waterway",
+      "group": "Waterway",
+      "order": 3,
+      "defaultVisible": false,
+      "render": "fill-stroke",
+      "color": "#4682c8",
+      "fillColor": "#4682c8",
+      "fillOpacity": 0.65,
+      "weight": 1
+    },
+    {
+      "id": "restored_waterway_bridges",
+      "url": "/data/restored_waterway_bridges.geojson",
+      "featureCount": 3,
+      "label": "Restored State \u2014 Waterway Bridges",
+      "group": "Waterway",
+      "order": 3.5,
+      "defaultVisible": false,
+      "render": "stroke",
+      "color": "#dce6f0",
+      "weight": 1.5,
+      "dashed": true
+    },
+    {
+      "id": "restored_structures",
+      "url": "/data/restored_structures.geojson",
+      "featureCount": 25,
+      "label": "Restored State \u2014 Structures",
+      "group": "Structures",
+      "order": 4,
+      "defaultVisible": false,
+      "render": "fill-stroke",
+      "color": "#f2b134",
+      "fillColor": "#f2b134",
+      "fillOpacity": 0.3,
+      "weight": 1.25,
+      "labelField": "Name"
+    },
+    {
+      "id": "regio_1",
+      "url": "/data/regio_1.geojson",
+      "featureCount": 1,
+      "label": "Regio I",
+      "group": "Regios",
+      "order": 5,
+      "defaultVisible": false,
+      "render": "fill-stroke",
+      "color": "#911eb4",
+      "fillColor": "#911eb4",
+      "fillOpacity": 0.25,
+      "weight": 1
+    }
+  ]
+}
