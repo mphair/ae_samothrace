@@ -534,6 +534,82 @@ tracks specific open items worth picking up later.
   recovering required knowing which Python environment actually has
   `desk` importable, which isn't obvious from `ps aux` alone.
 
+- **A second "Keys" extraction source — the Restored plan's own printed
+  compass indicator and scale bar** (2026-10-19, requested directly via
+  recording: "there's a huge N here, and next to it there is an
+  arrow over a... plus sign... those together are the compass
+  indicator... I'd like to extract that out into its own layer, and I
+  don't want that in the waterway layer that we're building...
+  similarly, down below that, there is a distance key... I would also
+  like that to be its own layer... I want them to be in keys... remain
+  aligned to the spot").
+
+  **Proved the "Keys" mechanism's own "fully self-discovering" design
+  claim for real**, not just in the abstract: `scripts/
+  extract_restored_keys.py` creates a brand-new `Data/mapSources/
+  restored-plan/` slug (whose own `transform.json` has NOTHING but a
+  `keys` list — no homography/photo-size fields, since nothing ever
+  bakes this slug into real tiles) and needed ZERO changes to either
+  `desk_hmsvc/samothrace-tiles/service.py` or this widget — confirmed
+  live by curling a running hmsvc instance's own `/layers` endpoint
+  directly and seeing both new keys already present, no restart
+  required (unlike an actual code change, this is just new data files on
+  disk, which `_discover_keys()` reads fresh on every call).
+
+  **Crops directly from the Restored mosaic's own raw ink, not a
+  photo**: `extract_keys()` (the original, `initial-map`-only version)
+  crops from a PHOTO in its own unwarped pixel space, before any
+  homography exists. The Restored plan has no equivalent photo — its own
+  `.desk_temp/pipeline-stages/restored/00_raw-ink.png` (`scripts/
+  extract_vector_layers.py`'s own output) IS already the final pixel
+  grid, so this script crops directly from that instead, no warping
+  needed either way.
+
+  **Same generous-crop/tighter-mask split `extract_keys()` already
+  established**, found the same way (crop, look at the actual masked
+  -and-cropped result, iterate) — connected-component analysis was tried
+  first to find the tight mask boxes automatically and failed the same
+  way this project's other ink-classification problems have: both
+  symbols sit close enough to real elevation-contour ink that
+  8-connectivity merges them into one blob. `style_restored_waterway.py`
+  gained `RESTORED_KEY_MASK_BOXES` (hand-maintained, duplicated rather
+  than read from `restored-plan/transform.json` at runtime — same
+  reasoning every other hand-derived geometry constant in that script
+  already follows) and blanks both boxes out of its own `ink_mask`
+  before anything else runs — confirmed directly: the compass/scale
+  symbols are completely gone from the Waterway layer's own output, with
+  only a couple of short, visually negligible contour-line stubs lost
+  where they happened to cross through the (necessarily not-pixel
+  -perfect) mask boxes, same trade-off the original Chronology fix
+  already made peace with.
+
+  **"Only a couple of negligible stubs" turned out to actually bother the
+  user** — corrected the very next pass (rec-1792441616287-d4c4): "that
+  last extraction of the compass and scale keys left some weird hanging
+  situations here in terms of the... contour lines." Not a vector
+  -contour problem (the unrelated "Extracted Contours"/Contour Connector
+  system operates on a completely different dataset,
+  `SamoWeb_RestoredStatePlan_Contours.geojson`'s own fragments, never
+  touched by this layer) — purely a raster one: real contour lines the
+  mask boxes had cut clean through, now dangling two stubs apiece.
+  Traced by hand across each gap, PURPLE for ones the user called out as
+  a "major" line and GREEN for "minor" ones (no actual rendering
+  difference between the two — both just become ordinary ink, the colors
+  were only about which real line the user was tracing). One purple
+  attempt was disclaimed by the user mid-recording ("I don't think that
+  was actually correct") and crossed out in red — excluded. A second red
+  mark (a small square) flagged a genuinely stray ink fragment, confirmed
+  directly: the compass's own crosshair bar ran slightly past the
+  original mask box's left edge, so a connected-but-cropped piece of it
+  was reading as an orphaned "contour" stub — fixed by widening that
+  box's own left edge (2085→2065) rather than drawing a patch over it.
+  New `CONTOUR_RECONNECT_SEGMENTS_PX` in `style_restored_waterway.py`
+  (thin `CONTOUR_RECONNECT_WIDTH_PX`, matching real contour weight, NOT
+  the thicker hand-drawn-annotation widths elsewhere in that file) folds
+  the kept segments into `ink_mask` before composing. Confirmed directly:
+  every contour line through both mask boxes now reads as one continuous
+  curve, and the stray fragment is gone.
+
 - **Recording-mode toolbar: timecoded screenshots + a quick annotation
   layer (2026-10-17).** A small 3-button toolbar, top-center over the
   map canvas, visible only while a recording is active (same

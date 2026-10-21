@@ -164,6 +164,25 @@ components with 2+ are kept. This is a real, accepted compromise, not a
 perfect classifier. The user is reconsidering the approach separately,
 so this stays computed-but-unused until they raise it again.
 
+## Compass/scale bar removal, and the contour lines that needed reconnecting
+
+The Restored plan's own printed compass indicator and scale bar are
+extracted into their own "Keys" entries by `scripts/
+extract_restored_keys.py` (2026-10-19: "I don't want that in the
+waterway layer that we're building") and blanked out of `ink_mask` here
+via `RESTORED_KEY_MASK_BOXES` before anything else runs. Blanking a
+rectangle necessarily cuts clean through any real elevation-contour line
+passing underneath, leaving two dangling stubs -- confirmed directly the
+very next pass ("that last extraction... left some weird hanging
+situations here in terms of the contour lines"), and fixed by hand
+-tracing each severed line back together across the gap
+(`CONTOUR_RECONNECT_SEGMENTS_PX`, folded into `ink_mask` before
+composing, same "duplicated rather than imported" reasoning as every
+other hand-derived geometry constant in this file). See both constants'
+own comments for the full story, including a stray ink fragment that
+turned out to be the compass's own crosshair bar poking past the
+original (now widened) mask box edge, not a contour at all.
+
 ## Output
 
 `Data/mapFeatures/SamoWeb_RestoredStatePlan_WaterwayView.png` (RGBA,
@@ -263,6 +282,65 @@ SEED_POINTS_PX: list[tuple[int, int]] = [
     (1618, 1982),
     (2129, 1260),
 ]
+
+# The Restored plan's own printed compass indicator and scale bar
+# (mosaic-pixel boxes, same grid as `00_raw-ink.png`) -- extracted into
+# their own "Keys" entries by `scripts/extract_restored_keys.py`
+# (rec-1792426059633-1b56, 2026-10-19: "I don't want that in the
+# waterway layer that we're building"). Blanked out of `ink_mask` before
+# anything else runs, so neither symbol survives into this script's own
+# `other_ink` rendering. TIGHTER than that script's own crop boxes (same
+# "generous crop, tighter mask" split its own header explains) -- kept
+# as a separate hand-maintained copy here rather than read from
+# `restored-plan/transform.json` at runtime, same "duplicated rather
+# than imported, these scripts assume direct execution" reasoning every
+# other hand-derived geometry constant in this file already follows.
+RESTORED_KEY_MASK_BOXES: list[tuple[int, int, int, int]] = [
+    # Left edge extended from 2085 to 2065, 2026-10-19 (rec-1792441616287
+    # -d4c4): the compass's own crosshair bar runs slightly wider than
+    # the original box -- "there's a little line segment there... that is
+    # not actually part of a contour... that is part of the compass
+    # key" -- confirmed directly against a crop: the crossbar's own left
+    # tip was sticking out past the old boundary, reading as a stray,
+    # unconnected ink fragment.
+    (2065, 1760, 2230, 1980),  # compass (the "N" + arrow/crosshair)
+    (1870, 2000, 2420, 2140),  # scale bar
+]
+
+# Hand-drawn reconnections for elevation-contour lines the two mask boxes
+# above severed -- directly requested the same pass: "that last extraction
+# of the compass and scale keys left some weird hanging situations here
+# in terms of the... contour lines... I'm going to use purple here to
+# extend these major lines... in green, these are minor ones... just
+# drawing those connections there." Traced by the user along each real
+# contour's own remaining stubs on either side of a mask box, not a
+# generic bridge -- same "duplicated rather than imported" reasoning
+# RESTORED_KEY_MASK_BOXES gives for living here rather than in
+# `extract_restored_keys.py`'s own transform.json. One purple segment
+# from the same pass was drawn, then immediately disclaimed by the user
+# themselves ("I don't think that was actually correct") and crossed out
+# in red -- not included here. Rendered as ordinary ink (folded into
+# `ink_mask` below), no visual distinction between the "major"/"minor"
+# labels the user used while narrating which real contour each one
+# belongs to -- that distinction was about which line they were tracing,
+# not how it should look once reconnected.
+CONTOUR_RECONNECT_SEGMENTS_PX: list[list[tuple[int, int]]] = [
+    [(2073, 1995), (2073, 2001), (2071, 2025), (2069, 2036), (2069, 2060), (2066, 2097), (2062, 2132), (2062, 2139), (2064, 2144)],
+    [(1926, 2001), (1926, 2010), (1913, 2071), (1904, 2104), (1898, 2132), (1894, 2143)],
+    [(1913, 1999), (1904, 2065), (1885, 2139), (1878, 2156)],
+    [(1948, 1988), (1948, 1994), (1953, 2076), (1944, 2126), (1929, 2143), (1928, 2148)],
+    [(1951, 2152), (1955, 2146), (1975, 2115), (1984, 2086), (1986, 2064), (1984, 2030), (1979, 1995), (1977, 1990)],
+    [(2005, 1988), (2010, 1992), (2027, 2041), (2025, 2089), (2012, 2117), (2001, 2141), (1996, 2144)],
+    [(2034, 1981), (2036, 1990), (2045, 2036), (2045, 2047), (2045, 2064), (2045, 2080), (2047, 2108), (2040, 2148), (2025, 2161), (2014, 2166)],
+    [(2237, 1764), (2231, 1764), (2202, 1764), (2185, 1762), (2174, 1758)],
+    [(2086, 1766), (2091, 1767), (2102, 1782), (2112, 1804), (2117, 1837), (2121, 1865), (2126, 1894), (2126, 1911), (2126, 1937), (2126, 1948), (2128, 1964), (2128, 1975), (2128, 1986)],
+    [(2126, 1997), (2124, 2003), (2115, 2030), (2112, 2047), (2106, 2075), (2102, 2102), (2097, 2130), (2095, 2146)],
+]
+# Rasterized stroke width (px) for the segments above -- thin, matching
+# this survey's own elevation-contour line weight (nowhere near
+# BOUNDARY_STROKE_WIDTH_PX-style thicknesses, which are for a hand-drawn
+# ANNOTATION boundary, not a redrawn printed contour).
+CONTOUR_RECONNECT_WIDTH_PX = 2
 
 # Structure Labels (Data/mapFeatures/SamoWeb_RestoredStatePlan_Overlay.geojson's
 # own `properties.Label`) confirmed to be real bridges the channel
@@ -467,7 +545,23 @@ def main() -> None:
     origin = project_world(bounds["west"], bounds["north"])
     shape = ink_mask.shape  # (rows, cols) == (height, width)
 
-    print(f"ink mask: {ink_mask.sum()} px, mosaic {shape[1]}x{shape[0]}")
+    # See RESTORED_KEY_MASK_BOXES' own comment -- the compass/scale bar
+    # now live in their own "Keys" entries, not here.
+    removed_by_key_mask = 0
+    for x0, y0, x1, y1 in RESTORED_KEY_MASK_BOXES:
+        removed_by_key_mask += int(ink_mask[y0:y1, x0:x1].sum())
+        ink_mask[y0:y1, x0:x1] = False
+
+    # See CONTOUR_RECONNECT_SEGMENTS_PX's own comment -- real contour
+    # lines the boxes above severed, redrawn by hand across the gap.
+    reconnect_img = Image.new("L", (shape[1], shape[0]), 0)
+    reconnect_draw = ImageDraw.Draw(reconnect_img)
+    for segment in CONTOUR_RECONNECT_SEGMENTS_PX:
+        reconnect_draw.line(segment, fill=255, width=CONTOUR_RECONNECT_WIDTH_PX)
+    reconnect_mask = np.asarray(reconnect_img) > 0
+    ink_mask |= reconnect_mask
+
+    print(f"ink mask: {ink_mask.sum()} px, mosaic {shape[1]}x{shape[0]} (-{removed_by_key_mask}px compass/scale key, +{int(reconnect_mask.sum())}px contour reconnects)")
 
     water_fill_raw, n_open, n_barrier = seeded_flood_fill(ink_mask, SEED_POINTS_PX, FLOOD_FILL_CLOSING_ITERATIONS)
     print(f"seeds on open ground: {n_open}, seeds landed on a barrier pixel (skipped): {n_barrier}")
