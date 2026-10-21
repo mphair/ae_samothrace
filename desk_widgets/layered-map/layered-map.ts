@@ -12,7 +12,18 @@
 // readable by Samothrace Map itself straight off disk, see
 // desk_hmsvc/samothrace-vectors/service.py's own header comment for the
 // full story) -- interleaved in a single z-order, and that z-order is
-// not a local per-instance setting. It's read from the shared state key
+// not a local per-instance setting.
+// 2026-10-21 -- `samothrace-tiles`' own raster layers (everything
+// except the two pipeline-topographic debug ones) now actually come
+// from a FOURTH hmsvc, `samothrace-tiles-static` (pre-baked/passthrough
+// static files, no live PIL compute -- see
+// desk_hmsvc/samothrace-tiles-static/service.py's own header comment),
+// merged into the same logical `samothrace-tiles` catalog this widget
+// already had. Each RasterLayerMeta entry carries its own resolved
+// `serviceUrl` forward from whichever origin its own /layers response
+// came from, so drawRasterLayer/getTile never have to re-decide
+// ownership per tile request.
+// It's read from the shared state key
 // `samothrace.mapLayerStack` (see STACK_STATE_KEY below), written by
 // the companion `desk_widgets/layer-stack/` widget's own drag-and-drop
 // UI. This widget never writes that key, only reads it (once at
@@ -47,6 +58,7 @@ declare class ResizeObserver {
 
 const NE_SERVICE_NAME = 'natural-earth-map';
 const TILES_SERVICE_NAME = 'samothrace-tiles';
+const TILES_STATIC_SERVICE_NAME = 'samothrace-tiles-static';
 const VECTORS_SERVICE_NAME = 'samothrace-vectors';
 
 // The shared layer-stack contract -- see desk_widgets/layer-stack/
@@ -150,6 +162,13 @@ interface RasterLayerMeta {
   // raster layers have no per-layer color of their own the way
   // natural-earth-map's vector layers do).
   color: string;
+  // Also assigned client-side (2026-10-21), from whichever of
+  // samothrace-tiles/samothrace-tiles-static's own /layers response this
+  // entry actually came from -- see this file's own header comment on
+  // the two-hmsvc split. drawRasterLayer/getTile use this directly
+  // rather than a single shared service-URL field, since different
+  // layers can now come from different origins.
+  serviceUrl: string;
 }
 
 // A per-group fallback color for samothrace-tiles' own raster layers --
@@ -484,7 +503,6 @@ class LayeredMapElement extends HTMLElement {
   private resizeObserver: ResizeObserver | null = null;
 
   private neServiceUrl: string | null = null;
-  private tilesServiceUrl: string | null = null;
   private vectorsServiceUrl: string | null = null;
   private tilesMinZoom = 17;
   private tilesMaxZoom = 22;
@@ -611,9 +629,10 @@ class LayeredMapElement extends HTMLElement {
   // step overwrites its own previous result.
   private async attemptLoad(): Promise<void> {
     this.loader?.setMessage('Finding map services…');
-    const [neServiceUrl, tilesServiceUrl, vectorsServiceUrl] = await Promise.all([
+    const [neServiceUrl, tilesServiceUrl, tilesStaticServiceUrl, vectorsServiceUrl] = await Promise.all([
       sharedPlatform.getServiceUrl(NE_SERVICE_NAME),
       sharedPlatform.getServiceUrl(TILES_SERVICE_NAME),
+      sharedPlatform.getServiceUrl(TILES_STATIC_SERVICE_NAME),
       sharedPlatform.getServiceUrl(VECTORS_SERVICE_NAME),
     ]);
     if (!neServiceUrl) {
@@ -622,15 +641,36 @@ class LayeredMapElement extends HTMLElement {
     if (!tilesServiceUrl) {
       throw new Error(`${TILES_SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
     }
+    if (!tilesStaticServiceUrl) {
+      throw new Error(`${TILES_STATIC_SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
+    }
     if (!vectorsServiceUrl) {
       throw new Error(`${VECTORS_SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
     }
     this.neServiceUrl = neServiceUrl;
-    this.tilesServiceUrl = tilesServiceUrl;
     this.vectorsServiceUrl = vectorsServiceUrl;
 
     this.loader?.setMessage('Loading layer catalogs…');
     let neCenter: { lon: number; lat: number } | null = null;
+    // samothrace-tiles and samothrace-tiles-static both back the SAME
+    // logical raster catalog (see this file's own header comment) --
+    // merged into `this.tilesCatalog` by this one small helper, called
+    // once per origin, each entry keeping its OWN resolved `serviceUrl`
+    // so drawRasterLayer/getTile never have to re-decide ownership.
+    const mergeRasterCatalog = async (serviceName: string, serviceUrl: string): Promise<void> => {
+      const res = await fetch(`${serviceUrl}/layers`);
+      if (!res.ok) throw new Error(`${serviceName} /layers request failed: ${res.status}`);
+      const data = (await res.json()) as { layers: Omit<RasterLayerMeta, 'color' | 'serviceUrl'>[]; minZoom: number; maxZoom: number };
+      // Neither origin's own /layers response has a per-layer color
+      // field (see RasterLayerMeta.color's own comment) -- assigned
+      // here, client-side, from each layer's own group.
+      for (const m of data.layers) {
+        this.tilesCatalog.set(m.id, { ...m, color: rasterColorForGroup(m.group), serviceUrl });
+      }
+      if (typeof data.minZoom === 'number') this.tilesMinZoom = data.minZoom;
+      if (typeof data.maxZoom === 'number') this.tilesMaxZoom = data.maxZoom;
+    };
+    this.tilesCatalog = new Map();
     await Promise.all([
       (async () => {
         const res = await fetch(`${this.neServiceUrl}/layers`);
@@ -639,17 +679,8 @@ class LayeredMapElement extends HTMLElement {
         this.neCatalog = new Map(data.layers.map((m) => [m.id, m]));
         neCenter = data.center;
       })(),
-      (async () => {
-        const res = await fetch(`${this.tilesServiceUrl}/layers`);
-        if (!res.ok) throw new Error(`${TILES_SERVICE_NAME} /layers request failed: ${res.status}`);
-        const data = (await res.json()) as { layers: Omit<RasterLayerMeta, 'color'>[]; minZoom: number; maxZoom: number };
-        // samothrace-tiles' own /layers response has no per-layer color
-        // field (see RasterLayerMeta.color's own comment) -- assigned
-        // here, client-side, from each layer's own group.
-        this.tilesCatalog = new Map(data.layers.map((m) => [m.id, { ...m, color: rasterColorForGroup(m.group) }]));
-        if (typeof data.minZoom === 'number') this.tilesMinZoom = data.minZoom;
-        if (typeof data.maxZoom === 'number') this.tilesMaxZoom = data.maxZoom;
-      })(),
+      mergeRasterCatalog(TILES_SERVICE_NAME, tilesServiceUrl),
+      mergeRasterCatalog(TILES_STATIC_SERVICE_NAME, tilesStaticServiceUrl),
       (async () => {
         const res = await fetch(`${this.vectorsServiceUrl}/layers`);
         if (!res.ok) throw new Error(`${VECTORS_SERVICE_NAME} /layers request failed: ${res.status}`);
@@ -758,7 +789,7 @@ class LayeredMapElement extends HTMLElement {
       this.stack = this.sanitizeStack(value);
       this.scheduleRedraw();
     });
-    for (const serviceName of [NE_SERVICE_NAME, TILES_SERVICE_NAME, VECTORS_SERVICE_NAME]) {
+    for (const serviceName of [NE_SERVICE_NAME, TILES_SERVICE_NAME, TILES_STATIC_SERVICE_NAME, VECTORS_SERVICE_NAME]) {
       sharedPlatform.onServiceUrlChanged(serviceName, () => {
         // This hmsvc restarted (new URL published) -- the simplest
         // correct response is to re-run the whole load attempt, same as
@@ -1021,7 +1052,7 @@ class LayeredMapElement extends HTMLElement {
           continue;
         }
         if (zoom < this.tilesMinZoom || zoom > this.tilesMaxZoom) continue; // out of range and no known bounds to fall back to a marker for (e.g. "blank"/"initial-map") -- just skip, no fetch
-        this.drawRasterLayer(ctx, ref.id, zoom, centerWorld);
+        this.drawRasterLayer(ctx, ref.id, meta.serviceUrl, zoom, centerWorld);
       } else {
         const meta = this.vectorMetaFor(ref);
         const features = this.featureCache.get(ref.id);
@@ -1245,8 +1276,7 @@ class LayeredMapElement extends HTMLElement {
     return entry;
   }
 
-  private drawRasterLayer(ctx: CanvasRenderingContext2D, layerId: string, zoom: number, centerWorld: { x: number; y: number }): void {
-    if (!this.tilesServiceUrl) return;
+  private drawRasterLayer(ctx: CanvasRenderingContext2D, layerId: string, serviceUrl: string, zoom: number, centerWorld: { x: number; y: number }): void {
     const tileSize = TILE_SIZE;
     const topLeftWorldX = centerWorld.x - this.viewportWidth / 2;
     const topLeftWorldY = centerWorld.y - this.viewportHeight / 2;
@@ -1263,7 +1293,7 @@ class LayeredMapElement extends HTMLElement {
       if (tx < 0 || tx > maxIndex) continue;
       for (let ty = minTy; ty <= maxTy; ty++) {
         if (ty < 0 || ty > maxIndex) continue;
-        const url = `${this.tilesServiceUrl}/tiles/${layerId}/${zoom}/${tx}/${ty}.png`;
+        const url = `${serviceUrl}/tiles/${layerId}/${zoom}/${tx}/${ty}.png`;
         const entry = this.getTile(url);
         if (entry.status !== 'loaded') continue;
         const screenX = tx * tileSize - centerWorld.x + this.viewportWidth / 2;

@@ -1,0 +1,5 @@
+{
+  "description": "Serves the pre-baked/passthrough public subset of samothrace-tiles' own raster layers (aerial, topographic, blank, initial-map, restored-structures, restored-monuments, restored-plan-raw) as static files, no per-request computation, for the Layer Stack and Layered Map widgets' AWS deployment.",
+  "autostart": true,
+  "capabilities": []
+}

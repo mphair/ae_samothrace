@@ -2,7 +2,16 @@
 // desk_widgets/layered-map/ widget. Every layer exposed by any of the
 // `natural-earth-map`, `samothrace-tiles`, or `samothrace-vectors`
 // (added 2026-10-20 -- see desk_hmsvc/samothrace-vectors/service.py's
-// own header comment) hmsvcs shows up here as a small labelled "chip." Chips not currently in use sit in a free-form
+// own header comment) hmsvcs shows up here as a small labelled "chip."
+// 2026-10-21 -- samothrace-tiles' own public/deployable raster layers
+// (everything except the two pipeline-topographic debug ones) also
+// come from a second hmsvc, `samothrace-tiles-static`, now that those
+// are pre-baked/passthrough static files rather than live PIL output
+// (see desk_hmsvc/samothrace-tiles-static/service.py's own header
+// comment for the full split). Both origins are merged into the SAME
+// `samothrace-tiles` logical source below -- the two-hmsvc split is an
+// internal fetch-routing detail, invisible to chip keys/grouping/color.
+// Chips not currently in use sit in a free-form
 // palette area (drop them anywhere; position is purely cosmetic, saved
 // to this widget INSTANCE's own persisted local data, never shared).
 // Chips dragged into the central Stack column are the layers Layered Map
@@ -38,6 +47,7 @@
 
 const NE_SERVICE_NAME = 'natural-earth-map';
 const TILES_SERVICE_NAME = 'samothrace-tiles';
+const TILES_STATIC_SERVICE_NAME = 'samothrace-tiles-static';
 const VECTORS_SERVICE_NAME = 'samothrace-vectors';
 
 // See desk_widgets/layered-map/layered-map.ts's own header comment for
@@ -252,9 +262,10 @@ class LayerStackElement extends HTMLElement {
 
   private async attemptLoad(): Promise<void> {
     this.loader?.setMessage('Finding map services…');
-    const [neServiceUrl, tilesServiceUrl, vectorsServiceUrl] = await Promise.all([
+    const [neServiceUrl, tilesServiceUrl, tilesStaticServiceUrl, vectorsServiceUrl] = await Promise.all([
       sharedPlatform.getServiceUrl(NE_SERVICE_NAME),
       sharedPlatform.getServiceUrl(TILES_SERVICE_NAME),
+      sharedPlatform.getServiceUrl(TILES_STATIC_SERVICE_NAME),
       sharedPlatform.getServiceUrl(VECTORS_SERVICE_NAME),
     ]);
     if (!neServiceUrl) {
@@ -262,6 +273,9 @@ class LayerStackElement extends HTMLElement {
     }
     if (!tilesServiceUrl) {
       throw new Error(`${TILES_SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
+    }
+    if (!tilesStaticServiceUrl) {
+      throw new Error(`${TILES_STATIC_SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
     }
     if (!vectorsServiceUrl) {
       throw new Error(`${VECTORS_SERVICE_NAME} service is not running yet -- start it from the Microservices widget if this persists`);
@@ -290,24 +304,30 @@ class LayerStackElement extends HTMLElement {
         });
       }
     };
+    // samothrace-tiles and samothrace-tiles-static both back the SAME
+    // logical `samothrace-tiles` source (see this file's own header
+    // comment) -- merged by this one small helper, called once per
+    // origin, same reasoning as loadVectorCatalog above.
+    const loadRasterCatalog = async (serviceName: string, serviceUrl: string): Promise<void> => {
+      const res = await fetch(`${serviceUrl}/layers`);
+      if (!res.ok) throw new Error(`${serviceName} /layers request failed: ${res.status}`);
+      const data = (await res.json()) as { layers: { id: string; label: string; group: string; order: number }[] };
+      for (const m of data.layers) {
+        catalog.set(makeLayerKey('samothrace-tiles', m.id), {
+          source: 'samothrace-tiles',
+          id: m.id,
+          label: m.label,
+          group: m.group,
+          order: m.order,
+          color: rasterColorForGroup(m.group),
+        });
+      }
+    };
     await Promise.all([
       loadVectorCatalog('natural-earth-map', NE_SERVICE_NAME, neServiceUrl),
       loadVectorCatalog('samothrace-vectors', VECTORS_SERVICE_NAME, vectorsServiceUrl),
-      (async () => {
-        const res = await fetch(`${tilesServiceUrl}/layers`);
-        if (!res.ok) throw new Error(`${TILES_SERVICE_NAME} /layers request failed: ${res.status}`);
-        const data = (await res.json()) as { layers: { id: string; label: string; group: string; order: number }[] };
-        for (const m of data.layers) {
-          catalog.set(makeLayerKey('samothrace-tiles', m.id), {
-            source: 'samothrace-tiles',
-            id: m.id,
-            label: m.label,
-            group: m.group,
-            order: m.order,
-            color: rasterColorForGroup(m.group),
-          });
-        }
-      })(),
+      loadRasterCatalog(TILES_SERVICE_NAME, tilesServiceUrl),
+      loadRasterCatalog(TILES_STATIC_SERVICE_NAME, tilesStaticServiceUrl),
     ]);
     this.catalog = catalog;
 
@@ -386,7 +406,7 @@ class LayerStackElement extends HTMLElement {
       this.assignDefaultPositions();
       this.render();
     });
-    for (const serviceName of [NE_SERVICE_NAME, TILES_SERVICE_NAME, VECTORS_SERVICE_NAME]) {
+    for (const serviceName of [NE_SERVICE_NAME, TILES_SERVICE_NAME, TILES_STATIC_SERVICE_NAME, VECTORS_SERVICE_NAME]) {
       sharedPlatform.onServiceUrlChanged(serviceName, () => {
         console.warn(`${serviceName} service URL changed -- reloading catalog`);
         this.loader?.retryNow();
